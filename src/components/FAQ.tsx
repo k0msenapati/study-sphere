@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Plus } from "lucide-react"
+import { Plus, Minus } from "lucide-react" // Import Minus icon
 
 const tabs = [
   {
@@ -24,45 +24,64 @@ const tabs = [
     description:
       "Yes, Study Sphere is completely free to use. Our goal is to provide valuable educational tools to students without any cost. You can access all features of the app without any subscriptions or hidden fees.",
   },
+  {
+    title: "Is it okay to start learning from scratch with Study Sphere if I have less experience?",
+    description:
+      "Absolutely! Study Sphere provides beginner-friendly resources, interactive tutorials, and guided learning paths to help students of all experience levels build their knowledge from basic concepts to advanced topics.",
+  },
+  {
+    title: "How do I balance my academic studies with using Study Sphere?",
+    description:
+      "Study Sphere is designed to integrate seamlessly with your academic schedule. You can use its note-taking features during lectures, create custom quizzes for self-assessment, and use the chat feature to collaborate with study buddies on challenging topics, making your study time more efficient.",
+  },
+  {
+    title: "What makes Study Sphere different from other educational platforms?",
+    description:
+      "Study Sphere stands out due to its comprehensive and open-source nature. It offers a unique combination of note-taking, quiz creation, and real-time chat functionalities, fostering a collaborative and personalized learning environment without any cost.",
+  },
+  {
+    title: "Are Study Sphere resources suitable for students from all academic backgrounds?",
+    description:
+      "Yes, Study Sphere's resources are designed to be adaptable and beneficial for students across various academic disciplines. Whether you're in science, humanities, or engineering, you'll find tools and content to support your learning journey.",
+  },
 ]
 
 function FAQ() {
   const [activeIndex, setActiveIndex] = useState<number | null>(0)
-  const [activeItem, setActiveItem] = useState<
-    | {
-        title: string
-        description: string
-      }
-    | undefined
-  >(tabs[0])
 
-  const handleClick = async (index: number) => {
+  const handleClick = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index)
-    const newActiveItem = tabs.find((_, i) => i === index)
-    setActiveItem(newActiveItem)
   }
 
   return (
-    <>
-      <div className="container mx-auto pb-10 pt-2">
-        <h1 className="uppercase text-center text-4xl font-bold pt-2 pb-4">FAQ</h1>
-        <div className="h-fit border  rounded-lg p-2 dark:bg-[#111111] bg-[#F2F2F2]">
+    <div className="min-h-screen bg-white text-gray-900 font-inter py-10">
+      <div className="container mx-auto px-4 md:px-8 max-w-4xl">
+        <h1 className="text-center text-4xl md:text-5xl font-bold mb-10 tracking-wide text-gray-900">
+          Frequently Asked Questions
+        </h1>
+        <div className="bg-white"> {/* Removed outer border, background is white */}
           {tabs.map((tab, index) => (
             <motion.div
               key={index}
-              className={`overflow-hidden ${index !== tabs.length - 1 ? "border-b" : ""}`}
+              // Conditional styling for active/inactive items
+              className={`rounded-lg mb-4 overflow-hidden ${
+                activeIndex === index
+                  ? "bg-orange-50 shadow-md" // Light orange background and shadow for active
+                  : "bg-white border border-gray-200" // White background, border for inactive
+              }`}
               onClick={() => handleClick(index)}
             >
               <button
-                className={`p-3 px-2 w-full cursor-pointer items-center transition-all font-semibold dark:text-white text-black   flex gap-2 
-               `}
+                className={`w-full text-left py-4 px-6 flex justify-between items-center cursor-pointer text-lg font-semibold transition-colors duration-300 ${
+                  activeIndex === index ? "text-orange-600" : "text-gray-900" // Orange text for active, dark gray for inactive
+                }`}
               >
-                <Plus
-                  className={`${
-                    activeIndex === index ? "rotate-45" : "rotate-0 "
-                  } transition-transform ease-in-out w-5 h-5 dark:text-gray-200 text-gray-600`}
-                />
-                {tab.title}
+                <span>{tab.title}</span>
+                {activeIndex === index ? (
+                  <Minus className="w-6 h-6 text-orange-600" /> // Minus icon for active, orange color
+                ) : (
+                  <Plus className="w-6 h-6 text-gray-500" /> // Plus icon for inactive, gray color
+                )}
               </button>
               <AnimatePresence mode="sync">
                 {activeIndex === index && (
@@ -73,20 +92,20 @@ function FAQ() {
                     transition={{
                       duration: 0.3,
                       ease: "easeInOut",
-                      delay: 0.14,
                     }}
+                    className="px-6 pb-4" // Adjusted padding
                   >
-                    <p className={`dark:text-white text-black p-3 pt-0 w-[90%]`}>
+                    <p className="text-gray-700 text-base leading-relaxed"> {/* Darker gray text for description */}
                       {tab.description}
                     </p>
                   </motion.div>
                 )}
               </AnimatePresence>
             </motion.div>
-          ))}
+            ))}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
