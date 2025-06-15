@@ -41,6 +41,7 @@ function NotesComponent() {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(new Set());
 
   const handleCreateNote = () => {
     createNote({
@@ -60,6 +61,16 @@ function NotesComponent() {
   const handleDeleteNote = (id: string) => {
     deleteNote(id);
     setIsViewModalOpen(false);
+  };
+
+  const toggleSubjectExpansion = (subject: string) => {
+    const newExpanded = new Set(expandedSubjects);
+    if (newExpanded.has(subject)) {
+      newExpanded.delete(subject);
+    } else {
+      newExpanded.add(subject);
+    }
+    setExpandedSubjects(newExpanded);
   };
 
   useCopilotReadable({
@@ -132,7 +143,7 @@ function NotesComponent() {
   const totalNotes = notes.length;
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen p-8 relative">
       <div className="max-w-2xl mx-auto mb-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-4">📝 Notes</h1>
@@ -151,6 +162,14 @@ function NotesComponent() {
           )}
         </div>
       </div>
+
+      {/* Backdrop for expanded subjects */}
+      {expandedSubjects.size > 0 && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out"
+          onClick={() => setExpandedSubjects(new Set())}
+        />
+      )}
 
       {totalNotes === 0 && (
         <div className="text-center py-20">
@@ -171,65 +190,156 @@ function NotesComponent() {
       )}
 
       {Object.keys(groupedNotes).length > 0 && (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="mb-6 flex justify-end">
             <Button onClick={() => setIsCreateModalOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white">
               ✍️ Create a Note
             </Button>
           </div>
           
-          <div className="space-y-8">
-            {Object.entries(groupedNotes).map(([subject, subjectNotes]) => (
-              <div key={subject}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      📚 {subject}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Object.entries(groupedNotes).map(([subject, subjectNotes]) => {
+              const isExpanded = expandedSubjects.has(subject);
+              return (
+                <Card 
+                  key={subject} 
+                  className={`
+                    transition-all duration-500 ease-in-out transform-gpu
+                    ${isExpanded 
+                      ? 'fixed inset-8 z-50 bg-white shadow-2xl scale-100 opacity-100' 
+                      : 'aspect-square flex flex-col hover:scale-105 hover:shadow-lg'
+                    }
+                  `}
+                  style={{
+                    transformOrigin: 'center center',
+                  }}
+                >
+                  <CardHeader 
+                    className={`
+                      cursor-pointer hover:bg-gray-50 rounded-t-lg flex-shrink-0 
+                      transition-all duration-300 ease-in-out
+                      ${isExpanded 
+                        ? 'sticky top-0 bg-white border-b z-10 hover:bg-gray-100' 
+                        : 'flex-1 flex flex-col justify-center hover:bg-blue-50'
+                      }
+                    `}
+                    onClick={() => toggleSubjectExpansion(subject)}
+                  >
+                    <CardTitle className={`
+                      flex items-center justify-between transition-all duration-300 ease-in-out
+                      ${isExpanded 
+                        ? 'text-xl transform scale-100' 
+                        : 'text-2xl text-center flex-col gap-4 transform hover:scale-105'
+                      }
+                    `}>
+                      <span className={`
+                        flex items-center gap-2 transition-all duration-300 ease-in-out
+                        ${isExpanded ? '' : 'flex-col text-center'}
+                      `}>
+                        <span className={`
+                          transition-all duration-300 ease-in-out
+                          ${isExpanded ? 'text-3xl' : 'text-4xl'}
+                        `}>📚</span>
+                        <span className={`
+                          font-bold transition-all duration-300 ease-in-out
+                          ${isExpanded ? 'text-xl' : 'text-xl'}
+                        `}>{subject}</span>
+                      </span>
+                      <span className={`
+                        font-normal text-gray-500 transition-all duration-300 ease-in-out transform
+                        ${isExpanded 
+                          ? 'text-2xl rotate-45 hover:rotate-90' 
+                          : 'text-base rotate-0 hover:rotate-12'
+                        }
+                      `}>
+                        {isExpanded ? '✕' : '▶'}
+                      </span>
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className={`
+                      text-center text-base mt-2 transition-all duration-300 ease-in-out
+                      ${isExpanded 
+                        ? 'text-left opacity-100 transform translate-y-0' 
+                        : 'opacity-100 transform translate-y-0'
+                      }
+                    `}>
                       {subjectNotes.length} note{subjectNotes.length !== 1 ? 's' : ''} 📄
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {subjectNotes.map((note) => (
-                        <div key={note.id} className="border rounded-lg p-4 hover:border-blue-300 hover:shadow-sm transition-all duration-200">
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-medium">{note.title}</h3>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => {
-                                  setSelectedNote(note);
-                                  setIsViewModalOpen(true);
-                                }}
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleDeleteNote(note.id)}
-                              >
-                                <Trash className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                          <p className="text-gray-600 text-sm line-clamp-2">
-                            {note.content}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
+                  
+                  {isExpanded && (
+                    <CardContent className={`
+                      flex-1 p-6 overflow-auto
+                      transition-all duration-500 ease-in-out delay-200
+                      opacity-0 animate-fade-in-up
+                    `}
+                    style={{
+                      animation: 'fadeInUp 0.5s ease-out 0.2s forwards'
+                    }}
+                    >
+                      <div className="space-y-4 max-w-4xl mx-auto">
+                        {subjectNotes.map((note, index) => (
+                          <Card 
+                            key={note.id} 
+                            className={`
+                              border-2 hover:border-blue-300 hover:shadow-md 
+                              transition-all duration-300 ease-in-out transform hover:scale-102
+                              opacity-0 translate-y-4
+                            `}
+                            style={{
+                              animation: `slideInUp 0.4s ease-out ${0.1 + index * 0.1}s forwards`
+                            }}
+                          >
+                            <CardHeader className="pb-3">
+                              <div className="flex justify-between items-start">
+                                <CardTitle className="text-lg transition-colors duration-200 hover:text-blue-600">
+                                  {note.title}
+                                </CardTitle>
+                                <div className="flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="hover:bg-blue-100 hover:text-blue-600 transition-all duration-200"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedNote(note);
+                                      setIsViewModalOpen(true);
+                                    }}
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="hover:bg-red-100 hover:text-red-600 transition-all duration-200"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteNote(note.id);
+                                    }}
+                                  >
+                                    <Trash className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="pt-0">
+                              <p className="text-gray-700 leading-relaxed transition-colors duration-200">
+                                {note.content.length > 200 
+                                  ? `${note.content.substring(0, 200)}...` 
+                                  : note.content
+                                }
+                              </p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </CardContent>
+                  )}
                 </Card>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
-
 
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent className="sm:max-w-2xl">
@@ -285,12 +395,11 @@ function NotesComponent() {
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <Save className="h-4 w-4 mr-2" />
-              💾 Save Note
+              Save Note
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
 
       {isViewModalOpen && selectedNote && (
         <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
@@ -407,6 +516,30 @@ function NotesComponent() {
           </DialogContent>
         </Dialog>
       )}
+
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(16px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
