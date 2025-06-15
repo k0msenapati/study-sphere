@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import { useEffect, useState } from "react"
@@ -28,6 +29,7 @@ export default function ScrollToTopButton() {
       size="icon"
       variant="secondary"
       className={`fixed bottom-6 left-6 z-50 rounded-full shadow-lg transition-opacity ${
+
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
