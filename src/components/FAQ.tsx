@@ -54,63 +54,61 @@ function FAQ() {
   }
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 font-inter py-10">
+
+
+<div className="min-h-screen bg-background text-foreground font-inter py-10">
       <div className="container mx-auto px-4 md:px-8 max-w-4xl">
-        <h1 className="text-center text-4xl md:text-5xl font-bold mb-10 tracking-wide text-gray-900">
+        <h1 className="text-center text-4xl md:text-5xl font-bold mb-10 tracking-wide">
           Frequently Asked Questions
         </h1>
-        <div className="bg-white">
-          {" "}
-          {/* Removed outer border, background is white */}
-          {tabs.map((tab, index) => (
-            <motion.div
-              key={index}
-              // Conditional styling for active/inactive items
-              className={`rounded-lg mb-4 overflow-hidden ${
-                activeIndex === index
-                  ? "bg-orange-50 shadow-md" // Light orange background and shadow for active
-                  : "bg-white border border-gray-200" // White background, border for inactive
+        {tabs.map((tab, i) => (
+          <motion.div
+            key={i}
+            onClick={() => handleClick(i)}
+            className={`rounded-lg mb-4 overflow-hidden ${
+              activeIndex === i
+                ? "bg-card shadow-md"
+                : "bg-background border border-border"
+            }`}
+          >
+            <button
+              className={`w-full text-left py-4 px-6 flex justify-between items-center text-lg font-semibold transition-colors duration-300 ${
+                activeIndex === i
+                  ? "text-primary-foreground"
+                  : "text-foreground"
               }`}
-              onClick={() => handleClick(index)}
             >
-              <button
-                className={`w-full text-left py-4 px-6 flex justify-between items-center cursor-pointer text-lg font-semibold transition-colors duration-300 ${
-                  activeIndex === index ? "text-orange-600" : "text-gray-900" // Orange text for active, dark gray for inactive
-                }`}
-              >
-                <span>{tab.title}</span>
-                {activeIndex === index ? (
-                  <Minus className="w-6 h-6 text-orange-600" /> // Minus icon for active, orange color
-                ) : (
-                  <Plus className="w-6 h-6 text-gray-500" /> // Plus icon for inactive, gray color
-                )}
-              </button>
-              <AnimatePresence mode="sync">
-                {activeIndex === index && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{
-                      duration: 0.3,
-                      ease: "easeInOut",
-                    }}
-                    className="px-6 pb-4" // Adjusted padding
-                  >
-                    <p className="text-gray-700 text-base leading-relaxed">
-                      {" "}
-                      {/* Darker gray text for description */}
-                      {tab.description}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
-        </div>
+              <span>{tab.title}</span>
+              {activeIndex === i ? (
+                <Minus className="w-6 h-6 text-primary-foreground" />
+              ) : (
+                <Plus className="w-6 h-6 text-muted-foreground" />
+              )}
+            </button>
+
+            <AnimatePresence mode="sync">
+              {activeIndex === i && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{
+                    duration: 0.3,
+                    ease: "easeInOut",
+                  }}
+                  className="px-6 pb-4"
+                >
+                  <p className="text-muted-foreground text-base leading-relaxed">
+                    {tab.description}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        ))}
       </div>
     </div>
-  )
+  );
 }
 
 export default FAQ

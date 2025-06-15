@@ -1,15 +1,13 @@
-"use client"
-import React from "react"
 import { CopilotKit } from "@copilotkit/react-core"
 import { CopilotPopup } from "@copilotkit/react-ui"
 import Navbar from "@/components/navbar"
 import "@copilotkit/react-ui/styles.css"
 
-interface DashboardLayoutProps {
+export default function DashboardLayout({
+  children,
+}: {
   children: React.ReactNode
-}
-
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+}) {
   return (
     <CopilotKit runtimeUrl="/api/copilotkit">
       <div className="h-full w-full">

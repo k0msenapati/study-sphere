@@ -4,15 +4,13 @@ import {
   copilotRuntimeNextJSAppRouterEndpoint,
 } from "@copilotkit/runtime"
 import { NextRequest } from "next/server"
-import { Groq } from "groq-sdk"
+import Groq from "groq-sdk"
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+const groq = new Groq({ apiKey: process.env["GROQ_API_KEY"] })
+
 const copilotKit = new CopilotRuntime()
 
-const serviceAdapter = new GroqAdapter({
-  groq,
-  model: process.env.GROQ_MODEL, // ensure this is set in .env.local
-})
+const serviceAdapter = new GroqAdapter({ groq, model: "gemma2-9b-it" })
 
 export const POST = async (req: NextRequest) => {
   const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
@@ -20,5 +18,6 @@ export const POST = async (req: NextRequest) => {
     serviceAdapter,
     endpoint: "/api/copilotkit",
   })
+
   return handleRequest(req)
 }

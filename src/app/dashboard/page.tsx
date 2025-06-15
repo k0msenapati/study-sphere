@@ -1,102 +1,112 @@
 "use client"
 
 import { motion } from "framer-motion"
-import FAQ from "@/components/FAQ"
-import SecondBrain from "@/components/ui/second-brain"
-import Sparkles from "@/components/ui/sparkle-button"
 import Link from "next/link"
 
-export default function LandingPage() {
+const Dashboard = () => {
   return (
-    <div className="relative min-h-screen px-4 py-16 overflow-hidden bg-white sm:px-6 lg:px-8">
-      {/* Background */}
-      <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
-
-      {/* Navbar */}
-      <nav className="relative mb-16 flex items-center justify-between p-6 bg-white rounded-lg shadow-sm">
-        <h1 className="text-3xl font-bold text-gray-900">Study Sphere</h1>
-        <Link
-          href="/dashboard"
-          className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-blue-500 px-6 font-medium text-neutral-50"
-        >
-          <span className="absolute h-56 w-32 rounded-full bg-neutral-950 transition-all duration-300 group-hover:h-0 group-hover:w-0"></span>
-          <span className="relative">Study</span>
-        </Link>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="text-center mb-20">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4 sm:text-5xl lg:text-6xl">
-          Revolutionize Your Study Routine
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Enhance your learning experience with AI-powered notes, quizzes, and a personal study
-          buddy.
-        </p>
-        <Link href="/dashboard">
-          <SecondBrain text="Get Started Now" />
-        </Link>
-      </section>
-
-      {/* Features Section */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-        {["🤖", "📝", "📚"].map((emoji, idx) => (
-          <motion.div
-            key={idx}
-            className="bg-white p-6 rounded-lg shadow-sm flex flex-col items-center text-center"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <span className="text-5xl mb-4">{emoji}</span>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-              {idx === 0 ? "AI Study Buddy" : idx === 1 ? "Smart Notes" : "Adaptive Quizzes"}
-            </h2>
-            <p className="text-gray-600">
-              {idx === 0
-                ? "Chat with your personal AI study buddy for instant help, explanations, and study tips."
-                : idx === 1
-                  ? "Generate and store comprehensive notes with AI assistance. Organize and access them easily."
-                  : "Test your knowledge with AI-generated quizzes that adapt to your learning progress."}
+    <div className="min-h-screen p-6">
+      <header className="relative bg-blue-500 text-white p-12 rounded-lg shadow-md mb-8 overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1500989145603-8e7ef71d639e?q=80&w=1776&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Study Background"
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
+        />
+        <div className="relative z-10 p-8">
+          <h1 className="text-5xl font-bold mb-4">Good Morning, Student!</h1>
+          <div className="flex items-center space-x-4">
+            <span className="text-yellow-400 text-4xl">🌟</span>
+            <p className="text-2xl font-semibold">
+              "The best way to predict the future is to create it." – Peter Drucker
             </p>
-          </motion.div>
-        ))}
-      </section>
-
-      {/* Benefits Section */}
-      <section className="text-center mb-20">
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">Why Choose Study Sphere?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          {/* Icon + Heading + Text... */}
-          {/* Repeat similar blocks */}
+          </div>
         </div>
-      </section>
+      </header>
 
-      <FAQ />
-
-      {/* CTA Section */}
-      <section className="text-center mb-20">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          Ready to Transform Your Study Habits?
-        </h2>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Join Study Sphere today and experience a new way of learning with your personal AI study
-          buddy.
-        </p>
-        <Link href="/dashboard">
-          <Sparkles text="Join" />
+      <div className="flex flex-col md:flex-row justify-between gap-8 py-12">
+        <Link href="/dashboard/notes">
+          <motion.div
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="absolute inset-0 border-2 border-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-lg opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"></div>
+            <div className="relative z-10 flex items-center">
+              <span className="text-blue-500 text-5xl mr-6">📚</span>
+              <div>
+                <h2 className="text-2xl font-semibold">Review Your Notes</h2>
+                <p className="mt-2 text-lg">
+                  Make sure to revisit your study notes to reinforce your knowledge.
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </Link>
-      </section>
+        <Link href="/dashboard/quizzes">
+          <motion.div
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="absolute inset-0 border-2 border-gradient-to-r from-green-400 via-teal-400 to-cyan-400 rounded-lg opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"></div>
+            <div className="relative z-10 flex items-center">
+              <span className="text-green-500 text-5xl mr-6">📝</span>
+              <div>
+                <h2 className="text-2xl font-semibold">Take a Quiz</h2>
+                <p className="mt-2 text-lg">
+                  Challenge yourself with a quiz to test your understanding.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </Link>
+        <Link href="/dashboard/chat">
+          <motion.div
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="absolute inset-0 border-2 border-gradient-to-r from-red-400 via-orange-400 to-yellow-400 rounded-lg opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"></div>
+            <div className="relative z-10 flex items-center">
+              <span className="text-red-500 text-5xl mr-6">💬</span>
+              <div>
+                <h2 className="text-2xl font-semibold">Chat with a Study Buddy</h2>
+                <p className="mt-2 text-lg">
+                  Discuss any doubts or concepts with your study partner.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </Link>
+      </div>
 
-      {/* Footer */}
-      <footer className="text-center py-4">
-        <p className="text-sm text-gray-600">
-          Made with ❤️ by{" "}
-          <a href="https://github.com/kom-senapati" className="text-blue-600 hover:underline">
-            kom-senapati
-          </a>{" "}
-          using copilotkit 🪁
-        </p>
-      </footer>
+      <div className="mt-12 mb-32 bg-gradient-to-r from-fuchsia-500 to-cyan-500 p-12 rounded-lg shadow-md">
+        <div className="bg-white bg-opacity-30 backdrop-blur-lg rounded-lg shadow-xl p-8">
+          <h2 className="text-4xl font-bold mb-6 text-center text-white">
+            📚 Tips for Effective Studying 📚
+          </h2>
+          <div className="flex flex-wrap justify-between">
+            <div className="w-full md:w-1/2 pr-4 mb-6">
+              <ul className="list-disc pl-6 text-white text-xl">
+                <li>🎯 Set clear goals for each study session.</li>
+                <li>⏲️ Take regular breaks to avoid burnout.</li>
+                <li>🔄 Use active recall and spaced repetition techniques.</li>
+                <li>🗂️ Stay organized and manage your time effectively.</li>
+              </ul>
+            </div>
+            <div className="w-full md:w-1/2 pl-4 mb-6">
+              <ul className="list-disc pl-6 text-white text-xl">
+                <li>⚖️ Keep a healthy balance between study and relaxation.</li>
+                <li>💡 Find your optimal study environment.</li>
+                <li>📝 Practice past papers and sample questions.</li>
+                <li>📅 Create a study schedule and stick to it.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
+
+export default Dashboard
