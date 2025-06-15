@@ -39,15 +39,15 @@ const Navbar = () => {
   })
 
   const firstNavVariants = {
-    hidden: {
-      width: 65,
-      background: "transparent",
-    },
-    vissible: {
-      width: 500,
-      background: "rgb(0,0,0,0.5)",
-    },
-  }
+  hidden: {
+    width: 65,
+    background: "transparent",
+  },
+  vissible: {
+    width: 600, // Increase this width to fit all items
+    background: "rgb(0,0,0,0.5)",
+  },
+}
 
   const routes = [
     {
@@ -78,7 +78,7 @@ const Navbar = () => {
       variants={firstNavVariants}
       transition={{ duration: 0.25 }}
       className={cn(
-        "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px]  backdrop-blur bottom-10 left-0 right-0 mx-auto overflow-hidden rounded-lg flex items-center justify-between pr-6"
+  "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px] backdrop-blur bottom-10 left-0 right-0 mx-auto rounded-lg flex items-center justify-between pr-6"
       )}
       style={{
         width: navbarWidth,
@@ -95,7 +95,7 @@ const Navbar = () => {
       <div className="mr-10" />
       <AnimatePresence>
         {(height >= 0 || !isHidden) && (
-          <motion.ul className="flex items-center gap-10">
+          <motion.ul className="flex items-center gap-10 min-w-max">
             {routes.map((route, i) => (
               <Link href={route.url}>
                 <motion.li
@@ -103,6 +103,8 @@ const Navbar = () => {
                   className="text-white text-xl cursor-pointer"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
+                   whileHover={{ scale: 1.1, color: "#FFD700" }} // Gold highlight
+                    whileTap={{ scale: 0.95 }}
                   style={{
                     opacity: routesOpacity,
                   }}
