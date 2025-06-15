@@ -14,8 +14,11 @@ export const useNotes = () => {
   }
 
   const deleteNote = (id: string) => {
-    setNotes(notes.filter(note => note.id !== id))
-  }
+  const confirmDelete = window.confirm("Are you sure you want to delete this note?");
+  if (!confirmDelete) return;
+
+  setNotes(notes.filter(note => note.id !== id));
+};
 
   return {
     notes,
