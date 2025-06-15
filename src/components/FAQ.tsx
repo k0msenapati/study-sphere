@@ -59,7 +59,9 @@ function FAQ() {
         <h1 className="text-center text-4xl md:text-5xl font-bold mb-10 tracking-wide text-gray-900">
           Frequently Asked Questions
         </h1>
-        <div className="bg-white"> {/* Removed outer border, background is white */}
+        <div className="bg-white">
+          {" "}
+          {/* Removed outer border, background is white */}
           {tabs.map((tab, index) => (
             <motion.div
               key={index}
@@ -95,14 +97,16 @@ function FAQ() {
                     }}
                     className="px-6 pb-4" // Adjusted padding
                   >
-                    <p className="text-gray-700 text-base leading-relaxed"> {/* Darker gray text for description */}
+                    <p className="text-gray-700 text-base leading-relaxed">
+                      {" "}
+                      {/* Darker gray text for description */}
                       {tab.description}
                     </p>
                   </motion.div>
                 )}
               </AnimatePresence>
             </motion.div>
-            ))}
+          ))}
         </div>
       </div>
     </div>

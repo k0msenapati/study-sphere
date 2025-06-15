@@ -30,7 +30,8 @@ export default function LandingPage() {
           Revolutionize Your Study Routine
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Enhance your learning experience with AI-powered notes, quizzes, and a personal study buddy.
+          Enhance your learning experience with AI-powered notes, quizzes, and a personal study
+          buddy.
         </p>
         <Link href="/dashboard">
           <SecondBrain text="Get Started Now" />
@@ -39,7 +40,7 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-        {["🤖","📝","📚"].map((emoji, idx) => (
+        {["🤖", "📝", "📚"].map((emoji, idx) => (
           <motion.div
             key={idx}
             className="bg-white p-6 rounded-lg shadow-sm flex flex-col items-center text-center"
@@ -54,8 +55,8 @@ export default function LandingPage() {
               {idx === 0
                 ? "Chat with your personal AI study buddy for instant help, explanations, and study tips."
                 : idx === 1
-                ? "Generate and store comprehensive notes with AI assistance. Organize and access them easily."
-                : "Test your knowledge with AI-generated quizzes that adapt to your learning progress."}
+                  ? "Generate and store comprehensive notes with AI assistance. Organize and access them easily."
+                  : "Test your knowledge with AI-generated quizzes that adapt to your learning progress."}
             </p>
           </motion.div>
         ))}
@@ -78,7 +79,8 @@ export default function LandingPage() {
           Ready to Transform Your Study Habits?
         </h2>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Join Study Sphere today and experience a new way of learning with your personal AI study buddy.
+          Join Study Sphere today and experience a new way of learning with your personal AI study
+          buddy.
         </p>
         <Link href="/dashboard">
           <Sparkles text="Join" />
