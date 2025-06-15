@@ -1,5 +1,8 @@
 "use client"
 
+import dynamic from "next/dynamic"
+import "react-quill/dist/quill.snow.css"
+
 import { NotesProvider, useNotesContext } from "@/lib/notes/notes-provider"
 import { Note } from "@/lib/notes/types"
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core"
@@ -26,6 +29,21 @@ import {
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Edit, Eye, Save, Trash } from "lucide-react"
+
+const ReactQuill = dynamic(() => import("react-quill"),{ssr:false})
+
+const quillModules = {
+  toolbar: [
+    ['bold','italic','underline'],
+    [{'background':[]}],
+    ['clean']
+  ]
+}
+
+const quillFormats = [
+  'bold','italic','underline','background'
+]
+  
 
 function NotesComponent() {
   const { notes, createNote, updateNote, deleteNote } = useNotesContext()
@@ -215,10 +233,12 @@ function NotesComponent() {
                 onChange={e => setNewNote({ ...newNote, title: e.target.value })}
                 className="mb-4"
               />
-              <Textarea
-                placeholder="Content"
+              <ReactQuill
+              theme="snow"
                 value={newNote.content}
-                onChange={e => setNewNote({ ...newNote, content: e.target.value })}
+                onChange={(value) => setNewNote({ ...newNote, content: value })}
+                modules={quillModules}
+                formats={quillFormats}
                 className="mb-4"
               />
               <DialogFooter>
@@ -244,18 +264,23 @@ function NotesComponent() {
               </DialogHeader>
               <div className="flex-grow overflow-auto">
                 {isEditMode ? (
-                  <Textarea
+                  <ReactQuill
+                  theme="snow"
                     value={selectedNote.content}
-                    onChange={e =>
+                    onChange={(value) =>
                       setSelectedNote({
                         ...selectedNote,
-                        content: e.target.value,
+                        content: value,
                       })
                     }
-                    className="w-full h-full resize-none"
+                    modules={quillModules}
+                    formats={quillFormats}
+                    className="h-[calc(100%-3rem)] mb-2"
                   />
                 ) : (
-                  <div className="whitespace-pre-wrap">{selectedNote.content}</div>
+                  <div className="prose max-w-full"
+                    dangerouslySetInnerHTML= {{__html: selectedNote.content as string}}
+                    />
                 )}
               </div>
               <DialogFooter>
