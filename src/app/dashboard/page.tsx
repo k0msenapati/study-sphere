@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Link from "next/link"
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 const Dashboard = () => {
   return (
@@ -17,16 +17,17 @@ const Dashboard = () => {
           <div className="flex items-center space-x-4">
             <span className="text-yellow-400 text-4xl">🌟</span>
             <p className="text-2xl font-semibold">
-              "The best way to predict the future is to create it." – Peter Drucker
+              "The best way to predict the future is to create it." – Peter
+              Drucker
             </p>
           </div>
         </div>
       </header>
 
-      <div className="flex flex-col md:flex-row justify-between gap-8 py-12">
+      <div className="flex flex-wrap md:flex-wrap lg:flex-wrap justify-around gap-8 py-12">
         <Link href="/dashboard/notes">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out w-full lg:w-[600px]"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -36,7 +37,8 @@ const Dashboard = () => {
               <div>
                 <h2 className="text-2xl font-semibold">Review Your Notes</h2>
                 <p className="mt-2 text-lg">
-                  Make sure to revisit your study notes to reinforce your knowledge.
+                  Make sure to revisit your study notes to reinforce your
+                  knowledge.
                 </p>
               </div>
             </div>
@@ -44,7 +46,7 @@ const Dashboard = () => {
         </Link>
         <Link href="/dashboard/quizzes">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out w-full lg:w-[600px]"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -62,7 +64,7 @@ const Dashboard = () => {
         </Link>
         <Link href="/dashboard/chat">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out w-full lg:w-[600px]"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -70,9 +72,30 @@ const Dashboard = () => {
             <div className="relative z-10 flex items-center">
               <span className="text-red-500 text-5xl mr-6">💬</span>
               <div>
-                <h2 className="text-2xl font-semibold">Chat with a Study Buddy</h2>
+                <h2 className="text-2xl font-semibold">
+                  Chat with a Study Buddy
+                </h2>
                 <p className="mt-2 text-lg">
                   Discuss any doubts or concepts with your study partner.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </Link>
+        <Link href="/dashboard/roadmap">
+          <motion.div
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out w-full lg:w-[600px]"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="absolute inset-0 border-2 border-gradient-to-r from-red-400 via-orange-400 to-yellow-400 rounded-lg opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"></div>
+            <div className="relative z-10 flex items-center">
+              <span className="text-red-500 text-5xl mr-6">🤖</span>
+              <div>
+                <h2 className="text-2xl font-semibold">Tailor Your Roadmap</h2>
+                <p className="mt-2 text-lg">
+                  Generate your personalized Roadmap with desired time for
+                  selected days.
                 </p>
               </div>
             </div>
@@ -106,7 +129,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
