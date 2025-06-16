@@ -28,7 +28,7 @@ const SecondBrain = ({ text }: { text: string }) => {
 
         <span
           className={cn(
-            "absolute w-8 h-[200%] bg-indigo-100/10 -top-1/2 -left-5 -z-[20] rotate-12 transition-all duration-300",
+            "absolute w-8 h-[200%] bg-indigo-100/10 -top-1/2 -left-5 -z-[20] rotate-12 transition-all duration-700",
             hovering && "left-[90%]"
           )}
         />
