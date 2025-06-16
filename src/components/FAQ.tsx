@@ -81,7 +81,7 @@ function FAQ() {
             >
               <span>{tab.title}</span>
               {activeIndex === i ? (
-                <Minus className="w-6 h-6 text-primary-foreground" />
+                <Minus className="w-6 h-6 text-black" />
               ) : (
                 <Plus className="w-6 h-6 text-muted-foreground" />
               )}
