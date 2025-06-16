@@ -1,12 +1,12 @@
-import { CopilotKit } from "@copilotkit/react-core";
-import { CopilotPopup } from "@copilotkit/react-ui";
-import Navbar from "@/components/navbar";
-import "@copilotkit/react-ui/styles.css";
+import { CopilotKit } from "@copilotkit/react-core"
+import { CopilotPopup } from "@copilotkit/react-ui"
+import Navbar from "@/components/navbar"
+import "@copilotkit/react-ui/styles.css"
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <CopilotKit runtimeUrl="/api/copilotkit">
@@ -21,5 +21,5 @@ export default function DashboardLayout({
         <CopilotPopup />
       </div>
     </CopilotKit>
-  );
+  )
 }

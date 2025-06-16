@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { motion } from "framer-motion";
-import Link from "next/link";
+import { motion } from "framer-motion"
+import Link from "next/link"
 
 const Dashboard = () => {
   return (
@@ -17,8 +17,7 @@ const Dashboard = () => {
           <div className="flex items-center space-x-4">
             <span className="text-yellow-400 text-4xl">🌟</span>
             <p className="text-2xl font-semibold">
-              "The best way to predict the future is to create it." – Peter
-              Drucker
+              "The best way to predict the future is to create it." – Peter Drucker
             </p>
           </div>
         </div>
@@ -37,8 +36,7 @@ const Dashboard = () => {
               <div>
                 <h2 className="text-2xl font-semibold">Review Your Notes</h2>
                 <p className="mt-2 text-lg">
-                  Make sure to revisit your study notes to reinforce your
-                  knowledge.
+                  Make sure to revisit your study notes to reinforce your knowledge.
                 </p>
               </div>
             </div>
@@ -72,9 +70,7 @@ const Dashboard = () => {
             <div className="relative z-10 flex items-center">
               <span className="text-red-500 text-5xl mr-6">💬</span>
               <div>
-                <h2 className="text-2xl font-semibold">
-                  Chat with a Study Buddy
-                </h2>
+                <h2 className="text-2xl font-semibold">Chat with a Study Buddy</h2>
                 <p className="mt-2 text-lg">
                   Discuss any doubts or concepts with your study partner.
                 </p>
@@ -110,7 +106,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

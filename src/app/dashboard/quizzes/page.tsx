@@ -1,38 +1,27 @@
-"use client";
+"use client"
 
-import { useQuizzesContext } from "@/lib/quizzes/quizzes-provider";
-import { Question, Quiz } from "@/lib/quizzes/types";
-import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Trash2, Play, Info } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { useQuizzesContext } from "@/lib/quizzes/quizzes-provider"
+import { Question, Quiz } from "@/lib/quizzes/types"
+import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core"
+import { useRouter } from "next/navigation"
+import { motion } from "framer-motion"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Trash2, Play, Info } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 function QuizzesComponent() {
-  const { quizzes, createQuiz, updateQuiz, deleteQuiz } = useQuizzesContext();
-  const router = useRouter();
+  const { quizzes, createQuiz, updateQuiz, deleteQuiz } = useQuizzesContext()
+  const router = useRouter()
 
   const handleDeleteQuiz = (id: string) => {
-    deleteQuiz(id);
-  };
+    deleteQuiz(id)
+  }
 
   useCopilotReadable({
     description: "Quizzes list.",
     value: JSON.stringify(quizzes),
-  });
+  })
 
   useCopilotAction({
     name: "Create a Quiz",
@@ -58,19 +47,19 @@ function QuizzesComponent() {
       },
     ],
     handler: (args: {
-      title: string;
-      description?: string;
-      questions: Question[];
+      title: string
+      description?: string
+      questions: Question[]
     }) => {
       const newQuiz: Quiz = {
         id: Math.random().toString(36).substring(7),
         title: args.title as string,
         description: args.description as string,
         questions: args.questions as Question[],
-      };
-      createQuiz(newQuiz);
+      }
+      createQuiz(newQuiz)
     },
-  });
+  })
 
   useCopilotAction({
     name: "Delete a Quiz",
@@ -84,9 +73,9 @@ function QuizzesComponent() {
       },
     ],
     handler: (args: { id: string }) => {
-      deleteQuiz(args.id as string);
+      deleteQuiz(args.id as string)
     },
-  });
+  })
 
   useCopilotAction({
     name: "Update a Quiz",
@@ -112,16 +101,16 @@ function QuizzesComponent() {
       },
     ],
     handler: (args: { id: string; title?: string; questions?: Question[] }) => {
-      const updatedQuiz: Partial<Quiz> = {};
+      const updatedQuiz: Partial<Quiz> = {}
       if (args.title) {
-        updatedQuiz.title = args.title as string;
+        updatedQuiz.title = args.title as string
       }
       if (args.questions) {
-        updatedQuiz.questions = args.questions as Question[];
+        updatedQuiz.questions = args.questions as Question[]
       }
-      updateQuiz(args.id as string, updatedQuiz);
+      updateQuiz(args.id as string, updatedQuiz)
     },
-  });
+  })
 
   return (
     <div className="min-h-screen p-12">
@@ -141,13 +130,9 @@ function QuizzesComponent() {
               </Button>
             </TooltipTrigger>
             <TooltipContent className="max-w-xs">
-              <p>
-                Quizzes are a great way to test your knowledge and learn new
-                things.
-              </p>
+              <p>Quizzes are a great way to test your knowledge and learn new things.</p>
               <p className="mt-2">
-                Playing quizzes can help improve memory retention and make
-                learning more engaging.
+                Playing quizzes can help improve memory retention and make learning more engaging.
               </p>
             </TooltipContent>
           </Tooltip>
@@ -185,11 +170,7 @@ function QuizzesComponent() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex justify-between items-center pt-2">
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDeleteQuiz(quiz.id)}
-                  >
+                  <Button variant="destructive" size="sm" onClick={() => handleDeleteQuiz(quiz.id)}>
                     <Trash2 className="h-4 w-4 mr-2" />
                     Delete
                   </Button>
@@ -208,9 +189,9 @@ function QuizzesComponent() {
         </motion.div>
       )}
     </div>
-  );
+  )
 }
 
 export default function Quizzes() {
-  return <QuizzesComponent />;
+  return <QuizzesComponent />
 }

@@ -1,4 +1,4 @@
-import { CopilotChat } from "@copilotkit/react-ui";
+import { CopilotChat } from "@copilotkit/react-ui"
 
 export default function Page() {
   return (
@@ -15,5 +15,5 @@ export default function Page() {
         />
       </div>
     </div>
-  );
+  )
 }

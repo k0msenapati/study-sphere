@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 import {
   motion,
   useMotionValueEvent,
@@ -8,35 +8,35 @@ import {
   useTransform,
   useMotionValue,
   AnimatePresence,
-} from "framer-motion";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+} from "framer-motion"
+import Link from "next/link"
+import { useEffect, useRef, useState } from "react"
 
 const Navbar = () => {
-  const [isHidden, setIsHidden] = useState(false);
-  const [height, setHeight] = useState(0);
-  const [mounted, setMounted] = useState(false);
-  const { scrollY } = useScroll();
-  const lastYRef = useRef(0);
+  const [isHidden, setIsHidden] = useState(false)
+  const [height, setHeight] = useState(0)
+  const [mounted, setMounted] = useState(false)
+  const { scrollY } = useScroll()
+  const lastYRef = useRef(0)
 
-  const navbarWidth = useMotionValue(65);
-  const routesOpacity = useTransform(navbarWidth, [65, 500], [0, 1]);
+  const navbarWidth = useMotionValue(65)
+  const routesOpacity = useTransform(navbarWidth, [65, 500], [0, 1])
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
-  useMotionValueEvent(scrollY, "change", (y) => {
-    const difference = y - lastYRef.current;
+  useMotionValueEvent(scrollY, "change", y => {
+    const difference = y - lastYRef.current
 
     if (difference > 50) {
-      setIsHidden(false);
+      setIsHidden(false)
     } else {
-      setIsHidden(true);
+      setIsHidden(true)
     }
 
-    setHeight(difference);
-  });
+    setHeight(difference)
+  })
 
   const firstNavVariants = {
     hidden: {
@@ -47,7 +47,7 @@ const Navbar = () => {
       width: 500,
       background: "rgb(0,0,0,0.5)",
     },
-  };
+  }
 
   const routes = [
     {
@@ -66,7 +66,7 @@ const Navbar = () => {
       text: "Chat",
       url: "/dashboard/chat",
     },
-  ];
+  ]
 
   return (
     <motion.nav
@@ -115,7 +115,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
     </motion.nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
-import { useState } from "react";
+import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
+import { Sparkles } from "lucide-react"
+import { useState } from "react"
 
 const SecondBrain = ({ text }: { text: string }) => {
-  const [hovering, setHovering] = useState(false);
+  const [hovering, setHovering] = useState(false)
   return (
     <div className="h-full center">
       <motion.button
@@ -34,7 +34,7 @@ const SecondBrain = ({ text }: { text: string }) => {
         />
       </motion.button>
     </div>
-  );
-};
+  )
+}
 
-export default SecondBrain;
+export default SecondBrain

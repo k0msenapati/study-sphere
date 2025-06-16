@@ -1,55 +1,83 @@
-![study-sphere](https://socialify.git.ci/k0msenapati/study-sphere/image?font=Rokkitt&language=1&name=1&owner=1&pattern=Charlie%20Brown&theme=Light)
-
 <p align="center">
-  <img src="https://img.shields.io/badge/npm-v.0.21.0-red"  />
-  <img src="https://img.shields.io/badge/LICENSE-MIT-green"  />
+  <img src="https://github.com/user-attachments/assets/56509c06-42a5-49c8-a39d-26598ca00cd9" alt="Study Sphere Logo" width="200"/>
 </p>
 
-### :star2: About
-**Study Sphere** is an all-in-one learning platform designed to enhance your study experience. The project offers three key features:
-1. **Notes**: Manage and organize your notes efficiently.
-2. **Quiz**: Test your knowledge with quizzes tailored to various subjects.
-3. **Study Buddy (AI Mentor)**: An AI-powered mentor to help you with your learning, offering guidance and insights like a personal tutor.
+<h1 align="center">📚 Study Sphere</h1>
+<h3 align="center">Your All-in-One AI-Powered Learning Companion</h3>
 
-With a clean, intuitive interface and responsive design, Study Sphere makes it easy to keep track of your studies and improve your learning outcomes.
+---
 
-### :movie_camera: Demo
+### 🌟 About
+
+**Study Sphere** is an intelligent and versatile learning platform built to supercharge your study sessions. With a modern interface and powerful AI support, it offers an engaging and personalized educational experience through three core features:
+
+- 📝 **Notes**: Create, manage, and organize your study notes with ease.
+- ❓ **Quiz**: Challenge yourself with subject-specific quizzes and track your progress.
+- 🤖 **Study Buddy (AI Mentor)**: Get instant help, explanations, and guidance from your AI-powered learning assistant.
+
+Start your journey toward smarter studying with **Study Sphere** – where learning meets innovation.
+
 <p align="center">
-    <a href="https://www.youtube.com/watch?v=a5dYdKVxN4k">
-        <img src="https://img.freepik.com/free-vector/modern-red-video-media-player-template_1017-23409.jpg"/>
-    </a>
+  <a href="https://www.youtube.com/watch?v=a5dYdKVxN4k">
+    <img src="http://i.ytimg.com/vi/a5dYdKVxN4k/hqdefault.jpg" alt="Study Sphere Demo Video" width="640"/>
+  </a>
 </p>
 
-### :hammer_and_wrench: Tech Stack
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/CopilotKit-🪁-black" alt="CopilotKit" />
 </p>
 
-### :outbox_tray: Set up
-To get Study Sphere up and running, follow these steps:
+Here’s your **setup section** converted into a clean, collapsible `<details>` format using Markdown — ideal for a more compact and interactive README:
 
-1. Clone the repository:
+<details>
+<summary>📦 <strong>Set Up</strong></summary>
+
+To get **Study Sphere** up and running locally, follow these steps:
+
+1. **Clone the repository:**
    ```sh
    git clone https://github.com/k0msenapati/study-sphere.git
    ```
 
-2. Install NPM packages:
+2. **Install dependencies:**
+
    ```sh
    bun install
    ```
 
-3. Add your environment variables in `.env.local`:
+3. **Add environment variables:**
+
+   Create a `.env.local` file in the root directory and add your API key:
+
    ```sh
    GROQ_API_KEY='YOUR API KEY HERE'
    ```
 
-4. Start the development server:
+4. **Run the development server:**
+
    ```sh
    bun run dev
    ```
 
-### :email: Contact
-- GitHub: [k0msenapati](https://github.com/k0msenapati)
-- Twitter: [@k0msenapati](https://x.com/k0msenapati)
+</details>
+
+<div align="center">
+  <h1>Tip from us 😇</h1>
+  <p>It always takes time to understand and learn. So, don't worry at all. We know <b>you have got this</b>! 💪</p>
+</div>
+
+<div>
+  <h2><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2764_fe0f/512.webp" width="35" height="35"> Show Your Support</h2>
+</div>
+
+If you find this project interesting and inspiring, please consider showing your support by starring it on GitHub! Your star goes a long way in helping us to reach more developers and encourages to keep enhancing the project.
+
+<div>
+  <h2><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Memo.webp" alt="Memo" width="35" height="35" /> License</h2>
+</div>
+
+Study Sphere is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for more information.
+
+<img src="https://media.giphy.com/media/LnQjpWaON8nhr21vNW/giphy.gif" width="60"> <em><b>I love connecting with different people</b>, so if you want to say <b>hi, I'll be happy to meet you more!</b> :)</em>
