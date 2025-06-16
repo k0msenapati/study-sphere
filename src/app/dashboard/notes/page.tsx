@@ -222,16 +222,17 @@ function NotesComponent() {
       <AnimatePresence>
         {isCreateModalOpen && (
           <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-            <DialogContent>
+            <DialogContent className="w-full sm:max-w-3xl">
               <DialogHeader>
                 <DialogTitle>Create a New Note</DialogTitle>
                 <DialogDescription>Add a new note to your collection</DialogDescription>
               </DialogHeader>
+              <div className="flex flex-col gap-4">
               <Input
                 placeholder="Title"
                 value={newNote.title}
                 onChange={e => setNewNote({ ...newNote, title: e.target.value })}
-                className="mb-4"
+              
               />
               <ReactQuill
               theme="snow"
@@ -239,14 +240,15 @@ function NotesComponent() {
                 onChange={(value) => setNewNote({ ...newNote, content: value })}
                 modules={quillModules}
                 formats={quillFormats}
-                className="mb-4"
+                className="min-h-[150px]"
               />
-              <DialogFooter>
+              <DialogFooter className="pt-4">
                 <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
                   Cancel
                 </Button>
                 <Button onClick={handleCreateNote}>Save</Button>
               </DialogFooter>
+              </div>
             </DialogContent>
           </Dialog>
         )}
@@ -255,14 +257,17 @@ function NotesComponent() {
       <AnimatePresence>
         {isViewModalOpen && selectedNote && (
           <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-            <DialogContent className="max-w-4xl h-[70vh] flex flex-col">
-              <DialogHeader className="flex flex-row items-center justify-between">
-                <DialogTitle>{selectedNote.title}</DialogTitle>
+            <DialogContent className="w-full sm:max-w-4xl  h-[80vh] flex flex-col gap-4">
+              <DialogHeader className="flex-row justify-between items-center ">
+                <DialogTitle className="text-xl font-bold truncate">
+                  {selectedNote.title}</DialogTitle>
+
                 <Button variant="ghost" size="icon" onClick={() => setIsEditMode(!isEditMode)}>
                   {isEditMode ? <Save className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                 </Button>
               </DialogHeader>
-              <div className="flex-grow overflow-auto">
+
+              <ScrollArea className="flex-1 overflow-y-auto border rounded-md px-2">
                 {isEditMode ? (
                   <ReactQuill
                   theme="snow"
@@ -275,15 +280,15 @@ function NotesComponent() {
                     }
                     modules={quillModules}
                     formats={quillFormats}
-                    className="h-[calc(100%-3rem)] mb-2"
+                    className="min-h-[200px]"
                   />
                 ) : (
-                  <div className="prose max-w-full"
+                  <div className="prose max-w-none"
                     dangerouslySetInnerHTML= {{__html: selectedNote.content as string}}
                     />
                 )}
-              </div>
-              <DialogFooter>
+              </ScrollArea>
+              <DialogFooter className="pt-4"> 
                 <Button
                   variant="outline"
                   onClick={() => {
