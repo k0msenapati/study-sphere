@@ -79,7 +79,7 @@ function QuizGame({ quizId }: { quizId: string }) {
 
       const currentQuestion = currentQuiz.questions[currentQuestionIndex]
       if (selectedOption === currentQuestion.correctOption) {
-        setScore(score + 1)
+        setScore((prevScore) => prevScore + 1);
       }
       handleNextQuestion()
     }
