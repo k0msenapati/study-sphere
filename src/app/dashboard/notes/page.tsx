@@ -1,9 +1,10 @@
-"use client";
+"use client"
 
-import { NotesProvider, useNotesContext } from "@/lib/notes/notes-provider";
-import { Note } from "@/lib/notes/types";
-import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
-import { useState } from "react";
+import { NotesProvider, useNotesContext } from "@/lib/notes/notes-provider"
+import { Note } from "@/lib/notes/types"
+import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   Card,
   CardContent,
@@ -11,10 +12,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Dialog,
   DialogContent,
@@ -22,61 +23,60 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-
-import { Edit, Eye, Save, Trash, Plus, FileText, BookOpen, Search } from "lucide-react";
+} from "@/components/ui/dialog"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Edit, Eye, Save, Trash, Plus, FileText, BookOpen, Search } from "lucide-react"
 
 function NotesComponent() {
-  const { notes, createNote, updateNote, deleteNote } = useNotesContext();
+  const { notes, createNote, updateNote, deleteNote } = useNotesContext()
   const emptyNote: Note = {
     id: "",
     title: "",
     content: "",
     subject: "",
-  };
-  const [newNote, setNewNote] = useState<Note>(emptyNote);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(new Set());
+  }
+  const [newNote, setNewNote] = useState<Note>(emptyNote)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false)
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(new Set())
 
   const handleCreateNote = () => {
     createNote({
       ...newNote,
       id: Math.random().toString(),
-    });
-    setIsCreateModalOpen(false);
-    setNewNote(emptyNote);
-  };
+    })
+    setIsCreateModalOpen(false)
+    setNewNote(emptyNote)
+  }
 
   const handleEditNote = (id: string, selectedNote: Note) => {
-    updateNote(id, selectedNote);
-    setIsViewModalOpen(false);
-    setIsEditMode(false);
-  };
+    updateNote(id, selectedNote)
+    setIsViewModalOpen(false)
+    setIsEditMode(false)
+  }
 
   const handleDeleteNote = (id: string) => {
-    deleteNote(id);
-    setIsViewModalOpen(false);
-  };
+    deleteNote(id)
+    setIsViewModalOpen(false)
+  }
 
   const toggleSubjectExpansion = (subject: string) => {
-    const newExpanded = new Set(expandedSubjects);
+    const newExpanded = new Set(expandedSubjects)
     if (newExpanded.has(subject)) {
-      newExpanded.delete(subject);
+      newExpanded.delete(subject)
     } else {
-      newExpanded.add(subject);
+      newExpanded.add(subject)
     }
-    setExpandedSubjects(newExpanded);
-  };
+    setExpandedSubjects(newExpanded)
+  }
 
   useCopilotReadable({
     description: "Notes list.",
     value: JSON.stringify(notes),
-  });
+  })
 
   useCopilotAction({
     name: "Create a Note",
@@ -86,25 +86,33 @@ function NotesComponent() {
       { name: "content", type: "string", required: true },
       { name: "subject", type: "string", required: true },
     ],
-    handler: (args) => {
+    handler: args => {
       const newNote: Note = {
         id: Math.random().toString(),
         title: args.title as string,
         content: args.content as string,
         subject: args.subject as string,
-      };
-      createNote(newNote);
+      }
+      createNote(newNote)
+      console.log("Note created", newNote)
     },
-  });
+  })
 
   useCopilotAction({
     name: "Delete a Note",
     description: "Deletes a note from notes list.",
-    parameters: [{ name: "id", type: "string", required: true }],
-    handler: (args) => {
-      deleteNote(args.id as string);
+    parameters: [
+      {
+        name: "id",
+        type: "string",
+        description: "The id of the note.",
+        required: true,
+      },
+    ],
+    handler: args => {
+      deleteNote(args.id as string)
     },
-  });
+  })
 
   useCopilotAction({
     name: "Update a Note",
@@ -115,14 +123,14 @@ function NotesComponent() {
       { name: "content", type: "string", required: true },
       { name: "subject", type: "string", required: true },
     ],
-    handler: (args) => {
+    handler: args => {
       updateNote(args.id as string, {
         title: args.title as string,
         content: args.content as string,
         subject: args.subject as string,
-      });
+      })
     },
-  });
+  })
 
   // Filter notes based on search term
   const filteredNotes = notes.filter(
@@ -130,17 +138,17 @@ function NotesComponent() {
       note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       note.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
       note.subject.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  )
 
   const groupedNotes = filteredNotes.reduce((acc: Record<string, Note[]>, note) => {
     if (!acc[note.subject]) {
-      acc[note.subject] = [];
+      acc[note.subject] = []
     }
-    acc[note.subject].push(note);
-    return acc;
-  }, {});
+    acc[note.subject].push(note)
+    return acc
+  }, {})
 
-  const totalNotes = notes.length;
+  const totalNotes = notes.length
 
   return (
     <div className="min-h-screen p-8 relative">
@@ -199,7 +207,7 @@ function NotesComponent() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Object.entries(groupedNotes).map(([subject, subjectNotes]) => {
-              const isExpanded = expandedSubjects.has(subject);
+              const isExpanded = expandedSubjects.has(subject)
               return (
                 <Card 
                   key={subject} 
@@ -300,9 +308,9 @@ function NotesComponent() {
                                     variant="ghost"
                                     className="hover:bg-blue-100 hover:text-blue-600 transition-all duration-200"
                                     onClick={(e) => {
-                                      e.stopPropagation();
-                                      setSelectedNote(note);
-                                      setIsViewModalOpen(true);
+                                      e.stopPropagation()
+                                      setSelectedNote(note)
+                                      setIsViewModalOpen(true)
                                     }}
                                   >
                                     <Eye className="h-4 w-4" />
@@ -312,8 +320,8 @@ function NotesComponent() {
                                     variant="ghost"
                                     className="hover:bg-red-100 hover:text-red-600 transition-all duration-200"
                                     onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleDeleteNote(note.id);
+                                      e.stopPropagation()
+                                      handleDeleteNote(note.id)
                                     }}
                                   >
                                     <Trash className="h-4 w-4" />
@@ -335,7 +343,7 @@ function NotesComponent() {
                     </CardContent>
                   )}
                 </Card>
-              );
+              )
             })}
           </div>
         </div>
@@ -490,8 +498,8 @@ function NotesComponent() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setIsViewModalOpen(false);
-                  setIsEditMode(false);
+                  setIsViewModalOpen(false)
+                  setIsEditMode(false)
                 }}
               >
                 Close
@@ -541,7 +549,7 @@ function NotesComponent() {
         }
       `}</style>
     </div>
-  );
+  )
 }
 
 export default function Page() {
@@ -549,5 +557,5 @@ export default function Page() {
     <NotesProvider>
       <NotesComponent />
     </NotesProvider>
-  );
+  )
 }
