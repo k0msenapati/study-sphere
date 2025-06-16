@@ -22,7 +22,7 @@ const Dashboard = () => {
           </div>
         </div>
       </header>
-
+      
       <div className="flex flex-col md:flex-row justify-between gap-8 py-12">
         <Link href="/dashboard/notes">
           <motion.div
@@ -60,6 +60,27 @@ const Dashboard = () => {
             </div>
           </motion.div>
         </Link>
+        {/* -------------------------------------------------------------------- */}
+              <Link href="/dashboard/studyarea">
+        <motion.div
+          className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <div className="absolute inset-0 border-2 border-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 rounded-lg opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"></div>
+          <div className="relative z-10 flex items-center">
+            <span className="text-indigo-500 text-5xl mr-6">🎓</span>
+            <div>
+              <h2 className="text-2xl font-semibold">Enter Study Area</h2>
+              <p className="mt-2 text-lg">
+                Access your personalized study space and resources.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </Link>
+
+{/* --------------------------------------------------------------------------- */}
         <Link href="/dashboard/chat">
           <motion.div
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
