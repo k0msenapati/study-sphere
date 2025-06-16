@@ -74,7 +74,8 @@ function FAQ() {
             <button
               className={`w-full text-left py-4 px-6 flex justify-between items-center text-lg font-semibold transition-colors duration-300 ${
                 activeIndex === i
-                  ? "text-primary-foreground"
+                 
+                  ? "text-black"
                   : "text-foreground"
               }`}
             >
