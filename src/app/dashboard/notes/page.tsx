@@ -222,12 +222,14 @@ function NotesComponent() {
       <AnimatePresence>
         {isCreateModalOpen && (
           <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-            <DialogContent className="w-full sm:max-w-3xl">
+            <DialogContent className="w-full sm:max-w-3xl max-h-[90vh] flex flex-col p-4 rounded-lg ">
               <DialogHeader>
                 <DialogTitle>Create a New Note</DialogTitle>
                 <DialogDescription>Add a new note to your collection</DialogDescription>
               </DialogHeader>
-              <div className="flex flex-col gap-4">
+
+            <div className="flex-1 overflow-y-auto" >  
+              <div className="flex flex-col gap-4 pb-4">
               <Input
                 placeholder="Title"
                 value={newNote.title}
@@ -242,13 +244,14 @@ function NotesComponent() {
                 formats={quillFormats}
                 className="min-h-[150px]"
               />
-              <DialogFooter className="pt-4">
+              </div>
+            </div>  
+              <DialogFooter className="pt-4 pb-2">
                 <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
                   Cancel
                 </Button>
                 <Button onClick={handleCreateNote}>Save</Button>
               </DialogFooter>
-              </div>
             </DialogContent>
           </Dialog>
         )}
@@ -257,17 +260,18 @@ function NotesComponent() {
       <AnimatePresence>
         {isViewModalOpen && selectedNote && (
           <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-            <DialogContent className="w-full sm:max-w-4xl  h-[80vh] flex flex-col gap-4">
+            <DialogContent className="w-full sm:max-w-4xl  max-h-[90vh] flex flex-col p-4 rounded-lg">
               <DialogHeader className="flex-row justify-between items-center ">
                 <DialogTitle className="text-xl font-bold truncate">
-                  {selectedNote.title}</DialogTitle>
+                  {selectedNote.title}
+                  </DialogTitle>
 
                 <Button variant="ghost" size="icon" onClick={() => setIsEditMode(!isEditMode)}>
                   {isEditMode ? <Save className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                 </Button>
               </DialogHeader>
 
-              <ScrollArea className="flex-1 overflow-y-auto border rounded-md px-2">
+              <div className="flex-1 overflow-y-auto border rounded-md px-2 py-2">
                 {isEditMode ? (
                   <ReactQuill
                   theme="snow"
@@ -287,8 +291,9 @@ function NotesComponent() {
                     dangerouslySetInnerHTML= {{__html: selectedNote.content as string}}
                     />
                 )}
-              </ScrollArea>
-              <DialogFooter className="pt-4"> 
+              </div>
+
+              <DialogFooter className="pt-4 pb-2"> 
                 <Button
                   variant="outline"
                   onClick={() => {
