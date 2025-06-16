@@ -3,7 +3,7 @@
 import { NotesProvider, useNotesContext } from "@/lib/notes/notes-provider"
 import { Note } from "@/lib/notes/types"
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Card,
@@ -25,7 +25,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Edit, Eye, Save, Trash, Plus, FileText, BookOpen, Search } from "lucide-react"
+import { Edit, Eye, Save, Trash, Plus, FileText, BookOpen, Search, Tag, Calendar, Hash } from "lucide-react"
+import { MultiSelect } from "@/components/ui/multi-select"
 
 function NotesComponent() {
   const { notes, createNote, updateNote, deleteNote } = useNotesContext()
@@ -39,7 +40,7 @@ function NotesComponent() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedSearchTerms, setSelectedSearchTerms] = useState<string[]>([])
 
   const handleCreateNote = () => {
     createNote({
@@ -60,6 +61,47 @@ function NotesComponent() {
     deleteNote(id)
     setIsViewModalOpen(false)
   }
+
+  // Generate search options from existing notes
+  const searchOptions = useMemo(() => {
+    const options = new Set<string>()
+    
+    notes.forEach(note => {
+      // Add note titles as search options
+      if (note.title.trim()) {
+        options.add(note.title.toLowerCase())
+      }
+      
+      // Add significant words from content (longer than 3 characters)
+      const words = note.content
+        .toLowerCase()
+        .replace(/[^\w\s]/g, ' ')
+        .split(/\s+/)
+        .filter(word => word.length > 3)
+      
+      words.forEach(word => options.add(word))
+    })
+
+    return Array.from(options).map(term => ({
+      label: term.charAt(0).toUpperCase() + term.slice(1),
+      value: term,
+      icon: term.length > 10 ? FileText : Tag
+    })).sort((a, b) => a.label.localeCompare(b.label))
+  }, [notes])
+
+  // Filter notes based on selected search terms
+  const filteredNotes = useMemo(() => {
+    if (selectedSearchTerms.length === 0) {
+      return notes
+    }
+
+    return notes.filter(note => {
+      const noteText = `${note.title} ${note.content}`.toLowerCase()
+      return selectedSearchTerms.some(term => 
+        noteText.includes(term.toLowerCase())
+      )
+    })
+  }, [notes, selectedSearchTerms])
 
   useCopilotReadable({
     description: "Notes list.",
@@ -116,13 +158,6 @@ function NotesComponent() {
     },
   })
 
-  // Filter notes based on search term
-  const filteredNotes = notes.filter(
-    (note) =>
-      note.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      note.content.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
   const totalNotes = notes.length
 
   return (
@@ -132,15 +167,24 @@ function NotesComponent() {
           <h1 className="text-3xl font-bold mb-4">📝 Notes</h1>
           <p className="text-gray-600 mb-6">Keep your thoughts organized ✨</p>
           
-          {totalNotes > 0 && (
-            <div className="relative mb-6 max-w-md mx-auto">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search notes..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+          {totalNotes > 0 && searchOptions.length > 0 && (
+            <div className="mb-6 max-w-2xl mx-auto">
+              <label className="block text-sm font-medium mb-2 text-left">
+                🔍 Search and filter your notes
+              </label>
+              <MultiSelect
+                options={searchOptions}
+                onValueChange={setSelectedSearchTerms}
+                placeholder="Select keywords to search..."
+                maxCount={5}
+                className="w-full"
+                animation={0.2}
               />
+              {selectedSearchTerms.length > 0 && (
+                <p className="text-sm text-gray-500 mt-2">
+                  Found {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''} matching your search
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -156,8 +200,8 @@ function NotesComponent() {
 
         {filteredNotes.length === 0 && totalNotes > 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-500 mb-6">🔍 No notes found for your search.</p>
-            <Button onClick={() => setSearchTerm("")} variant="outline">
+            <p className="text-gray-500 mb-6">🔍 No notes found matching your selected search terms.</p>
+            <Button onClick={() => setSelectedSearchTerms([])} variant="outline">
               Clear Search
             </Button>
           </div>
