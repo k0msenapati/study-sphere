@@ -25,7 +25,59 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Edit, Eye, Save, Trash } from "lucide-react"
+import { Edit, Eye, Save, Trash, Download } from "lucide-react"
+
+const exportToPDF = (note: Note) => {
+  const printWindow = window.open('', '_blank')
+  
+  if (!printWindow) {
+    alert('Please allow popups to export PDF')
+    return
+  }
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${note.title}</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          line-height: 1.6;
+          color: #333;
+        }
+        h1 {
+          border-bottom: 2px solid #333;
+          padding-bottom: 10px;
+          margin-bottom: 20px;
+          color: #2c3e50;
+        }
+        .content {
+          white-space: pre-wrap;
+          font-size: 14px;
+          line-height: 1.8;
+        }
+        @media print {
+          body { margin: 0; }
+        }
+      </style>
+    </head>
+    <body>
+      <h1>${note.title}</h1>
+      <div class="content">${note.content}</div>
+    </body>
+    </html>
+  `
+  printWindow.document.write(htmlContent)
+  printWindow.document.close()
+  
+  setTimeout(() => {
+    printWindow.print()
+    printWindow.close()
+  }, 250)
+}
 
 function NotesComponent() {
   const { notes, createNote, updateNote, deleteNote } = useNotesContext()
@@ -57,6 +109,10 @@ function NotesComponent() {
   const handleDeleteNote = (id: string) => {
     deleteNote(id)
     setIsViewModalOpen(false)
+  }
+
+  const handleExportPDF = (note: Note) => {
+    exportToPDF(note)
   }
 
   useCopilotReadable({
@@ -163,21 +219,28 @@ function NotesComponent() {
               className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm w-full"
             >
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                   <h3 className="font-semibold text-lg text-gray-900">{note.title}</h3>
                   <p className="text-gray-600 mt-1">
                     {note.content.slice(0, 50)}
                     {note.content.length > 50 ? "..." : ""}
                   </p>
                 </div>
-                <div>
+                <div className="flex gap-2">
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleExportPDF(note)}
+                    title="Export as PDF"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
                   <Button
                     size="icon"
                     onClick={() => {
                       setSelectedNote(note)
                       setIsViewModalOpen(true)
                     }}
-                    className="mr-4"
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
@@ -236,11 +299,21 @@ function NotesComponent() {
         {isViewModalOpen && selectedNote && (
           <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
             <DialogContent className="max-w-4xl h-[70vh] flex flex-col">
-              <DialogHeader className="flex flex-row items-center justify-between">
+            <DialogHeader className="flex flex-row items-center justify-between">
                 <DialogTitle>{selectedNote.title}</DialogTitle>
-                <Button variant="ghost" size="icon" onClick={() => setIsEditMode(!isEditMode)}>
-                  {isEditMode ? <Save className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    onClick={() => handleExportPDF(selectedNote)}
+                    title="Export as PDF"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => setIsEditMode(!isEditMode)}>
+                    {isEditMode ? <Save className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+                  </Button>
+                </div>
               </DialogHeader>
               <div className="flex-grow overflow-auto">
                 {isEditMode ? (
