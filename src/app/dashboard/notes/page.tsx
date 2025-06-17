@@ -36,29 +36,39 @@ import {
 } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { Edit, Eye, Save, Trash, Plus, FileText, BookOpen, Search, Tag, Calendar, Hash, X, Filter } from "lucide-react"
+import {
+  Edit,
+  Eye,
+  Save,
+  Trash,
+  Plus,
+  FileText,
+  BookOpen,
+  Search,
+  Tag,
+  Calendar,
+  Hash,
+  X,
+  Filter,
+} from "lucide-react"
 import { MultiSelect } from "@/components/ui/multi-select"
-
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false })
 
 const quillModules = {
-  toolbar: [
-    ['bold', 'italic', 'underline'],
-    [{ 'background': [] }],
-    ['clean']
-  ]
+  toolbar: [["bold", "italic", "underline"], [{ background: [] }], ["clean"]],
 }
 
-const quillFormats = [
-  'bold', 'italic', 'underline', 'background'
-]
+const quillFormats = ["bold", "italic", "underline", "background"]
 
 // Extended Note type with categories
 interface ExtendedNote extends Note {
   categories?: string[]
 }
 
-function CategoryInput({ categories, onChange }: { categories: string[], onChange: (categories: string[]) => void }) {
+function CategoryInput({
+  categories,
+  onChange,
+}: { categories: string[]; onChange: (categories: string[]) => void }) {
   const [inputValue, setInputValue] = useState("")
 
   const handleAddCategory = () => {
@@ -73,7 +83,7 @@ function CategoryInput({ categories, onChange }: { categories: string[], onChang
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault()
       handleAddCategory()
     }
@@ -86,7 +96,7 @@ function CategoryInput({ categories, onChange }: { categories: string[], onChang
         <Input
           placeholder="Add category..."
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={e => setInputValue(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={categories.length >= 2}
           className="flex-1"
@@ -103,7 +113,7 @@ function CategoryInput({ categories, onChange }: { categories: string[], onChang
       </div>
       {categories.length > 0 && (
         <div className="flex gap-2 flex-wrap">
-          {categories.map((category) => (
+          {categories.map(category => (
             <Badge key={category} variant="secondary" className="flex items-center gap-1">
               <Tag className="h-3 w-3" />
               {category}
@@ -130,7 +140,7 @@ function NotesComponent() {
     id: "",
     title: "",
     content: "",
-    categories: []
+    categories: [],
   }
   const [newNote, setNewNote] = useState<ExtendedNote>(emptyNote)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -176,28 +186,30 @@ function NotesComponent() {
   // Generate search options from existing notes
   const searchOptions = useMemo(() => {
     const options = new Set<string>()
-    
+
     notes.forEach(note => {
       // Add note titles as search options
       if (note.title.trim()) {
         options.add(note.title.toLowerCase())
       }
-      
+
       // Add significant words from content (longer than 3 characters)
       const words = note.content
         .toLowerCase()
-        .replace(/[^\w\s]/g, ' ')
+        .replace(/[^\w\s]/g, " ")
         .split(/\s+/)
         .filter(word => word.length > 3)
-      
+
       words.forEach(word => options.add(word))
     })
 
-    return Array.from(options).map(term => ({
-      label: term.charAt(0).toUpperCase() + term.slice(1),
-      value: term,
-      icon: term.length > 10 ? FileText : Tag
-    })).sort((a, b) => a.label.localeCompare(b.label))
+    return Array.from(options)
+      .map(term => ({
+        label: term.charAt(0).toUpperCase() + term.slice(1),
+        value: term,
+        icon: term.length > 10 ? FileText : Tag,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label))
   }, [notes])
 
   // Filter notes based on search query, selected search terms, and category
@@ -216,9 +228,7 @@ function NotesComponent() {
     if (selectedSearchTerms.length > 0) {
       filtered = filtered.filter(note => {
         const noteText = `${note.title} ${note.content}`.toLowerCase()
-        return selectedSearchTerms.some(term => 
-          noteText.includes(term.toLowerCase())
-        )
+        return selectedSearchTerms.some(term => noteText.includes(term.toLowerCase()))
       })
     }
 
@@ -244,18 +254,26 @@ function NotesComponent() {
     parameters: [
       { name: "title", type: "string", required: true },
       { name: "content", type: "string", required: true },
-      { name: "categories", type: "string", description: "Comma-separated categories (max 2)", required: false },
+      {
+        name: "categories",
+        type: "string",
+        description: "Comma-separated categories (max 2)",
+        required: false,
+      },
     ],
     handler: args => {
-      const categories = args.categories 
-        ? (args.categories as string).split(',').map(c => c.trim()).slice(0, 2)
+      const categories = args.categories
+        ? (args.categories as string)
+            .split(",")
+            .map(c => c.trim())
+            .slice(0, 2)
         : []
-      
+
       const newNote: ExtendedNote = {
         id: Math.random().toString(),
         title: args.title as string,
         content: args.content as string,
-        categories
+        categories,
       }
       createNote(newNote)
       console.log("Note created", newNote)
@@ -285,17 +303,25 @@ function NotesComponent() {
       { name: "id", type: "string", required: true },
       { name: "title", type: "string", required: true },
       { name: "content", type: "string", required: true },
-      { name: "categories", type: "string", description: "Comma-separated categories (max 2)", required: false },
+      {
+        name: "categories",
+        type: "string",
+        description: "Comma-separated categories (max 2)",
+        required: false,
+      },
     ],
     handler: args => {
-      const categories = args.categories 
-        ? (args.categories as string).split(',').map(c => c.trim()).slice(0, 2)
+      const categories = args.categories
+        ? (args.categories as string)
+            .split(",")
+            .map(c => c.trim())
+            .slice(0, 2)
         : []
-      
+
       updateNote(args.id as string, {
         title: args.title as string,
         content: args.content as string,
-        categories
+        categories,
       })
     },
   })
@@ -308,18 +334,16 @@ function NotesComponent() {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-4">📝 Notes</h1>
           <p className="text-gray-600 mb-6">Keep your thoughts organized ✨</p>
-          
+
           {totalNotes > 0 && (
             <div className="mb-6 max-w-4xl mx-auto space-y-4">
               {/* Search Bar */}
               <div>
-                <label className="block text-sm font-medium mb-2 text-left">
-                  🔍 Search notes
-                </label>
+                <label className="block text-sm font-medium mb-2 text-left">🔍 Search notes</label>
                 <Input
                   placeholder="Search by title or content..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(e.target.value)}
                   className="w-full"
                 />
               </div>
@@ -359,7 +383,7 @@ function NotesComponent() {
                             All Categories
                           </div>
                         </SelectItem>
-                        {allCategories.map((category) => (
+                        {allCategories.map(category => (
                           <SelectItem key={category} value={category}>
                             <div className="flex items-center gap-2">
                               <Tag className="h-4 w-4" />
@@ -376,7 +400,7 @@ function NotesComponent() {
               {/* Results Summary */}
               {(searchQuery || selectedSearchTerms.length > 0 || selectedCategory !== "all") && (
                 <div className="text-sm text-gray-500 text-left">
-                  Found {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''} 
+                  Found {filteredNotes.length} note{filteredNotes.length !== 1 ? "s" : ""}
                   {searchQuery && ` matching "${searchQuery}"`}
                   {selectedSearchTerms.length > 0 && ` with keywords`}
                   {selectedCategory !== "all" && ` in "${selectedCategory}" category`}
@@ -400,8 +424,13 @@ function NotesComponent() {
 
         {totalNotes === 0 && (
           <div className="text-center py-20">
-            <p className="text-gray-500 mb-6">📄 You don't have any notes yet. Let's create your first one!</p>
-            <Button onClick={() => setIsCreateModalOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <p className="text-gray-500 mb-6">
+              📄 You don't have any notes yet. Let's create your first one!
+            </p>
+            <Button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
               ✍️ Create a Note
             </Button>
           </div>
@@ -410,11 +439,14 @@ function NotesComponent() {
         {filteredNotes.length === 0 && totalNotes > 0 && (
           <div className="text-center py-20">
             <p className="text-gray-500 mb-6">🔍 No notes found matching your search criteria.</p>
-            <Button onClick={() => {
-              setSearchQuery("")
-              setSelectedSearchTerms([])
-              setSelectedCategory("all")
-            }} variant="outline">
+            <Button
+              onClick={() => {
+                setSearchQuery("")
+                setSelectedSearchTerms([])
+                setSelectedCategory("all")
+              }}
+              variant="outline"
+            >
               Clear Search
             </Button>
           </div>
@@ -423,11 +455,14 @@ function NotesComponent() {
         {filteredNotes.length > 0 && (
           <div>
             <div className="mb-6 flex justify-end">
-              <Button onClick={() => setIsCreateModalOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
                 ✍️ Create a Note
               </Button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <AnimatePresence>
                 {filteredNotes.map((note, index) => {
@@ -440,7 +475,7 @@ function NotesComponent() {
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.2, delay: index * 0.05 }}
                     >
-                      <Card 
+                      <Card
                         className="hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
                         onClick={() => {
                           setSelectedNote(extendedNote)
@@ -457,7 +492,7 @@ function NotesComponent() {
                                 size="sm"
                                 variant="ghost"
                                 className="hover:bg-blue-100 hover:text-blue-600 transition-all duration-200"
-                                onClick={(e) => {
+                                onClick={e => {
                                   e.stopPropagation()
                                   setSelectedNote(extendedNote)
                                   setIsViewModalOpen(true)
@@ -469,7 +504,7 @@ function NotesComponent() {
                                 size="sm"
                                 variant="ghost"
                                 className="hover:bg-red-100 hover:text-red-600 transition-all duration-200"
-                                onClick={(e) => {
+                                onClick={e => {
                                   e.stopPropagation()
                                   handleDeleteNote(note.id)
                                 }}
@@ -481,7 +516,7 @@ function NotesComponent() {
                           {/* Categories */}
                           {extendedNote.categories && extendedNote.categories.length > 0 && (
                             <div className="flex gap-1 flex-wrap mt-2">
-                              {extendedNote.categories.map((category) => (
+                              {extendedNote.categories.map(category => (
                                 <Badge key={category} variant="outline" className="text-xs">
                                   <Tag className="h-3 w-3 mr-1" />
                                   {category}
@@ -491,7 +526,7 @@ function NotesComponent() {
                           )}
                         </CardHeader>
                         <CardContent className="pt-0">
-                          <div 
+                          <div
                             className="text-gray-700 leading-relaxed line-clamp-4 prose prose-sm max-w-none"
                             dangerouslySetInnerHTML={{ __html: note.content }}
                           />
@@ -515,7 +550,7 @@ function NotesComponent() {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="flex-1 overflow-y-auto">  
+            <div className="flex-1 overflow-y-auto">
               <div className="flex flex-col gap-4 pb-4">
                 <Input
                   placeholder="Enter note title..."
@@ -524,24 +559,24 @@ function NotesComponent() {
                 />
                 <CategoryInput
                   categories={newNote.categories || []}
-                  onChange={(categories) => setNewNote({ ...newNote, categories })}
+                  onChange={categories => setNewNote({ ...newNote, categories })}
                 />
                 <ReactQuill
                   theme="snow"
                   value={newNote.content}
-                  onChange={(value) => setNewNote({ ...newNote, content: value })}
+                  onChange={value => setNewNote({ ...newNote, content: value })}
                   modules={quillModules}
                   formats={quillFormats}
                   className="min-h-[150px]"
                 />
               </div>
-            </div>  
-            
+            </div>
+
             <DialogFooter className="pt-4 pb-2">
               <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleCreateNote}
                 disabled={!newNote.title.trim() || !newNote.content.trim()}
                 className="bg-green-600 hover:bg-green-700 text-white"
@@ -562,7 +597,7 @@ function NotesComponent() {
                   {isEditMode ? (
                     <Input
                       value={selectedNote.title}
-                      onChange={(e) =>
+                      onChange={e =>
                         setSelectedNote({
                           ...selectedNote,
                           title: e.target.value,
@@ -575,11 +610,7 @@ function NotesComponent() {
                   )}
                 </DialogTitle>
 
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => setIsEditMode(!isEditMode)}
-                >
+                <Button variant="ghost" size="icon" onClick={() => setIsEditMode(!isEditMode)}>
                   {isEditMode ? <Eye className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                 </Button>
               </DialogHeader>
@@ -589,7 +620,7 @@ function NotesComponent() {
                 <div className="mb-4">
                   <CategoryInput
                     categories={selectedNote.categories || []}
-                    onChange={(categories) => setSelectedNote({ ...selectedNote, categories })}
+                    onChange={categories => setSelectedNote({ ...selectedNote, categories })}
                   />
                 </div>
               )}
@@ -598,7 +629,7 @@ function NotesComponent() {
               {!isEditMode && selectedNote.categories && selectedNote.categories.length > 0 && (
                 <div className="mb-4">
                   <div className="flex gap-2 flex-wrap">
-                    {selectedNote.categories.map((category) => (
+                    {selectedNote.categories.map(category => (
                       <Badge key={category} variant="secondary">
                         <Tag className="h-3 w-3 mr-1" />
                         {category}
@@ -613,7 +644,7 @@ function NotesComponent() {
                   <ReactQuill
                     theme="snow"
                     value={selectedNote.content}
-                    onChange={(value) =>
+                    onChange={value =>
                       setSelectedNote({
                         ...selectedNote,
                         content: value,
@@ -624,14 +655,14 @@ function NotesComponent() {
                     className="min-h-[200px]"
                   />
                 ) : (
-                  <div 
+                  <div
                     className="prose max-w-none"
                     dangerouslySetInnerHTML={{ __html: selectedNote.content as string }}
                   />
                 )}
               </div>
 
-              <DialogFooter className="pt-4 pb-2"> 
+              <DialogFooter className="pt-4 pb-2">
                 <Button
                   variant="outline"
                   onClick={() => {
@@ -650,10 +681,7 @@ function NotesComponent() {
                     Save Changes
                   </Button>
                 )}
-                <Button
-                  variant="destructive"
-                  onClick={() => handleDeleteNote(selectedNote.id)}
-                >
+                <Button variant="destructive" onClick={() => handleDeleteNote(selectedNote.id)}>
                   <Trash className="h-4 w-4 mr-2" />
                   Delete
                 </Button>

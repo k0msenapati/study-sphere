@@ -13,11 +13,11 @@ export const useQuizzes = () => {
     setQuizzes(quizzes.map(quiz => (quiz.id === id ? { ...quiz, ...updatedQuiz } : quiz)))
   }
   const deleteQuiz = (id: string) => {
-  const confirmDelete = window.confirm("Are you sure you want to delete this quiz?");
-  if (!confirmDelete) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete this quiz?")
+    if (!confirmDelete) return
 
-  setQuizzes(quizzes.filter(quiz => quiz.id !== id));
-};
+    setQuizzes(quizzes.filter(quiz => quiz.id !== id))
+  }
 
   return {
     quizzes,
