@@ -5,6 +5,7 @@ import SecondBrain from "@/components/ui/second-brain"
 import Sparkles from "@/components/ui/sparkle-button"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import SEO from "./SEO"
 
 export default function LandingPage() {
   return (
@@ -22,6 +23,13 @@ export default function LandingPage() {
           </button>
         </Link>
       </nav>
+      <SEO
+        title="Notes - Study Sphere"
+        description="Find notes curated by domain experts to help you revise and practice."
+        url="https://study-sphere-beta.vercel.app/dashboard/notes"
+        image="https://study-sphere-beta.vercel.app/og-banner.png"
+      />
+
 
       {/* Hero Section */}
       <section className="text-center mb-20">
