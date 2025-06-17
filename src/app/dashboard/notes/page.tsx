@@ -1,5 +1,8 @@
 "use client"
 
+import dynamic from "next/dynamic"
+import "react-quill/dist/quill.snow.css"
+
 import { NotesProvider, useNotesContext } from "@/lib/notes/notes-provider"
 import { Note } from "@/lib/notes/types"
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core"
@@ -27,6 +30,20 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Edit, Eye, Save, Trash, Plus, FileText, BookOpen, Search, Tag, Calendar, Hash } from "lucide-react"
 import { MultiSelect } from "@/components/ui/multi-select"
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false })
+
+const quillModules = {
+  toolbar: [
+    ['bold', 'italic', 'underline'],
+    [{ 'background': [] }],
+    ['clean']
+  ]
+}
+
+const quillFormats = [
+  'bold', 'italic', 'underline', 'background'
+]
 
 function NotesComponent() {
   const { notes, createNote, updateNote, deleteNote } = useNotesContext()
@@ -258,9 +275,10 @@ function NotesComponent() {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <p className="text-gray-700 leading-relaxed line-clamp-4">
-                      {note.content}
-                    </p>
+                    <div 
+                      className="text-gray-700 leading-relaxed line-clamp-4 prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ __html: note.content }}
+                    />
                   </CardContent>
                 </Card>
               ))}
@@ -268,42 +286,36 @@ function NotesComponent() {
           </div>
         )}
 
+        {/* Create Note Modal */}
         <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-          <DialogContent className="sm:max-w-2xl">
+          <DialogContent className="w-full sm:max-w-3xl max-h-[90vh] flex flex-col p-4 rounded-lg">
             <DialogHeader>
               <DialogTitle>✨ Create New Note</DialogTitle>
               <DialogDescription>
                 Add a new note to your collection and keep your thoughts organized! 🎯
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Title</label>
+
+            <div className="flex-1 overflow-y-auto">  
+              <div className="flex flex-col gap-4 pb-4">
                 <Input
                   placeholder="Enter note title..."
                   value={newNote.title}
-                  onChange={(e) =>
-                    setNewNote({ ...newNote, title: e.target.value })
-                  }
+                  onChange={e => setNewNote({ ...newNote, title: e.target.value })}
                 />
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-2 block">Content</label>
-                <Textarea
-                  placeholder="Write your note content here..."
+                <ReactQuill
+                  theme="snow"
                   value={newNote.content}
-                  onChange={(e) =>
-                    setNewNote({ ...newNote, content: e.target.value })
-                  }
-                  className="min-h-32"
+                  onChange={(value) => setNewNote({ ...newNote, content: value })}
+                  modules={quillModules}
+                  formats={quillFormats}
+                  className="min-h-[150px]"
                 />
               </div>
-            </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setIsCreateModalOpen(false)}
-              >
+            </div>  
+            
+            <DialogFooter className="pt-4 pb-2">
+              <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
                 Cancel
               </Button>
               <Button 
@@ -318,75 +330,61 @@ function NotesComponent() {
           </DialogContent>
         </Dialog>
 
+        {/* View/Edit Note Modal */}
         {isViewModalOpen && selectedNote && (
           <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-            <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
-              <DialogHeader className="flex flex-row items-center justify-between border-b pb-4">
-                <div className="flex-1">
-                  <DialogTitle>
-                    {isEditMode ? "Edit Note" : selectedNote.title}
-                  </DialogTitle>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
+            <DialogContent className="w-full sm:max-w-4xl max-h-[90vh] flex flex-col p-4 rounded-lg">
+              <DialogHeader className="flex-row justify-between items-center">
+                <DialogTitle className="text-xl font-bold truncate">
+                  {isEditMode ? (
+                    <Input
+                      value={selectedNote.title}
+                      onChange={(e) =>
+                        setSelectedNote({
+                          ...selectedNote,
+                          title: e.target.value,
+                        })
+                      }
+                      className="text-xl font-bold"
+                    />
+                  ) : (
+                    selectedNote.title
+                  )}
+                </DialogTitle>
+
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
                   onClick={() => setIsEditMode(!isEditMode)}
                 >
-                  {isEditMode ? (
-                    <>
-                      <Eye className="h-4 w-4 mr-2" />
-                      Preview
-                    </>
-                  ) : (
-                    <>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </>
-                  )}
+                  {isEditMode ? <Eye className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
                 </Button>
               </DialogHeader>
-              
-              <ScrollArea className="flex-1 py-4">
+
+              <div className="flex-1 overflow-y-auto border rounded-md px-2 py-2">
                 {isEditMode ? (
-                  <div className="space-y-4 pr-4">
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">Title</label>
-                      <Input
-                        value={selectedNote.title}
-                        onChange={(e) =>
-                          setSelectedNote({
-                            ...selectedNote,
-                            title: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">Content</label>
-                      <Textarea
-                        value={selectedNote.content}
-                        onChange={(e) =>
-                          setSelectedNote({
-                            ...selectedNote,
-                            content: e.target.value,
-                          })
-                        }
-                        className="min-h-96"
-                      />
-                    </div>
-                  </div>
+                  <ReactQuill
+                    theme="snow"
+                    value={selectedNote.content}
+                    onChange={(value) =>
+                      setSelectedNote({
+                        ...selectedNote,
+                        content: value,
+                      })
+                    }
+                    modules={quillModules}
+                    formats={quillFormats}
+                    className="min-h-[200px]"
+                  />
                 ) : (
-                  <div className="pr-4">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="whitespace-pre-wrap">
-                        {selectedNote.content}
-                      </div>
-                    </div>
-                  </div>
+                  <div 
+                    className="prose max-w-none"
+                    dangerouslySetInnerHTML={{ __html: selectedNote.content as string }}
+                  />
                 )}
-              </ScrollArea>
-              
-              <DialogFooter className="border-t pt-4">
+              </div>
+
+              <DialogFooter className="pt-4 pb-2"> 
                 <Button
                   variant="outline"
                   onClick={() => {
