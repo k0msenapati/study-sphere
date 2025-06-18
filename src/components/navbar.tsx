@@ -63,6 +63,10 @@ const Navbar = () => {
       url: "/dashboard/notes",
     },
     {
+      text: "Study Area",
+      url: "/dashboard/studyarea",
+    },
+    {
       text: "Chat",
       url: "/dashboard/chat",
     },
