@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic"
 import "react-quill/dist/quill.snow.css"
-
+import html2pdf from "html2pdf.js" 
 import { NotesProvider, useNotesContext } from "@/lib/notes/notes-provider"
 import { Note } from "@/lib/notes/types"
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core"
@@ -28,7 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Edit, Eye, Save, Trash } from "lucide-react"
+import { Download, Edit, Eye, Save, Trash } from "lucide-react"
 
 const ReactQuill = dynamic(() => import("react-quill"),{ssr:false})
 
@@ -44,7 +44,23 @@ const quillFormats = [
   'bold','italic','underline','background'
 ]
   
+function exportNoteAsPDF(note: Note) {
+  const element = document.createElement("div");
+  element.innerHTML = `
+    <h1 style="font-size:24px; font-weight:bold; margin-bottom:12px;">${note.title}</h1>
+    <div>${note.content}</div>
+  `;
 
+  const opt = {
+    margin: 0.5,
+    filename: `${note.title.replace(/\s+/g, "_")}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+  };
+
+  html2pdf().set(opt).from(element).save();
+}
 function NotesComponent() {
   const { notes, createNote, updateNote, deleteNote } = useNotesContext()
   const emptyNote: Note = {
@@ -189,6 +205,15 @@ function NotesComponent() {
                   </p>
                 </div>
                 <div>
+                  <Button
+                size="icon"
+                  onClick={() => exportNoteAsPDF(note)}
+                  className="mr-2"
+                  title="Download PDF"
+                >
+                  <Download className="h-4 w-4" />
+                </Button> 
+
                   <Button
                     size="icon"
                     onClick={() => {
