@@ -1,92 +1,161 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function StudyArea() {
-  const [minutes, setMinutes] = useState(25);
-  const [seconds, setSeconds] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
+const StudyArea = () => {
+  const [time, setTime] = useState(new Date());
+  const [selectedSound, setSelectedSound] = useState('/sounds/lofi.mp3');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [customTime, setCustomTime] = useState(0);
+  const [remainingTime, setRemainingTime] = useState<number | null>(null);
+  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const router = useRouter();
 
+  // Clock
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (isRunning && (minutes > 0 || seconds > 0)) {
-      interval = setInterval(() => {
-        if (seconds === 0) {
-          if (minutes > 0) {
-            setMinutes((prev) => prev - 1);
-            setSeconds(59);
-          }
-        } else {
-          setSeconds((prev) => prev - 1);
-        }
-      }, 1000);
-    } else {
-      clearInterval(interval);
-    }
-
+    const interval = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(interval);
-  }, [isRunning, minutes, seconds]);
+  }, []);
 
-  const handleStart = () => {
-    if (minutes === 0 && seconds === 0) return;
-    setIsRunning(true);
+  // Music change
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = selectedSound;
+      if (isPlaying) audioRef.current.play();
+    }
+  }, [selectedSound]);
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
   };
 
-  const handleReset = () => {
-    setIsRunning(false);
-    setMinutes(25);
-    setSeconds(0);
+  const exitStudyMode = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    }
+    router.push('/dashboard');
+  };
+
+  // Start Timer
+  const startTimer = () => {
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    let seconds = customTime * 60;
+    setRemainingTime(seconds);
+
+    timerIntervalRef.current = setInterval(() => {
+      seconds--;
+      setRemainingTime(seconds);
+      if (seconds <= 0 && timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        setRemainingTime(null);
+      }
+    }, 1000);
+  };
+
+  // Reset Timer
+  const resetTimer = () => {
+    if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    setRemainingTime(null);
+    setCustomTime(0);
+  };
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
   };
 
   return (
-    <div className="min-h-screen bg-pink-100 flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold mb-6 text-pink-700">
-        🧠 Study Area
-      </h1>
+    <div className="relative w-full h-screen overflow-hidden">
+      {/* Background GIF */}
+      <div className="absolute top-0 left-0 w-full h-full z-0">
+        <img
+          src="/studyGIF.gif"
+          alt="study mode"
+          className="absolute inset-0 w-full h-full object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
+      </div>
 
-      <div className="bg-white p-10 rounded-lg shadow-md text-center">
-        <div className="text-5xl font-bold text-pink-600 mb-6">
-          {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-        </div>
+      {/* Overlay */}
+      <div className="absolute top-0 left-0 w-full h-full z-10 flex flex-col justify-between p-4 text-white">
 
-        <div className="mb-4 space-x-2">
-          <input
-            type="number"
-            min={0}
-            placeholder="Min"
-            value={minutes}
-            disabled={isRunning}
-            onChange={(e) => setMinutes(parseInt(e.target.value) || 0)}
-            className="w-20 px-2 py-1 rounded border border-pink-300 text-center"
-          />
-          <input
-            type="number"
-            min={0}
-            placeholder="Sec"
-            value={seconds}
-            disabled={isRunning}
-            onChange={(e) => setSeconds(parseInt(e.target.value) || 0)}
-            className="w-20 px-2 py-1 rounded border border-pink-300 text-center"
-          />
-        </div>
-
-        <div className="flex justify-center gap-4">
+        {/* Header */}
+        <div className="flex justify-between items-center">
           <button
-            onClick={handleStart}
-            disabled={isRunning}
-            className="px-6 py-2 bg-pink-500 text-white rounded hover:bg-pink-600"
+            onClick={exitStudyMode}
+            className="bg-black text-white px-4 py-2 rounded shadow"
           >
-            Start
+            Exit Study Mode
+          </button>
+
+          <div className="flex gap-4 items-center bg-black text-white px-3 py-1 rounded shadow">
+            <select
+              className="bg-black outline-none"
+              value={selectedSound}
+              onChange={(e) => setSelectedSound(e.target.value)}
+            >
+              <option value="/sounds/rain.mp3">Rain Sounds</option>
+              <option value="/sounds/forest.mp3">Forest</option>
+              <option value="/sounds/cafe.mp3">Coffee Shop</option>
+              <option value="/sounds/lofi.mp3">Lo-Fi Beats</option>
+              <option value="/sounds/river.mp3">River Stream</option>
+            </select>
+            <button onClick={toggleMusic} className="font-semibold">
+              {isPlaying ? 'Pause Music' : 'Play Music'}
+            </button>
+          </div>
+        </div>
+
+      {/* Clock or Timer */}
+      <div className="flex flex-col items-center justify-center text-[#12254783] font-bold text-shadow-lg flex-1 gap-6">
+        <div className="text-5xl">
+          {remainingTime !== null
+            ? formatTime(remainingTime)
+            : time.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+              })}
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-2 items-center">
+          <input
+            type="number"
+            value={customTime}
+            onChange={(e) => setCustomTime(parseInt(e.target.value))}
+            className="text-black px-2 py-1 rounded w-28"
+            placeholder="Minutes"
+          />
+          <button
+            onClick={startTimer}
+            className="bg-[#4CAF90] hover:bg-[#45a582] text-white px-3 py-1 rounded transition-all duration-200"
+          >
+            Start Timer
           </button>
           <button
-            onClick={handleReset}
-            className="px-6 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+            onClick={resetTimer}
+            className="bg-[#ff6b6b] hover:bg-[#ff5252] text-white px-3 py-1 rounded transition-all duration-200"
           >
             Reset
           </button>
         </div>
       </div>
+
+      </div>
+
+      <audio ref={audioRef} loop />
     </div>
   );
-}
+};
+
+export default StudyArea;

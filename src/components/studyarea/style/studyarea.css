@@ -1,0 +1,64 @@
+.study-area {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: linear-gradient(135deg, #e0f7fa 0%, #f1f8e9 100%);
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: url('/studyGIF.gif') center/cover no-repeat;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #2e3a59;
+  margin-bottom: 20px;
+  z-index: 1;
+}
+
+.clock {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #0000008f;
+  z-index: 1;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  display: flex;
+  gap: 10px;
+}
+
+.fullscreen-btn,
+.music-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #607d8b;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.fullscreen-btn:hover,
+.music-btn:hover {
+  background-color: #455a64;
+}
