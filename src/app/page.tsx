@@ -5,10 +5,17 @@ import SecondBrain from "@/components/ui/second-brain"
 import Sparkles from "@/components/ui/sparkle-button"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import SEO from "./SEO"
 
 export default function LandingPage() {
   return (
     <div className="relative min-h-screen px-4 py-16 overflow-hidden bg-white sm:px-6 lg:px-8">
+      <SEO
+        title="Study Sphere – Revolutionize Your Study Routine"
+        description="Enhance your learning with AI-powered notes, quizzes, and a personal study buddy on Study Sphere."
+        url="https://study-sphere-beta.vercel.app"
+        image="https://study-sphere-beta.vercel.app/og-banner.png"
+      />
       {/* Background */}
       <div className="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
 
