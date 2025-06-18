@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen p-6">
+    <div className="max-w-7xl mx-auto p-6 min-h-screen">
       <header className="relative bg-blue-500 text-white p-12 rounded-lg shadow-md mb-8 overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1500989145603-8e7ef71d639e?q=80&w=1776&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -23,7 +23,7 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <div className="flex flex-col md:flex-row justify-between gap-8 py-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-12">
         <Link href="/dashboard/notes">
           <motion.div
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
