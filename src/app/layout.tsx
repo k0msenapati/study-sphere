@@ -35,7 +35,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <ScrollToTopButton/>
+          <ScrollToTopButton />
         </ThemeProvider>
       </body>
     </html>
