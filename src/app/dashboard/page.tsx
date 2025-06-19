@@ -26,7 +26,7 @@ const Dashboard = () => {
       <div className="flex flex-col md:flex-row justify-between gap-8 py-12">
         <Link href="/dashboard/notes">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+            className="relative bg-white dark:bg-slate-800 cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -34,8 +34,8 @@ const Dashboard = () => {
             <div className="relative z-10 flex items-center">
               <span className="text-blue-500 text-5xl mr-6">📚</span>
               <div>
-                <h2 className="text-2xl font-semibold">Review Your Notes</h2>
-                <p className="mt-2 text-lg">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Review Your Notes</h2>
+                <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
                   Make sure to revisit your study notes to reinforce your knowledge.
                 </p>
               </div>
@@ -44,7 +44,7 @@ const Dashboard = () => {
         </Link>
         <Link href="/dashboard/quizzes">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+            className="relative bg-white dark:bg-slate-800 cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -52,8 +52,8 @@ const Dashboard = () => {
             <div className="relative z-10 flex items-center">
               <span className="text-green-500 text-5xl mr-6">📝</span>
               <div>
-                <h2 className="text-2xl font-semibold">Take a Quiz</h2>
-                <p className="mt-2 text-lg">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Take a Quiz</h2>
+                <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
                   Challenge yourself with a quiz to test your understanding.
                 </p>
               </div>
@@ -62,7 +62,7 @@ const Dashboard = () => {
         </Link>
         <Link href="/dashboard/chat">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
+            className="relative bg-white dark:bg-slate-800 cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -70,8 +70,8 @@ const Dashboard = () => {
             <div className="relative z-10 flex items-center">
               <span className="text-red-500 text-5xl mr-6">💬</span>
               <div>
-                <h2 className="text-2xl font-semibold">Chat with a Study Buddy</h2>
-                <p className="mt-2 text-lg">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Chat with a Study Buddy</h2>
+                <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
                   Discuss any doubts or concepts with your study partner.
                 </p>
               </div>

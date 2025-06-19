@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { ThemeToggle } from "./ui/theme-toggle"
 import {
   motion,
   useMotionValueEvent,
@@ -97,20 +98,29 @@ const Navbar = () => {
         {(height >= 0 || !isHidden) && (
           <motion.ul className="flex items-center gap-10">
             {routes.map((route, i) => (
-              <Link href={route.url}>
+              <Link key={route.url} href={route.url} className="text-foreground">
                 <motion.li
-                  key={i}
-                  className="text-white text-xl cursor-pointer"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
                   style={{
                     opacity: routesOpacity,
+                  }}
+                  transition={{
+                    delay: 0.1 * i,
                   }}
                 >
                   {route.text}
                 </motion.li>
               </Link>
             ))}
+            <motion.li
+              style={{
+                opacity: routesOpacity,
+              }}
+              transition={{
+                delay: 0.1 * routes.length,
+              }}
+            >
+              <ThemeToggle />
+            </motion.li>
           </motion.ul>
         )}
       </AnimatePresence>
