@@ -8,6 +8,7 @@ import {
   useTransform,
   useMotionValue,
   AnimatePresence,
+  animate,
 } from "framer-motion"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
@@ -20,11 +21,26 @@ const Navbar = () => {
   const lastYRef = useRef(0)
 
   const navbarWidth = useMotionValue(65)
-  const routesOpacity = useTransform(navbarWidth, [65, 500], [0, 1])
 
+  // Automatically adjust width based on screen size
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    const updateWidth = () => {
+      const screenWidth = window.innerWidth
+      let target = 500
+
+      if (screenWidth < 640) {
+        target = 300
+      } else {
+        target = 500
+      }
+    }
+
+    updateWidth()
+    window.addEventListener("resize", updateWidth)
+    return () => window.removeEventListener("resize", updateWidth)
+  }, [navbarWidth])
+
+  const routesOpacity = useTransform(navbarWidth, [40, 300], [0, 1])
 
   useMotionValueEvent(scrollY, "change", y => {
     const difference = y - lastYRef.current
@@ -78,7 +94,7 @@ const Navbar = () => {
       variants={firstNavVariants}
       transition={{ duration: 0.25 }}
       className={cn(
-        "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px]  backdrop-blur bottom-10 left-0 right-0 mx-auto overflow-hidden rounded-lg flex items-center justify-between pr-6"
+        "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px]  backdrop-blur bottom-10 left-0 right-0 mx-auto overflow-hidden rounded-lg flex items-center sm:justify-between justify-start pr-6 gap-0"
       )}
       style={{
         width: navbarWidth,
@@ -92,15 +108,15 @@ const Navbar = () => {
       >
         <div className="h-4 rounded w-4 bg-white rotate-45" />
       </motion.div>
-      <div className="mr-10" />
+      <div className="sm:mr-10 mr-8" />
       <AnimatePresence>
         {(height >= 0 || !isHidden) && (
-          <motion.ul className="flex items-center gap-10">
+          <motion.ul className="flex items-center sm:gap-10 gap-4">
             {routes.map((route, i) => (
               <Link href={route.url}>
                 <motion.li
                   key={i}
-                  className="text-white text-xl cursor-pointer"
+                  className="text-white sm:text-xl text-xs cursor-pointer"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   style={{
