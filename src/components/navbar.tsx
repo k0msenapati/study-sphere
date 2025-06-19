@@ -87,9 +87,6 @@ const Navbar = () => {
       className={cn(
         "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px]  backdrop-blur bottom-10 left-0 right-0 mx-auto overflow-hidden rounded-lg flex items-center sm:justify-between justify-start pr-6 gap-0"
       )}
-      // style={{
-      //   width: navbarWidth,
-      // }}
     >
       <motion.div
         animate={{
