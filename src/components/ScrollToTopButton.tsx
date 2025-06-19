@@ -26,7 +26,7 @@ export default function ScrollToTopButton() {
       aria-label="Scroll to top"
       size="icon"
       variant="secondary"
-      className={`fixed bottom-6 right-6 z-50 rounded-full shadow-lg transition-opacity ${
+      className={`fixed bottom-6 left-6 z-50 rounded-full shadow-lg transition-opacity ${
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
