@@ -1,28 +1,68 @@
-import { useState } from "react"
-import { Note } from "./types"
+// src/lib/notes/use-notes.ts
+import { useEffect, useState } from "react";
+import { Note } from "./types";
 
-export const useNotes = () => {
-  const [notes, setNotes] = useState<Note[]>([])
+export function useNotes() {
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const createNote = (note: Note) => {
-    setNotes([...notes, note])
-  }
+  const fetchNotes = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetch("/api/notes");
+      if (!res.ok) throw new Error("Failed to fetch notes");
+      const data = await res.json();
+      setNotes(data);
+    } catch (err) {
+      setError("Could not load notes");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const updateNote = (id: string, updatedNote: Partial<Note>) => {
-    setNotes(notes.map(note => (note.id === id ? { ...note, ...updatedNote } : note)))
-  }
+  const createNote = async (note: Omit<Note, "createdAt" | "modifiedAt">) => {
+    const res = await fetch("/api/notes", {
+      method: "POST",
+      body: JSON.stringify(note),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setNotes(prev => [data.note, ...prev]);
+    }
+  };
 
-  const deleteNote = (id: string) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this note?")
-    if (!confirmDelete) return
+  const updateNote = async (id: string, updated: Partial<Note>) => {
+    const res = await fetch("/api/notes", {
+      method: "PUT",
+      body: JSON.stringify({ id, ...updated }),
+    });
+    if (res.ok) {
+      setNotes(prev =>
+        prev.map(note => (note.id === id ? { ...note, ...updated } : note))
+      );
+    }
+  };
 
-    setNotes(notes.filter(note => note.id !== id))
-  }
+  const deleteNote = async (id: string) => {
+    const res = await fetch(`/api/notes?id=${id}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      setNotes(prev => prev.filter(note => note.id !== id));
+    }
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   return {
     notes,
+    isLoading,
+    error,
     createNote,
     updateNote,
     deleteNote,
-  }
+  };
 }
