@@ -29,8 +29,9 @@ Start your journey toward smarter studying with **Study Sphere** – where learn
   <img src="https://img.shields.io/badge/CopilotKit-🪁-black" alt="CopilotKit" />
 </p>
 
-<details>
-<summary>📦 <strong>Set Up</strong></summary>
+---
+
+## 🚀 Set Up
 
 To get **Study Sphere** up and running locally, follow these steps:
 
@@ -40,41 +41,54 @@ To get **Study Sphere** up and running locally, follow these steps:
    ```
 
 2. **Install dependencies:**
-
    ```sh
    bun install
    ```
 
 3. **Add environment variables:**
-
    Create a `.env.local` file in the root directory and add your API key:
-
    ```sh
    GROQ_API_KEY='YOUR API KEY HERE'
    ```
 
 4. **Run the development server:**
-
    ```sh
    bun run dev
    ```
 
-</details>
+---
+
+## 🤝 How to Contribute
+
+We welcome contributions from everyone! To get started:
+
+1. **Fork** this repository.
+2. **Clone** your fork to your local machine.
+3. **Create a new branch** for your feature or bugfix.
+4. **Make your changes** and commit them with clear messages.
+5. **Push** your branch to your forked repository.
+6. **Open a Pull Request** describing your changes.
+
+For detailed guidelines, please see our [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Thank you for helping improve Study Sphere!
+
+---
 
 <div align="center">
   <h1>Tip from us 😇</h1>
   <p>It always takes time to understand and learn. So, don't worry at all. We know <b>you have got this</b>! 💪</p>
 </div>
 
-<div>
-  <h2><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2764_fe0f/512.webp" width="35" height="35"> Show Your Support</h2>
-</div>
+---
 
-If you find this project interesting and inspiring, please consider showing your support by starring it on GitHub! Your star goes a long way in helping us to reach more developers and encourages to keep enhancing the project.
+## ❤️ Show Your Support
 
-<div>
-  <h2><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Memo.webp" alt="Memo" width="35" height="35" /> License</h2>
-</div>
+If you find this project interesting and inspiring, please consider showing your support by starring it on GitHub! Your star goes a long way in helping us to reach more developers and encourages us to keep enhancing the project.
+
+---
+
+## 📝 License
 
 Study Sphere is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for more information.
 
