@@ -29,17 +29,17 @@ const Navbar = () => {
     target = 500
   }
 
-  const routesOpacity = useTransform(navbarWidth, [65, 300], [0, 1]);
+  const routesOpacity = useTransform(navbarWidth, [65, target], [0, 1]);
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const difference = y - lastYRef.current;
 
     if (difference > 50) {
-      // animate(navbarWidth, target, { duration: 0.25 });
       setIsHidden(false);
+      animate(navbarWidth, target, { duration: 0.25 });
     } else {
-      // animate(navbarWidth, 65, { duration: 0.25 });
       setIsHidden(true);
+      animate(navbarWidth, 65, { duration: 0.25 });
     }
 
     setHeight(difference);
@@ -87,9 +87,6 @@ const Navbar = () => {
       className={cn(
         "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px]  backdrop-blur bottom-10 left-0 right-0 mx-auto overflow-hidden rounded-lg flex items-center sm:justify-between justify-start pr-6 gap-0"
       )}
-      // style={{
-      //   width: navbarWidth,
-      // }}
     >
       <motion.div
         animate={{
