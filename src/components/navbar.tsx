@@ -19,11 +19,10 @@ const Navbar = () => {
   const [mounted, setMounted] = useState(false);
   const { scrollY } = useScroll();
   const lastYRef = useRef(0);
-
   const navbarWidth = useMotionValue(65);
 
   let target = 300;
-  if(window.innerWidth<640) {
+  if(typeof window !== 'undefined' && window.innerWidth < 640) {
     target = 300
   } else {
     target = 500
