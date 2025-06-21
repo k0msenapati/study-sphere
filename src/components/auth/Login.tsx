@@ -24,9 +24,9 @@ export default function Login() {
       });
 
       const data = await response.json();
-
+      //Added this at last moment as the link in url is not changing to /dashboard
       if (response.ok) {
-        window.location.assign('/dashboard'); //Added this at last moment as the link in url is not changing to /dashboard
+        window.location.href = '/dashboard';
       }
       else {
         setError(data.error || 'Login failed');
