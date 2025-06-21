@@ -34,6 +34,7 @@
     "install": "^0.13.0",
     "lucide-react": "^0.445.0",
     "next": "14.2.13",
+    "next-themes": "^0.4.6",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.5.0",
@@ -43,12 +44,12 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@types/bun": "latest",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5",
-    "@types/bun": "latest"
+    "typescript": "^5"
   }
 }
