@@ -26,9 +26,9 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        router.push('/dashboard');
-        router.refresh();
-      } else {
+        window.location.assign('/dashboard'); //Added this at last moment as the link in url is not changing to /dashboard
+      }
+      else {
         setError(data.error || 'Login failed');
       }
     } catch (error) {
