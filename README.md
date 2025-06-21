@@ -29,9 +29,8 @@ Start your journey toward smarter studying with **Study Sphere** – where learn
   <img src="https://img.shields.io/badge/CopilotKit-🪁-black" alt="CopilotKit" />
 </p>
 
----
-
-## 🚀 Set Up
+<details>
+<summary>📦 <strong>Set Up</strong></summary>
 
 To get **Study Sphere** up and running locally, follow these steps:
 
@@ -41,22 +40,26 @@ To get **Study Sphere** up and running locally, follow these steps:
    ```
 
 2. **Install dependencies:**
+
    ```sh
    bun install
    ```
 
 3. **Add environment variables:**
+
    Create a `.env.local` file in the root directory and add your API key:
+
    ```sh
    GROQ_API_KEY='YOUR API KEY HERE'
    ```
 
 4. **Run the development server:**
+
    ```sh
    bun run dev
    ```
 
----
+   ---
 
 ## 🤝 How to Contribute
 
@@ -75,20 +78,22 @@ Thank you for helping improve Study Sphere!
 
 ---
 
+</details>
+
 <div align="center">
   <h1>Tip from us 😇</h1>
   <p>It always takes time to understand and learn. So, don't worry at all. We know <b>you have got this</b>! 💪</p>
 </div>
 
----
+<div>
+  <h2><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/2764_fe0f/512.webp" width="35" height="35"> Show Your Support</h2>
+</div>
 
-## ❤️ Show Your Support
+If you find this project interesting and inspiring, please consider showing your support by starring it on GitHub! Your star goes a long way in helping us to reach more developers and encourages to keep enhancing the project.
 
-If you find this project interesting and inspiring, please consider showing your support by starring it on GitHub! Your star goes a long way in helping us to reach more developers and encourages us to keep enhancing the project.
-
----
-
-## 📝 License
+<div>
+  <h2><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis/main/Objects/Memo.webp" alt="Memo" width="35" height="35" /> License</h2>
+</div>
 
 Study Sphere is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for more information.
 
