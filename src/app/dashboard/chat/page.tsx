@@ -27,11 +27,14 @@ export default function StudySphereChat() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Convert CopilotKit messages to our format
-  const messages: Message[] = visibleMessages.map(msg => ({
-    content: msg.content,
-    role: msg.role === Role.User ? 'User' : 'Assistant',
-    createdAt: msg.createdAt || new Date()
-  }));
+  const messages: Message[] = visibleMessages.map(msg => {
+    const textMsg = msg as TextMessage;
+    return {
+      content: textMsg.content,
+      role: textMsg.role === Role.User ? 'User' : 'Assistant',
+      createdAt: textMsg.createdAt || new Date()
+    };
+  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -67,7 +70,12 @@ export default function StudySphereChat() {
   };
 
   const handleReloadMessages = () => {
-    reloadMessages();
+    if (messages.length > 0) {
+      const lastMessageId = (visibleMessages[visibleMessages.length - 1] as any)?.id;
+      if (lastMessageId) {
+        reloadMessages(lastMessageId);
+      }
+    }
     setShowFullChat(false);
   };
 
