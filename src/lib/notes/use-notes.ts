@@ -1,9 +1,8 @@
 import { useState } from "react"
 import { Note } from "./types"
-import { defaultNotes } from "./default-notes"
 
 export const useNotes = () => {
-  const [notes, setNotes] = useState<Note[]>(defaultNotes)
+  const [notes, setNotes] = useState<Note[]>([])
 
   const createNote = (note: Note) => {
     setNotes([...notes, note])
@@ -14,6 +13,9 @@ export const useNotes = () => {
   }
 
   const deleteNote = (id: string) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this note?")
+    if (!confirmDelete) return
+
     setNotes(notes.filter(note => note.id !== id))
   }
 

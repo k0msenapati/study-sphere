@@ -8,6 +8,10 @@ import {
   useTransform,
   useMotionValue,
   AnimatePresence,
+<<<<<<< HEAD
+=======
+  animate,
+>>>>>>> upstream/main
 } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +22,7 @@ const Navbar = () => {
   const [mounted, setMounted] = useState(false);
   const { scrollY } = useScroll();
   const lastYRef = useRef(0);
+<<<<<<< HEAD
 
   const navbarWidth = useMotionValue(65);
   const routesOpacity = useTransform(navbarWidth, [65, 500], [0, 1]);
@@ -25,14 +30,33 @@ const Navbar = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
+=======
+  const navbarWidth = useMotionValue(65);
+
+  let target = 300;
+  if(typeof window !== 'undefined' && window.innerWidth < 640) {
+    target = 300
+  } else {
+    target = 500
+  }
+
+  const routesOpacity = useTransform(navbarWidth, [65, target], [0, 1]);
+>>>>>>> upstream/main
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const difference = y - lastYRef.current;
 
     if (difference > 50) {
       setIsHidden(false);
+<<<<<<< HEAD
     } else {
       setIsHidden(true);
+=======
+      animate(navbarWidth, target, { duration: 0.25 });
+    } else {
+      setIsHidden(true);
+      animate(navbarWidth, 65, { duration: 0.25 });
+>>>>>>> upstream/main
     }
 
     setHeight(difference);
@@ -44,7 +68,11 @@ const Navbar = () => {
       background: "transparent",
     },
     vissible: {
+<<<<<<< HEAD
       width: 620,
+=======
+      width: target,
+>>>>>>> upstream/main
       background: "rgb(0,0,0,0.5)",
     },
   };
@@ -66,10 +94,13 @@ const Navbar = () => {
       text: "Chat",
       url: "/dashboard/chat",
     },
+<<<<<<< HEAD
     {
       text: "Roadmap",
       url: "/dashboard/roadmap",
     },
+=======
+>>>>>>> upstream/main
   ];
 
   return (
@@ -82,11 +113,8 @@ const Navbar = () => {
       variants={firstNavVariants}
       transition={{ duration: 0.25 }}
       className={cn(
-        "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px]  backdrop-blur bottom-10 left-0 right-0 mx-auto overflow-hidden rounded-lg flex items-center justify-between pr-6"
+        "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px]  backdrop-blur bottom-10 left-0 right-0 mx-auto overflow-hidden rounded-lg flex items-center sm:justify-between justify-start pr-6 gap-0"
       )}
-      style={{
-        width: navbarWidth,
-      }}
     >
       <motion.div
         animate={{
@@ -96,15 +124,15 @@ const Navbar = () => {
       >
         <div className="h-4 rounded w-4 bg-white rotate-45" />
       </motion.div>
-      <div className="mr-10" />
+      <div className="sm:mr-10 mr-4" />
       <AnimatePresence>
         {(height >= 0 || !isHidden) && (
-          <motion.ul className="flex items-center gap-10">
+          <motion.ul className="flex items-center sm:gap-10 gap-4 w-fit">
             {routes.map((route, i) => (
               <Link href={route.url}>
                 <motion.li
                   key={i}
-                  className="text-white text-xl cursor-pointer"
+                  className="text-white sm:text-xl text-xs cursor-pointer"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   style={{
