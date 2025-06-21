@@ -82,7 +82,7 @@ const Dashboard = () => {
             </div>
           </motion.div>
         </Link>
-        <Link href="/dashboard/roadmap">
+        <Link href="/dashboard/roadmaps">
           <motion.div
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out w-full lg:w-[600px]"
             whileHover={{ scale: 1.05 }}
