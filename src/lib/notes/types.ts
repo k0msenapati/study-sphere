@@ -1,5 +1,10 @@
+// src/lib/notes/types.ts
 export type Note = {
-  id: string
-  title: string
-  content: string
-}
+  id: string;
+  userId: number;
+  title: string;
+  content: string;
+  categories: string[];
+  createdAt: string;
+  modifiedAt: string;
+};

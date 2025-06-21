@@ -33,7 +33,38 @@ Create a `.env.local` file in the root directory:
 GROQ_API_KEY=your_key_here
 ```
 
-### 4. Run the Development Server
+### 4. Set Up SQLITE Database
+
+#### Create sqlite.db file
+Go to terminal and run this command:
+
+```bash
+npx drizzle-kit push
+```
+
+This will create a file `sqlite.db` in the root directory of the project.
+
+⚠️ **Warning:** Opening `sqlite.db` file and making changes manually is not recommended, as the sqlite.db file is stored in binary format.
+If you make changes, you can delete that file and run:
+
+```bash
+npx drizzle-kit push
+```
+
+This will again create a new and blank `sqlite.db` file, and you can do your contribution work
+
+#### Delete sqlite.db file
+When trying to delete the `sqlite.db` file, you may get this error:
+
+![App Preview](./public/sqlite_db_error.png)
+
+This happens when you try to delete the `sqlite.db` file when it is being used by either the next js app or the drizzle studio.
+
+Solution:
+- Stop the work which is using the `sqlite.db` file
+- Then delete the file
+
+### 5. Run the Development Server
 
 ```bash
 bun run dev
@@ -42,6 +73,13 @@ bun run dev
 Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
+
+## Demo Video
+
+- Here is a demo video showing how to set up and run the project:
+<a href="https://www.youtube.com/watch?v=fHgIxKXQMN4" target="_blank">
+  <img src="https://img.youtube.com/vi/fHgIxKXQMN4/0.jpg" alt="Watch the demo" width="600" />
+</a>
 
 ## Project Structure
 
