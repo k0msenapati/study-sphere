@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic"
 import "react-quill/dist/quill.snow.css"
-import html2pdf from "html2pdf.js" 
+import html2pdf from "html2pdf.js";
+import { useRef } from "react";
 import { NotesProvider, useNotesContext } from "@/lib/notes/notes-provider"
 import { Note } from "@/lib/notes/types"
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core"
@@ -178,6 +179,7 @@ function NotesComponent() {
   const [selectedSearchTerms, setSelectedSearchTerms] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const handleCreateNote = () => {
     createNote({
@@ -719,28 +721,29 @@ function NotesComponent() {
               )}
 
               <div className="flex-1 overflow-y-auto border rounded-md px-2 py-2">
-                {isEditMode ? (
-                  <ReactQuill
-                    theme="snow"
-                    value={selectedNote.content}
-                    onChange={value =>
-                      setSelectedNote({
-                        ...selectedNote,
-                        content: value,
-                      })
-                    }
-                    modules={quillModules}
-                    formats={quillFormats}
-                    className="min-h-[200px]"
-                  />
-                ) : (
-                  <div
-                    className="prose max-w-none"
-                    dangerouslySetInnerHTML={{ __html: selectedNote.content as string }}
-                  />
-                )}
-              </div>
-
+                    {isEditMode ? (
+                      <ReactQuill
+                        theme="snow"
+                        value={selectedNote.content}
+                        onChange={value =>
+                          setSelectedNote({
+                            ...selectedNote,
+                            content: value,
+                          })
+                        }
+                        modules={quillModules}
+                        formats={quillFormats}
+                        className="min-h-[200px]"
+                      />
+                    ) : (
+                      <div ref={contentRef}>
+                        <div
+                          className="prose max-w-none"
+                          dangerouslySetInnerHTML={{ __html: selectedNote.content as string }}
+                        />
+                      </div>
+                    )}
+                  </div>
               <DialogFooter className="pt-4 pb-2">
                 <Button
                   variant="outline"
@@ -751,6 +754,19 @@ function NotesComponent() {
                 >
                   Close
                 </Button>
+                  {/* 📄 Export Button — insert here */}
+                  {!isEditMode && (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        if (contentRef.current) {
+                          html2pdf().from(contentRef.current).save(`${selectedNote.title || "Note"}.pdf`);
+                        }
+                      }}
+                    >
+                      📄 Export as PDF
+                    </Button>
+                  )}
                 {isEditMode && (
                   <Button
                     onClick={() => handleEditNote(selectedNote.id, selectedNote)}
