@@ -8,7 +8,10 @@ import {
   useTransform,
   useMotionValue,
   AnimatePresence,
+<<<<<<< HEAD
+=======
   animate,
+>>>>>>> upstream/main
 } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -19,6 +22,15 @@ const Navbar = () => {
   const [mounted, setMounted] = useState(false);
   const { scrollY } = useScroll();
   const lastYRef = useRef(0);
+<<<<<<< HEAD
+
+  const navbarWidth = useMotionValue(65);
+  const routesOpacity = useTransform(navbarWidth, [65, 500], [0, 1]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+=======
   const navbarWidth = useMotionValue(65);
 
   let target = 300;
@@ -29,16 +41,22 @@ const Navbar = () => {
   }
 
   const routesOpacity = useTransform(navbarWidth, [65, target], [0, 1]);
+>>>>>>> upstream/main
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const difference = y - lastYRef.current;
 
     if (difference > 50) {
       setIsHidden(false);
+<<<<<<< HEAD
+    } else {
+      setIsHidden(true);
+=======
       animate(navbarWidth, target, { duration: 0.25 });
     } else {
       setIsHidden(true);
       animate(navbarWidth, 65, { duration: 0.25 });
+>>>>>>> upstream/main
     }
 
     setHeight(difference);
@@ -50,7 +68,11 @@ const Navbar = () => {
       background: "transparent",
     },
     vissible: {
+<<<<<<< HEAD
+      width: 620,
+=======
       width: target,
+>>>>>>> upstream/main
       background: "rgb(0,0,0,0.5)",
     },
   };
@@ -72,6 +94,13 @@ const Navbar = () => {
       text: "Chat",
       url: "/dashboard/chat",
     },
+<<<<<<< HEAD
+    {
+      text: "Roadmap",
+      url: "/dashboard/roadmap",
+    },
+=======
+>>>>>>> upstream/main
   ];
 
   return (

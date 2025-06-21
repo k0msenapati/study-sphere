@@ -1,5 +1,9 @@
-"use client"
+"use client";
 
+<<<<<<< HEAD
+import { motion } from "framer-motion";
+import Link from "next/link";
+=======
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { MdQuiz, MdTipsAndUpdates, MdTimer } from "react-icons/md"
@@ -9,6 +13,7 @@ import { IoFolderOpen, IoCalendarNumberSharp } from "react-icons/io5";
 import { RiFileList3Line } from "react-icons/ri"
 import { FaBookOpen, FaComments, FaLightbulb, FaBalanceScaleLeft } from "react-icons/fa"
 import { HiOutlineSparkles } from "react-icons/hi2"
+>>>>>>> upstream/main
 
 const Dashboard = () => {
   return (
@@ -19,21 +24,38 @@ const Dashboard = () => {
           alt="Study Background"
           className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
+<<<<<<< HEAD
+        <div className="relative z-10 p-8">
+          <h1 className="text-5xl font-bold mb-4">Good Morning, Student!</h1>
+          <div className="flex items-center space-x-4">
+            <span className="text-yellow-400 text-4xl">🌟</span>
+            <p className="text-2xl font-semibold">
+              "The best way to predict the future is to create it." – Peter
+              Drucker
+=======
         <div className="relative z-10">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">Good Morning, Student!</h1>
           <div className="flex items-center gap-3">
             <MdTipsAndUpdates className="shrink-0 text-yellow-400 text-4xl md:text-5xl" />
             <p className="text-lg md:text-2xl font-semibold">
               "The best way to predict the future is to create it." - Peter Drucker
+>>>>>>> upstream/main
             </p>
           </div>
         </div>
       </header>
 
+<<<<<<< HEAD
+      <div className="flex flex-wrap md:flex-wrap lg:flex-wrap justify-around gap-8 py-12">
+        <Link href="/dashboard/notes">
+          <motion.div
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out w-full lg:w-[600px]"
+=======
       <div className="flex flex-col md:flex-row flex-wrap gap-6 justify-between py-6">
         <Link href="/dashboard/notes" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-start transition-transform duration-300 ease-in-out h-full"
+>>>>>>> upstream/main
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -41,9 +63,16 @@ const Dashboard = () => {
             <div className="relative z-10 flex items-start gap-4">
               <FaBookOpen className="text-blue-500 text-5xl" />
               <div>
+<<<<<<< HEAD
+                <h2 className="text-2xl font-semibold">Review Your Notes</h2>
+                <p className="mt-2 text-lg">
+                  Make sure to revisit your study notes to reinforce your
+                  knowledge.
+=======
                 <h2 className="text-xl md:text-2xl font-semibold">Review Your Notes</h2>
                 <p className="mt-2 text-sm md:text-base">
                   Make sure to revisit your study notes to reinforce your knowledge.
+>>>>>>> upstream/main
                 </p>
               </div>
             </div>
@@ -51,7 +80,11 @@ const Dashboard = () => {
         </Link>
         <Link href="/dashboard/quizzes" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
+<<<<<<< HEAD
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out w-full lg:w-[600px]"
+=======
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-start transition-transform duration-300 ease-in-out h-full"
+>>>>>>> upstream/main
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -68,7 +101,11 @@ const Dashboard = () => {
           </motion.div>
         </Link>        <Link href="/dashboard/chat" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
+<<<<<<< HEAD
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out w-full lg:w-[600px]"
+=======
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-start transition-transform duration-300 ease-in-out h-full"
+>>>>>>> upstream/main
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -76,14 +113,37 @@ const Dashboard = () => {
             <div className="relative z-10 flex items-start gap-4">
               <FaComments className="text-red-500 text-5xl" />
               <div>
+<<<<<<< HEAD
+                <h2 className="text-2xl font-semibold">
+                  Chat with a Study Buddy
+                </h2>
+                <p className="mt-2 text-lg">
+=======
                 <h2 className="text-xl md:text-2xl font-semibold">Chat with a Study Buddy</h2>
                 <p className="mt-2 text-sm md:text-base">
+>>>>>>> upstream/main
                   Discuss any doubts or concepts with your study partner.
                 </p>
               </div>
             </div>
           </motion.div>
         </Link>
+<<<<<<< HEAD
+        <Link href="/dashboard/roadmaps">
+          <motion.div
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out w-full lg:w-[600px]"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="absolute inset-0 border-2 border-gradient-to-r from-red-400 via-orange-400 to-yellow-400 rounded-lg opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"></div>
+            <div className="relative z-10 flex items-center">
+              <span className="text-red-500 text-5xl mr-6">🤖</span>
+              <div>
+                <h2 className="text-2xl font-semibold">Tailor Your Roadmap</h2>
+                <p className="mt-2 text-lg">
+                  Generate your personalized Roadmap with desired time for
+                  selected days.
+=======
         
         <Link href="/dashboard/flashcards" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
@@ -98,6 +158,7 @@ const Dashboard = () => {
                 <h2 className="text-xl md:text-2xl font-semibold">Generate Flashcards</h2>
                 <p className="mt-2 text-sm md:text-base">
                   Create AI-powered flashcards from your study material for effective memorization.
+>>>>>>> upstream/main
                 </p>
               </div>
             </div>
@@ -155,7 +216,11 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
+<<<<<<< HEAD
+export default Dashboard;
+=======
 export default Dashboard
+>>>>>>> upstream/main

@@ -2,10 +2,13 @@ import {
   CopilotRuntime,
   GroqAdapter,
   copilotRuntimeNextJSAppRouterEndpoint,
-} from "@copilotkit/runtime"
-import { NextRequest } from "next/server"
-import Groq from "groq-sdk"
+} from "@copilotkit/runtime";
+import { NextRequest } from "next/server";
+import Groq from "groq-sdk";
 
+<<<<<<< HEAD
+const groq = new Groq({ apiKey: process.env["GROQ_API_KEY"] });
+=======
 // Check if GROQ_API_KEY is available
 const groqApiKey = process.env.GROQ_API_KEY
 
@@ -14,10 +17,15 @@ if (!groqApiKey) {
 }
 
 const groq = groqApiKey ? new Groq({ apiKey: groqApiKey }) : undefined
+>>>>>>> upstream/main
 
-const copilotKit = new CopilotRuntime()
+const copilotKit = new CopilotRuntime();
 
+<<<<<<< HEAD
+const serviceAdapter = new GroqAdapter({ groq, model: "gemma2-9b-it" });
+=======
 const serviceAdapter = groq ? new GroqAdapter({ groq, model: "gemma2-9b-it" }) : null
+>>>>>>> upstream/main
 
 export const POST = async (req: NextRequest) => {
   // Return early if no API key is configured
@@ -32,7 +40,7 @@ export const POST = async (req: NextRequest) => {
     runtime: copilotKit,
     serviceAdapter,
     endpoint: "/api/copilotkit",
-  })
+  });
 
-  return handleRequest(req)
-}
+  return handleRequest(req);
+};
