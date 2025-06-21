@@ -29,8 +29,6 @@ Start your journey toward smarter studying with **Study Sphere** – where learn
   <img src="https://img.shields.io/badge/CopilotKit-🪁-black" alt="CopilotKit" />
 </p>
 
-Here’s your **setup section** converted into a clean, collapsible `<details>` format using Markdown — ideal for a more compact and interactive README:
-
 <details>
 <summary>📦 <strong>Set Up</strong></summary>
 
