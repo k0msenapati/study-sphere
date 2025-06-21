@@ -59,7 +59,7 @@ To get **Study Sphere** up and running locally, follow these steps:
    bun run dev
    ```
 
-   ---
+</details>
 
 ## 🤝 How to Contribute
 
@@ -77,8 +77,6 @@ For detailed guidelines, please see our [CONTRIBUTING.md](CONTRIBUTING.md).
 Thank you for helping improve Study Sphere!
 
 ---
-
-</details>
 
 <div align="center">
   <h1>Tip from us 😇</h1>
