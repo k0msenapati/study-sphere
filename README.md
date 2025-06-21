@@ -10,9 +10,11 @@
 ### 🌟 About
 
 **Study Sphere** is an intelligent and versatile learning platform built to supercharge your study sessions. With a modern interface and powerful AI support, it offers an engaging and personalized educational experience through four core features:
+**Study Sphere** is an intelligent and versatile learning platform built to supercharge your study sessions. With a modern interface and powerful AI support, it offers an engaging and personalized educational experience through four core features:
 
 - 📝 **Notes**: Create, manage, and organize your study notes with ease.
 - ❓ **Quiz**: Challenge yourself with subject-specific quizzes and track your progress.
+- 🃏 **Flashcards Generator**: AI-powered flashcard creation from your study material for effective memorization.
 - 🃏 **Flashcards Generator**: AI-powered flashcard creation from your study material for effective memorization.
 - 🤖 **Study Buddy (AI Mentor)**: Get instant help, explanations, and guidance from your AI-powered learning assistant.
 
@@ -26,6 +28,7 @@ Start your journey toward smarter studying with **Study Sphere** – where learn
 
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-black?logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />  <img src="https://img.shields.io/badge/CopilotKit-🪁-black" alt="CopilotKit" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />  <img src="https://img.shields.io/badge/CopilotKit-🪁-black" alt="CopilotKit" />
 </p>
 
