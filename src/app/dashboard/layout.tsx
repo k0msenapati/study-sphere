@@ -4,6 +4,7 @@ import { CopilotPopup } from "@copilotkit/react-ui"
 import { getSession } from '@/lib/auth/jwt'
 import { redirect } from 'next/navigation'
 import AuthenticatedNavbar from "@/components/navbar"
+import { FlashcardsProvider } from "@/lib/flashcards/flashcards-provider"
 import "@copilotkit/react-ui/styles.css"
 
 export default async function DashboardLayout({
@@ -11,26 +12,25 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Check if user is authenticated
   const session = await getSession()
-  
-  // Redirect to login if no session
   if (!session) {
     redirect('/auth/login')
   }
 
   return (
     <CopilotKit runtimeUrl="/api/copilotkit">
-      <div className="h-full w-full">
-        <AuthenticatedNavbar session={session} />
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-            <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]"></div>
+      <FlashcardsProvider>
+        <div className="h-full w-full">
+          <AuthenticatedNavbar session={session} />
+          <div className="relative overflow-hidden">
+            <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
+              <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]"></div>
+            </div>
+            <main className="relative z-10">{children}</main>
           </div>
-          <main className="relative z-10">{children}</main>
+          <CopilotPopup />
         </div>
-        <CopilotPopup />
-      </div>
+      </FlashcardsProvider>
     </CopilotKit>
   )
 }

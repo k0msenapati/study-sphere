@@ -8,6 +8,7 @@ import { FiRefreshCw } from "react-icons/fi"
 import { IoFolderOpen, IoCalendarNumberSharp } from "react-icons/io5"
 import { RiFileList3Line } from "react-icons/ri"
 import { FaBookOpen, FaComments, FaLightbulb, FaBalanceScaleLeft } from "react-icons/fa"
+import { HiOutlineSparkles } from "react-icons/hi2"
 import { useEffect, useState } from "react"
 
 interface UserSession {
@@ -161,15 +162,28 @@ const Dashboard = () => {
             </div>
           </motion.div>
         </Link>
+        
+        <Link href="/dashboard/flashcards" className="w-full md:w-[48%] lg:w-[32%]">
+          <motion.div
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-start transition-transform duration-300 ease-in-out h-full"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="absolute inset-0 border-2 border-gradient-to-r from-purple-400 via-pink-400 to-rose-400 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative z-10 flex items-start gap-4">
+              <HiOutlineSparkles className="text-purple-500 text-5xl" />
+              <div>
+                <h2 className="text-xl md:text-2xl font-semibold">Generate Flashcards</h2>
+                <p className="mt-2 text-sm md:text-base">
+                  Create AI-powered flashcards from your study material for effective memorization.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </Link>
       </motion.div>
-
-      <motion.div 
-        className="mt-12 mb-32 bg-gradient-to-r from-fuchsia-500 to-cyan-500 p-6 md:p-12 rounded-lg shadow-md"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.5 }}
-      >
-        <div className="bg-white bg-opacity-20 backdrop-blur-lg rounded-lg shadow-xl p-6 md:p-8">
+      <div className="mt-12 mb-32 bg-gradient-to-r from-fuchsia-500 to-cyan-500 p-6 md:p-12 rounded-lg shadow-md">
+        <div className="bg-white bg-opacity-30 backdrop-blur-lg rounded-lg shadow-xl p-6 md:p-8">
           <h2 className="text-2xl md:text-3xl font-bold mb-10 text-center text-white flex items-center justify-center gap-4">
             <MdTipsAndUpdates className="shrink-0 text-white text-4xl md:text-5xl" />
             Tips for Effective Studying
@@ -265,7 +279,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }

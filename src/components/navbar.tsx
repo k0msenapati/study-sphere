@@ -15,18 +15,23 @@ import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import Logout from "../components/auth/Logout";
 
-const Navbar = () => {
+interface NavbarProps {
+  session: {
+    userId: number;
+    email: string;
+  };
+}
+
+const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
   const [isHidden, setIsHidden] = useState(false);
   const [height, setHeight] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { scrollY } = useScroll();
   const lastYRef = useRef(0);
-
   const navbarWidth = useMotionValue(65);
-  const target = 650;
-  const mobileTarget = typeof window !== "undefined" ? window.innerWidth - 32 : 300;
 
+  const target = 650;
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -72,7 +77,6 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Bottom Nav or Toggle Icon */}
       <motion.nav
         animate={!isMobile && height > 50 && !isHidden ? "vissible" : "hidden"}
         whileHover="vissible"
