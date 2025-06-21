@@ -396,20 +396,20 @@ function NotesComponent() {
                   </div>
                 )}
               </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="ml-2 h-6 px-2 text-xs"
-                    onClick={() => {
-                      setSearchQuery("")
-                      setSelectedSearchTerms([])
-                      setSelectedCategory("all")
-                    }}
-                  >
-                    Clear all filters
-                  </Button>
-                </div>
-              )}
+              <div className="flex justify-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="ml-2 h-6 px-2 text-xs"
+                  onClick={() => {
+                    setSearchQuery("")
+                    setSelectedSearchTerms([])
+                    setSelectedCategory("all")
+                  }}
+                >
+                  Clear all filters
+                </Button>
+              </div>
             </div>
           )}
         </div>

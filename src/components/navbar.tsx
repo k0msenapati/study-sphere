@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils"
-import { ThemeToggle } from "./ui/theme-toggle"
+import { DashboardThemeToggle } from "./ui/dashboard-theme-toggle"
 import {
   motion,
   useMotionValueEvent,
@@ -18,19 +18,26 @@ const Navbar = () => {
   const [isHidden, setIsHidden] = useState(false);
   const [height, setHeight] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [isNavExpanded, setIsNavExpanded] = useState(false)
+  const [target, setTarget] = useState(300);
   const { scrollY } = useScroll();
   const lastYRef = useRef(0);
 
   const navbarWidth = useMotionValue(65);
 
-  let target = 300;
-  if(window.innerWidth<640) {
-    target = 300
-  } else {
-    target = 500
-  }
+  // Handle window object safely for hydration
+  useEffect(() => {
+    setMounted(true);
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 640) {
+        setTarget(300);
+      } else {
+        setTarget(500);
+      }
+    }
+  }, []);
 
-  const routesOpacity = useTransform(navbarWidth, [65, 300], [0, 1]);
+  const routesOpacity = useTransform(navbarWidth, [65, target], [0, 1]);
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const difference = y - lastYRef.current;
@@ -51,7 +58,7 @@ const Navbar = () => {
       width: 65,
       background: "transparent",
     },
-    vissible: {
+    visible: {
       width: target,
       background: "rgb(0,0,0,0.5)",
     },
@@ -76,21 +83,31 @@ const Navbar = () => {
     },
   ];
 
+  // Don't render until mounted to avoid hydration issues
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <motion.nav
-      animate={height > 50 && !isHidden ? "vissible" : "hidden"}
-      whileHover="vissible"
+      animate={height > 50 && !isHidden ? "visible" : "hidden"}
+      whileHover="visible"
       initial="hidden"
       exit="hidden"
       onFocusCapture={() => setIsHidden(false)}
       variants={firstNavVariants}
+      onUpdate={(latest) => {
+        if (latest.width) {
+          const widthValue =
+            typeof latest.width === "string" ? parseFloat(latest.width) : latest.width
+          navbarWidth.set(widthValue)
+          setIsNavExpanded(widthValue > 70)
+        }
+      }}
       transition={{ duration: 0.25 }}
       className={cn(
         "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px]  backdrop-blur bottom-10 left-0 right-0 mx-auto overflow-hidden rounded-lg flex items-center sm:justify-between justify-start pr-6 gap-0"
       )}
-      // style={{
-      //   width: navbarWidth,
-      // }}
     >
       <motion.div
         animate={{
@@ -102,13 +119,13 @@ const Navbar = () => {
       </motion.div>
       <div className="sm:mr-10 mr-4" />
       <AnimatePresence>
-        {(height >= 0 || !isHidden) && (
-          <motion.ul className="flex items-center sm:gap-10 gap-4 w-fit">
+        {isNavExpanded && (
+          <motion.ul className="flex items-center sm:gap-8 gap-2 w-fit">
             {routes.map((route, i) => (
               <Link key={route.url} href={route.url} className="text-foreground">
                 <motion.li
                   key={i}
-                  className="text-foreground sm:text-xl text-xs cursor-pointer"
+                  className="text-foreground sm:text-lg text-xs cursor-pointer"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   style={{
@@ -122,7 +139,11 @@ const Navbar = () => {
                 </motion.li>
               </Link>
             ))}
+            {/* Theme toggle at the end */}
             <motion.li
+              className="text-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               style={{
                 opacity: routesOpacity,
               }}
@@ -130,7 +151,7 @@ const Navbar = () => {
                 delay: 0.1 * routes.length,
               }}
             >
-              <ThemeToggle />
+              <DashboardThemeToggle />
             </motion.li>
           </motion.ul>
         )}
