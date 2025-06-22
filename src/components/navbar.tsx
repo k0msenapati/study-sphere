@@ -22,7 +22,7 @@ interface NavbarProps {
   };
 }
 
-const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
+const Navbar: React.FC<NavbarProps> = ({ session }) => {
   const [isHidden, setIsHidden] = useState(false);
   const [height, setHeight] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -30,8 +30,8 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
   const { scrollY } = useScroll();
   const lastYRef = useRef(0);
   const navbarWidth = useMotionValue(65);
-
   const target = 650;
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -72,6 +72,7 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
     { text: "Dashboard", url: "/dashboard" },
     { text: "Quizzes", url: "/dashboard/quizzes" },
     { text: "Notes", url: "/dashboard/notes" },
+    { text: "Study Area", url: "/dashboard/studyarea" },
     { text: "Chat", url: "/dashboard/chat" },
   ];
 
@@ -97,9 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
           <div className="h-4 rounded w-4 bg-white rotate-45" />
         </motion.div>
 
-        {!isMobile && (
-          <div className="sm:mr-10 mr-4" />
-        )}
+        {!isMobile && <div className="sm:mr-10 mr-4" />}
 
         {!isMobile && (
           <AnimatePresence>
@@ -139,7 +138,6 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed top-0 left-0 h-full w-64 bg-black text-white z-[10000000001] p-6 sm:hidden shadow-xl"
           >
-            {/* Title and Close */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold tracking-wide">Study Sphere</h2>
               <button
@@ -150,7 +148,6 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
               </button>
             </div>
 
-            {/* Animated List */}
             <motion.ul
               initial="hidden"
               animate="visible"
@@ -158,9 +155,7 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
               variants={{
                 hidden: {},
                 visible: {
-                  transition: {
-                    staggerChildren: 0.1,
-                  },
+                  transition: { staggerChildren: 0.1 },
                 },
                 exit: {
                   transition: {
