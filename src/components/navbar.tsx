@@ -31,7 +31,9 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
   const lastYRef = useRef(0);
   const navbarWidth = useMotionValue(65);
 
-  const target = 650;
+
+  const target = 800;
+  
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -62,7 +64,7 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
       width: 65,
       background: "transparent",
     },
-    vissible: {
+    visible: {
       width: isMobile ? 65 : target,
       background: "rgb(0,0,0,0.5)",
     },
@@ -78,37 +80,33 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
   return (
     <>
       <motion.nav
-        animate={!isMobile && height > 50 && !isHidden ? "vissible" : "hidden"}
-        whileHover="vissible"
+        animate={!isMobile && height > 50 && !isHidden ? "visible" : "hidden"}
+        whileHover="visible"
         initial="hidden"
         exit="hidden"
         onFocusCapture={() => setIsHidden(false)}
         variants={firstNavVariants}
         transition={{ duration: 0.25 }}
         className={cn(
-          "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px] backdrop-blur bottom-10 left-4 right-4 mx-auto overflow-hidden rounded-lg flex items-center sm:justify-between justify-start pr-6 gap-0"
+          "fixed text-neutral-700 p-[10px] z-[10000000000] h-[65px] backdrop-blur bottom-10 left-4 right-4 mx-auto overflow-hidden rounded-lg flex items-center justify-between pr-6 gap-4"
         )}
       >
         <motion.div
           animate={{ height: 50 }}
           onClick={() => isMobile && setSidebarOpen(true)}
-          className="bg-black rounded-lg max-w-[50px] min-w-[50px] flex items-center justify-center cursor-pointer"
+          className="bg-black rounded-lg max-w-[50px] min-w-[50px] flex items-center justify-center cursor-pointer flex-shrink-0"
         >
           <div className="h-4 rounded w-4 bg-white rotate-45" />
         </motion.div>
 
         {!isMobile && (
-          <div className="sm:mr-10 mr-4" />
-        )}
-
-        {!isMobile && (
           <AnimatePresence>
             {(height >= 0 || !isHidden) && (
-              <motion.ul className="flex items-center sm:gap-10 gap-4 w-fit">
+              <motion.ul className="flex items-center gap-6 lg:gap-10 w-fit flex-grow justify-center">
                 {routes.map((route, i) => (
                   <Link key={i} href={route.url}>
                     <motion.li
-                      className="text-white sm:text-xl text-sm cursor-pointer"
+                      className="text-white text-lg lg:text-xl cursor-pointer whitespace-nowrap"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       style={{ opacity: routesOpacity }}
@@ -121,6 +119,7 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   style={{ opacity: routesOpacity }}
+                  className="flex-shrink-0"
                 >
                   <Logout />
                 </motion.li>
