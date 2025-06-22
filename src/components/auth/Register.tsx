@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import Link from 'next/link'
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -40,75 +44,92 @@ export default function Register() {
   };
 
   return (
-    <motion.form
-      onSubmit={handleSubmit}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-white p-8 shadow-xl rounded-2xl space-y-6"
-    >
-      <h2 className="text-3xl font-bold text-center text-gray-800">Create an Account</h2>
-
-      {error && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm"
-        >
-          {error}
-        </motion.div>
-      )}
-
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-          Password
-        </label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          minLength={6}
-          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
-        />
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
+    <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
+      <form
+        onSubmit={handleSubmit} // Connect form to handleSubmit
+        className="bg-card m-auto h-fit w-full max-w-sm rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md dark:[--color-muted:var(--color-zinc-900)]"
       >
-        {loading ? 'Registering...' : 'Register'}
-      </button>
-    </motion.form>
+        <div className="p-8 pb-6">
+          <div>
+            <h1 className="text-title mb-1 mt-4 text-xl font-semibold">Create a Study-sphere Account</h1>
+            <p className="text-sm">Welcome! Create an account to get started</p>
+          </div>
+
+          <hr className="my-4 border-dashed" />
+
+          {/* Display error message */}
+          {error && (
+            <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded">
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="Username" className="block text-sm">
+                Username
+              </Label>
+              <Input
+                type="text" // Changed from "Username" to "text"
+                required
+                name="Username"
+                id="Username"
+                value={name} // Connect to name state
+                onChange={(e) => setName(e.target.value)} // Handle changes
+                disabled={loading}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="email" className="block text-sm">
+                Email
+              </Label>
+              <Input
+                type="email"
+                required
+                name="email"
+                id="email"
+                value={email} // Connect to state
+                onChange={(e) => setEmail(e.target.value)} // Handle changes
+                disabled={loading}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="pwd" className="text-title text-sm">
+                Password
+              </Label>
+              <Input
+                type="password"
+                required
+                name="pwd"
+                id="pwd"
+                value={password} // Connect to state
+                onChange={(e) => setPassword(e.target.value)} // Handle changes
+                className="input sz-md variant-mixed"
+                disabled={loading}
+              />
+            </div>
+
+            <Button 
+              type="submit" // Make it a submit button
+              className="w-full"
+              disabled={loading}
+            >
+              {loading ? 'Creating Account...' : 'Continue'}
+            </Button>
+          </div>
+        </div>
+
+        <div className="bg-muted rounded-(--radius) border p-3">
+          <p className="text-accent-foreground text-center text-sm">
+            Have an account ?
+            <Button asChild variant="link" className="px-2">
+              <Link href="/auth/login">Sign In</Link>
+            </Button>
+          </p>
+        </div>
+      </form>
+    </section>
   );
 }

@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import Link from 'next/link'
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -39,60 +43,85 @@ export default function Login() {
   };
 
   return (
-    <motion.form
-      onSubmit={handleSubmit}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-white p-8 shadow-xl rounded-2xl space-y-6"
-    >
-      <h2 className="text-3xl font-bold text-center text-gray-800">Welcome Back</h2>
+    <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
+    <form
+        action=""  onSubmit={handleSubmit} 
+        className="bg-card m-auto h-fit w-full max-w-sm rounded-[calc(var(--radius)+.125rem)] border p-0.5 shadow-md dark:[--color-muted:var(--color-zinc-900)]">
+        <div className="p-8 pb-6">
+            <div>
+                <h1 className="mb-1 mt-4 text-xl font-semibold">Sign In to Study-Sphere</h1>
+                <p className="text-sm">Welcome back! Sign in to continue</p>
+            </div>
 
-      {error && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm"
-        >
-          {error}
-        </motion.div>
-      )}
+            <hr className="my-4 border-dashed" />
+            {error && (
+            <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded">
+              {error}
+            </div>
+          )}
 
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email address
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-        />
-      </div>
+            <div className="space-y-6">
+                <div className="space-y-2">
+                    <Label
+                        htmlFor="email"
+                        className="block text-sm">
+                        Email
+                    </Label>
+                    <Input
+                        type="email"
+                        required
+                        name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        id="email"
+                    />
+                </div>
 
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-          Password
-        </label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-        />
-      </div>
+                <div className="space-y-0.5">
+                    <div className="flex items-center justify-between">
+                        <Label
+                            htmlFor="pwd"
+                            className="text-title text-sm">
+                            Password
+                        </Label>
+                        <Button
+                            asChild
+                            variant="link"
+                            size="sm">
+                            <Link
+                                href="/auth/ForgotPassword"
+                                className="link intent-info variant-ghost text-sm">
+                                Forgot your Password ?
+                            </Link>
+                        </Button>
+                    </div>
+                    <Input
+                        type="password"
+                        required
+                        name="pwd"
+                        id="pwd"
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="input sz-md variant-mixed"
+                    />
+                </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-      >
-        {loading ? 'Logging in...' : 'Login'}
-      </button>
-    </motion.form>
+                <Button className="w-full"  type="submit" >  {loading ? 'Signing In...' : 'Sign In'} </Button>
+            </div>
+        </div>
+
+        <div className="bg-muted rounded-(--radius) border p-3">
+            <p className="text-accent-foreground text-center text-sm">
+                Don't have an account ?
+                <Button
+                    asChild
+                    variant="link"
+                    className="px-2">
+                    <Link href="/auth/register">Create account</Link>
+                </Button>
+            </p>
+        </div>
+    </form>
+</section>
   );
 }
