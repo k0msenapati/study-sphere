@@ -1,9 +1,10 @@
+// src/lib/notes/notes-provider.tsx
+"use client"
+
 import React, { createContext, useContext } from "react"
 import { useNotes } from "./use-notes"
 
-type NotesContextType = ReturnType<typeof useNotes>
-
-const NotesContext = createContext<NotesContextType | undefined>(undefined)
+const NotesContext = createContext<ReturnType<typeof useNotes> | undefined>(undefined)
 
 export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const notes = useNotes()

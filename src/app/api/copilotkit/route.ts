@@ -6,7 +6,6 @@ import {
 import { NextRequest } from "next/server"
 import Groq from "groq-sdk"
 
-// Check if GROQ_API_KEY is available
 const groqApiKey = process.env.GROQ_API_KEY
 
 if (!groqApiKey) {
@@ -20,7 +19,6 @@ const copilotKit = new CopilotRuntime()
 const serviceAdapter = groq ? new GroqAdapter({ groq, model: "gemma2-9b-it" }) : null
 
 export const POST = async (req: NextRequest) => {
-  // Return early if no API key is configured
   if (!serviceAdapter) {
     return new Response(
       JSON.stringify({ error: "GROQ_API_KEY is not configured" }),
