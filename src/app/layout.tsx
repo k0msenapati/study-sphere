@@ -4,9 +4,6 @@ import "./globals.css";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { ThemeProvider } from "@/components/theme-provider";
 
-// ✅ Import QuizProvider
-import { QuizProvider } from "@/context/QuizProvider";
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -32,11 +29,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
-          {/* ✅ Wrap app in QuizProvider here */}
-          <QuizProvider>
-            {children}
-            <ScrollToTopButton />
-          </QuizProvider>
+          {children}
+          <ScrollToTopButton />
         </ThemeProvider>
       </body>
     </html>
