@@ -1,4 +1,3 @@
-// src/app/quizzes/create/page.tsx
 'use client';
 
 import React from 'react';
