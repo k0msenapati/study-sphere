@@ -36,6 +36,7 @@ Requirements:
 - Each flashcard should have a clear, concise question and a comprehensive answer
 - Questions should test understanding, not just memorization
 - Answers should be educational and help with learning
+- For audio readability, ensure answers are well-structured and pronounceable
 - For ${focusArea === 'definitions' ? 'focus on key terms and their meanings' : focusArea === 'concepts' ? 'focus on understanding core concepts' : focusArea === 'problem-solving' ? 'focus on application and problem-solving scenarios' : 'cover a broad range of topics from the material'}
 
 Return your response as a JSON object with the following structure:
@@ -43,9 +44,10 @@ Return your response as a JSON object with the following structure:
   "flashcards": [
     {
       "question": "Clear, specific question",
-      "answer": "Comprehensive, educational answer",
+      "answer": "Comprehensive, educational answer that reads well when spoken aloud",
       "topic": "Main topic/category",
-      "tags": ["relevant", "tags"]
+      "tags": ["relevant", "tags"],
+      "audioReadableAnswer": "Simplified version of the answer optimized for text-to-speech (optional, defaults to main answer)"
     }
   ]
 }
@@ -56,7 +58,7 @@ Make sure the JSON is valid and contains exactly ${numberOfCards} flashcards.`
       messages: [
         {
           role: "system",
-          content: "You are an expert educational content creator specializing in creating effective flashcards for learning. Always respond with valid JSON only."
+          content: "You are an expert educational content creator specializing in creating effective flashcards for learning. Always respond with valid JSON only. Make answers suitable for text-to-speech reading."
         },
         {
           role: "user",
@@ -99,8 +101,10 @@ Make sure the JSON is valid and contains exactly ${numberOfCards} flashcards.`
       }
       
       return {
+        id: `card-${Date.now()}-${index}`, // Add unique ID for each card
         question: card.question.trim(),
         answer: card.answer.trim(),
+        audioReadableAnswer: card.audioReadableAnswer ? card.audioReadableAnswer.trim() : card.answer.trim(),
         topic: card.topic || focusArea,
         tags: Array.isArray(card.tags) ? card.tags : []
       }

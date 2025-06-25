@@ -31,10 +31,10 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
   const lastYRef = useRef(0);
   const navbarWidth = useMotionValue(65);
 
-  const target = 650;
+  const target = 800;
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 640);
+      setIsMobile(window.innerWidth < 800);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
