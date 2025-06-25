@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const prompt = `You are an expert tutor helping a student understand a flashcard. 
+    const prompt = `You are an expert tutor helping a student understand a flashcard.
 
 Current Flashcard:
 Question: ${flashcard.question}
@@ -71,7 +71,7 @@ Keep your response concise but informative (2-3 paragraphs maximum).`
 
   } catch (error) {
     console.error('Error generating explanation:', error)
-    
+        
     return NextResponse.json(
       { 
         error: 'Failed to generate explanation',
