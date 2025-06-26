@@ -5,6 +5,7 @@ import { getSession } from '@/lib/auth/jwt'
 import { redirect } from 'next/navigation'
 import AuthenticatedNavbar from "@/components/navbar"
 import { FlashcardsProvider } from "@/lib/flashcards/flashcards-provider"
+import { TasksProvider } from "@/lib/tasks/tasks-provider"
 import "@copilotkit/react-ui/styles.css"
 
 export default async function DashboardLayout({
@@ -18,6 +19,7 @@ export default async function DashboardLayout({
   }  return (
     <CopilotKit runtimeUrl="/api/copilotkit">
       <FlashcardsProvider>
+        <TasksProvider>
         <div className="h-full w-full bg-white text-slate-900 light" style={{
           '--background': '0 0% 100%',
           '--foreground': '222 84% 4.9%',
@@ -48,6 +50,7 @@ export default async function DashboardLayout({
           </div>
           <CopilotPopup />
         </div>
+        </TasksProvider>
       </FlashcardsProvider>
     </CopilotKit>
   )
