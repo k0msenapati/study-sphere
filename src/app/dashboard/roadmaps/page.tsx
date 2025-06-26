@@ -2,70 +2,91 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
 
-export default function RoadmapPage() {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+const RoadmapPage = () => {
+  const [selectedRoadmap, setSelectedRoadmap] = useState<string | null>(null);
 
-  const images = [
+  const roadmaps = [
     {
-      src: "/images/roadmap1.png",
-      alt: "Roadmap 1",
+      src: "/images/datascience.png",
+      alt: "datascience Roadmap",
+      componentPath: "datascience",
     },
     {
-      src: "/images/roadmap2.png",
-      alt: "Roadmap 2",
+      src: "/images/devops.png",
+      alt: "devops Roadmap",
+      componentPath: "devops",
     },
-    // Add more images if needed
+    {
+      src: "/images/machinelearning.png",
+      alt: "machinelearning Roadmap",
+      componentPath: "machinelearning",
+    },
+    {
+      src: "/images/mern.png",
+      alt: "MERN Roadmap",
+      componentPath: "mern",
+    },
+    {
+      src: "/images/nodejs.png",
+      alt: "Node.js Roadmap",
+      componentPath: "nodejs",
+    },
+    {
+      src: "/images/python.png",
+      alt: "python Roadmap",
+      componentPath: "python",
+    },
   ];
 
-  const handleDownload = (src: string) => {
-    const link = document.createElement("a");
-    link.href = src;
-    link.download = src.split("/").pop() || "roadmap.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  const DynamicMDX = selectedRoadmap
+    ? dynamic(() => import(`../roadmap/${selectedRoadmap}.mdx`))
+    : null;
+
+  const handleClose = () => setSelectedRoadmap(null);
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold text-center">Choose Your Roadmap</h1>
-      <div className="grid grid-cols-1 gap-4">
-        {images.map((img, index) => (
-          <img
-            key={index}
-            src={img.src}
-            alt={img.alt}
-            className="cursor-pointer rounded shadow hover:scale-105 transition-transform"
-            onClick={() => setSelectedImage(img.src)}
-          />
-        ))}
-      </div>
-
-      {/* Modal */}
-      {selectedImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg relative max-w-lg w-full">
-            <button
-              className="absolute top-2 right-2 text-gray-600 hover:text-black"
-              onClick={() => setSelectedImage(null)}
-            >
-              ✖
-            </button>
-            <img
-              src={selectedImage}
-              alt="Selected"
-              className="w-full h-auto rounded"
-            />
-            <button
-              onClick={() => handleDownload(selectedImage)}
-              className="mt-4 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-            >
-              Download
-            </button>
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      {!selectedRoadmap ? (
+        <>
+          <h1 className="text-2xl font-bold text-center">
+            Choose Your Roadmap
+          </h1>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+            {roadmaps.map((img, index) => (
+              <img
+                key={index}
+                src={img.src}
+                alt={img.alt}
+                className="cursor-pointer rounded shadow hover:scale-105 transition-transform"
+                onClick={() => setSelectedRoadmap(img.componentPath)}
+              />
+            ))}
           </div>
+
+          <div className="flex justify-center mt-10">
+            <Link href="/dashboard/airoadmap">
+              <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg shadow-md hover:from-purple-700 hover:to-blue-700 transition">
+                Tailor your own roadmap
+              </button>
+            </Link>
+          </div>
+        </>
+      ) : (
+        <div className="relative bg-white p-4 rounded shadow">
+          <button
+            onClick={handleClose}
+            className="absolute top-2 right-2 text-gray-600 hover:text-black text-xl"
+          >
+            ✖
+          </button>
+          {DynamicMDX && <DynamicMDX />}
         </div>
       )}
     </div>
   );
-}
+};
+
+export default RoadmapPage;

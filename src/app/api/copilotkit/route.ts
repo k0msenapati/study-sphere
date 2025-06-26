@@ -6,34 +6,28 @@ import {
 import { NextRequest } from "next/server";
 import Groq from "groq-sdk";
 
-<<<<<<< HEAD
-const groq = new Groq({ apiKey: process.env["GROQ_API_KEY"] });
-=======
-// Check if GROQ_API_KEY is available
-const groqApiKey = process.env.GROQ_API_KEY
+const groqApiKey = process.env.GROQ_API_KEY;
 
 if (!groqApiKey) {
-  console.warn("GROQ_API_KEY is not set. CopilotKit functionality will be limited.")
+  console.warn(
+    "GROQ_API_KEY is not set. CopilotKit functionality will be limited."
+  );
 }
 
-const groq = groqApiKey ? new Groq({ apiKey: groqApiKey }) : undefined
->>>>>>> upstream/main
+// Only initialize Groq and adapter if API key is available
+const groq = groqApiKey ? new Groq({ apiKey: groqApiKey }) : undefined;
+const serviceAdapter = groq
+  ? new GroqAdapter({ groq, model: "gemma-7b-it" })
+  : null;
 
 const copilotKit = new CopilotRuntime();
 
-<<<<<<< HEAD
-const serviceAdapter = new GroqAdapter({ groq, model: "gemma2-9b-it" });
-=======
-const serviceAdapter = groq ? new GroqAdapter({ groq, model: "gemma2-9b-it" }) : null
->>>>>>> upstream/main
-
 export const POST = async (req: NextRequest) => {
-  // Return early if no API key is configured
   if (!serviceAdapter) {
     return new Response(
       JSON.stringify({ error: "GROQ_API_KEY is not configured" }),
       { status: 503, headers: { "Content-Type": "application/json" } }
-    )
+    );
   }
 
   const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
