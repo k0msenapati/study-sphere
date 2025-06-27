@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Clock, FileText } from "lucide-react";
 
 const Dashboard = () => {
   return (
@@ -23,19 +24,48 @@ const Dashboard = () => {
         </div>
       </header>
 
+      {/* Metrics Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
+        <motion.div
+          className="bg-white rounded-xl shadow-md p-6 flex items-center gap-4 border border-blue-100 hover:shadow-lg transition-all duration-300"
+          whileHover={{ scale: 1.04, boxShadow: "0 8px 32px rgba(59,130,246,0.15)" }}
+        >
+          <div className="bg-blue-100 p-3 rounded-full">
+            <Clock className="h-7 w-7 text-blue-500" />
+          </div>
+          <div>
+            <div className="text-lg font-semibold text-blue-700">No. of Hours Spent</div>
+            <div className="text-3xl font-bold text-blue-900">12</div>
+          </div>
+        </motion.div>
+        <motion.div
+          className="bg-white rounded-xl shadow-md p-6 flex items-center gap-4 border border-green-100 hover:shadow-lg transition-all duration-300"
+          whileHover={{ scale: 1.04, boxShadow: "0 8px 32px rgba(16,185,129,0.15)" }}
+        >
+          <div className="bg-green-100 p-3 rounded-full">
+            <FileText className="h-7 w-7 text-green-500" />
+          </div>
+          <div>
+            <div className="text-lg font-semibold text-green-700">No. of Tests Given</div>
+            <div className="text-3xl font-bold text-green-900">8</div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Feature Cards Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-12">
         <Link href="/dashboard/notes">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="relative bg-white cursor-pointer p-6 rounded-xl shadow-md flex items-center border border-blue-100 group transition-all duration-300"
+            whileHover={{ scale: 1.05, boxShadow: "0 8px 32px rgba(59,130,246,0.15)" }}
+            whileTap={{ scale: 0.97 }}
           >
-            <div className="absolute inset-0 border-2 border-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-lg opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none" />
             <div className="relative z-10 flex items-center">
               <span className="text-blue-500 text-5xl mr-6">📚</span>
               <div>
                 <h2 className="text-2xl font-semibold">Review Your Notes</h2>
-                <p className="mt-2 text-lg">
+                <p className="mt-2 text-lg text-gray-600">
                   Make sure to revisit your study notes to reinforce your knowledge.
                 </p>
               </div>
@@ -44,16 +74,16 @@ const Dashboard = () => {
         </Link>
         <Link href="/dashboard/quizzes">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="relative bg-white cursor-pointer p-6 rounded-xl shadow-md flex items-center border border-green-100 group transition-all duration-300"
+            whileHover={{ scale: 1.05, boxShadow: "0 8px 32px rgba(16,185,129,0.15)" }}
+            whileTap={{ scale: 0.97 }}
           >
-            <div className="absolute inset-0 border-2 border-gradient-to-r from-green-400 via-teal-400 to-cyan-400 rounded-lg opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-400 via-teal-400 to-cyan-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none" />
             <div className="relative z-10 flex items-center">
               <span className="text-green-500 text-5xl mr-6">📝</span>
               <div>
                 <h2 className="text-2xl font-semibold">Take a Quiz</h2>
-                <p className="mt-2 text-lg">
+                <p className="mt-2 text-lg text-gray-600">
                   Challenge yourself with a quiz to test your understanding.
                 </p>
               </div>
@@ -62,16 +92,16 @@ const Dashboard = () => {
         </Link>
         <Link href="/dashboard/chat">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-center transition-transform duration-300 ease-in-out"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="relative bg-white cursor-pointer p-6 rounded-xl shadow-md flex items-center border border-red-100 group transition-all duration-300"
+            whileHover={{ scale: 1.05, boxShadow: "0 8px 32px rgba(239,68,68,0.15)" }}
+            whileTap={{ scale: 0.97 }}
           >
-            <div className="absolute inset-0 border-2 border-gradient-to-r from-red-400 via-orange-400 to-yellow-400 rounded-lg opacity-0 transition-opacity duration-300 ease-in-out hover:opacity-100"></div>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none" />
             <div className="relative z-10 flex items-center">
               <span className="text-red-500 text-5xl mr-6">💬</span>
               <div>
                 <h2 className="text-2xl font-semibold">Chat with a Study Buddy</h2>
-                <p className="mt-2 text-lg">
+                <p className="mt-2 text-lg text-gray-600">
                   Discuss any doubts or concepts with your study partner.
                 </p>
               </div>
