@@ -4,7 +4,8 @@
 
 This comprehensive documentation provides everything you need to understand, develop, contribute to, and deploy the Study Sphere educational platform. Study Sphere is an AI-powered learning companion that revolutionizes the way students organize, study, and retain information.
 
-## 🎯 Quick Start Guide
+<details>
+<summary>🎯 <strong>Quick Start Guide</strong></summary>
 
 ### For New Users
 1. 📖 Start with [Features Overview](features.md) to understand what Study Sphere offers
@@ -24,7 +25,10 @@ This comprehensive documentation provides everything you need to understand, dev
 3. 🎨 Follow [UI Guidelines](ui.md) for consistent component development
 4. 📊 Understand [Data Flow](working.md#data-flow-architecture) for feature integration
 
-## 📑 Documentation Structure
+</details>
+
+<details>
+<summary>📑 <strong>Documentation Structure</strong></summary>
 
 ### Core Documentation Files
 
@@ -37,6 +41,8 @@ This comprehensive documentation provides everything you need to understand, dev
 | **[db.md](db.md)** | Database setup and configuration | Developers, DevOps | ⭐⭐⭐ |
 | **[working.md](working.md)** | Workflows and user journeys | Product Managers, Developers | ⭐⭐⭐ |
 | **[ui.md](ui.md)** | UI components and design system | Frontend Developers, Designers | ⭐⭐⭐ |
+| **[api.md](api.md)** | API endpoints and integration | Backend Developers | ⭐⭐⭐⭐ |
+| **[deployment.md](deployment.md)** | Deployment and operations | DevOps, System Administrators | ⭐⭐⭐⭐⭐ |
 
 ### Documentation Categories
 
@@ -44,6 +50,7 @@ This comprehensive documentation provides everything you need to understand, dev
 - **[Technology Stack](tech.md)** - Complete technical foundation
 - **[File Structure](files.md)** - Project organization and important files
 - **[Database Setup](db.md)** - Installation, configuration, and management
+- **[Deployment Guide](deployment.md)** - Production deployment and scaling
 
 #### 🎨 Design & User Experience
 - **[UI Components](ui.md)** - Design system and component library
@@ -52,10 +59,13 @@ This comprehensive documentation provides everything you need to understand, dev
 
 #### 🔧 Development & Data
 - **[Database Schema](schema.md)** - Data modeling and relationships
-- **[API Documentation](working.md#data-flow-architecture)** - Backend API workflows
+- **[API Documentation](api.md)** - Backend API endpoints and integration
 - **[Security Implementation](working.md#security-workflow)** - Security measures and protocols
 
-## 🚀 Getting Started Workflows
+</details>
+
+<details>
+<summary>🚀 <strong>Getting Started Workflows</strong></summary>
 
 ### Development Environment Setup
 
@@ -100,7 +110,10 @@ flowchart TD
     F1 --> F2[Configure AI prompts]
 ```
 
-## 📖 Feature Deep Dives
+</details>
+
+<details>
+<summary>📖 <strong>Feature Deep Dives</strong></summary>
 
 ### Core Educational Features
 
@@ -139,7 +152,10 @@ flowchart TD
 - **Workflow**: [Working - Daily Review](working.md#daily-review-workflow)
 - **Database**: [Schema - Reviews Table](schema.md#daily-reviews-table-dailyreviews)
 
-## 🔧 Technical Reference
+</details>
+
+<details>
+<summary>🔧 <strong>Technical Reference</strong></summary>
 
 ### Development Guides
 
@@ -204,7 +220,10 @@ GET    /api/daily-reviews // Get review history
 POST   /api/daily-reviews // Create review
 ```
 
-## 📊 Data Flow Overview
+</details>
+
+<details>
+<summary>📊 <strong>Data Flow Overview</strong></summary>
 
 ### High-Level Data Architecture
 
@@ -261,7 +280,10 @@ graph TB
 - **AI Data**: Conversations and AI interactions are user-isolated
 - **Backup Security**: [Database - Backup Security](db.md#security-considerations)
 
-## 🧪 Testing & Quality Assurance
+</details>
+
+<details>
+<summary>🧪 <strong>Testing & Quality Assurance</strong></summary>
 
 ### Testing Strategy
 1. **Unit Tests**: Component and utility function testing
@@ -275,7 +297,10 @@ graph TB
 - **Performance**: [Working - Performance Optimization](working.md#performance-optimization-workflow)
 - **Accessibility**: [UI - Accessibility Features](ui.md#accessibility-features)
 
-## 🚢 Deployment & Operations
+</details>
+
+<details>
+<summary>🚢 <strong>Deployment & Operations</strong></summary>
 
 ### Deployment Options
 1. **Development**: Local development with SQLite
@@ -288,7 +313,10 @@ graph TB
 - **User Analytics**: Learning pattern analysis and improvements
 - **AI Performance**: Model response quality and speed monitoring
 
-## 🤝 Contributing Guidelines
+</details>
+
+<details>
+<summary>🤝 <strong>Contributing Guidelines</strong></summary>
 
 ### Development Process
 1. **Issue Creation**: Describe feature or bug with clear requirements
@@ -304,7 +332,10 @@ graph TB
 - **Database Changes**: [Schema Management](schema.md)
 - **API Development**: [Working - Data Flow](working.md#data-flow-architecture)
 
-## 📚 Learning Resources
+</details>
+
+<details>
+<summary>📚 <strong>Learning Resources</strong></summary>
 
 ### For New Developers
 1. **Next.js**: Official Next.js documentation and tutorials
@@ -319,7 +350,10 @@ graph TB
 3. **Prompt Engineering**: Best practices for AI prompts
 4. **Educational AI**: AI applications in learning environments
 
-## 🔗 External Links & Resources
+</details>
+
+<details>
+<summary>🔗 <strong>External Links & Resources</strong></summary>
 
 ### Official Documentation
 - [Next.js Documentation](https://nextjs.org/docs)
@@ -335,7 +369,10 @@ graph TB
 - **Development Blog**: Updates and technical insights
 - **Educational Resources**: Learning materials and tutorials
 
-## 📝 Documentation Maintenance
+</details>
+
+<details>
+<summary>📝 <strong>Documentation Maintenance</strong></summary>
 
 ### Update Schedule
 - **Weekly**: Minor updates and corrections
@@ -349,6 +386,8 @@ graph TB
 3. **Completeness**: Cover all aspects of the topic
 4. **Examples**: Provide practical code examples
 5. **Cross-references**: Link to related documentation sections
+
+</details>
 
 ---
 
