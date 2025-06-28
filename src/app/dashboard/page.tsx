@@ -1,59 +1,64 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import Link from "next/link"
-import { MdQuiz, MdTipsAndUpdates, MdTimer } from "react-icons/md"
-import { GiStairsGoal } from "react-icons/gi"
-import { FiRefreshCw } from "react-icons/fi"
-import { IoFolderOpen, IoCalendarNumberSharp } from "react-icons/io5"
-import { RiFileList3Line } from "react-icons/ri"
-import { FaBookOpen, FaComments, FaLightbulb, FaBalanceScaleLeft } from "react-icons/fa"
-import { HiOutlineSparkles } from "react-icons/hi2"
-import { useEffect, useState } from "react"
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { MdQuiz, MdTipsAndUpdates, MdTimer } from "react-icons/md";
+import { GiStairsGoal } from "react-icons/gi";
+import { FiRefreshCw } from "react-icons/fi";
+import { IoFolderOpen, IoCalendarNumberSharp } from "react-icons/io5";
+import { RiFileList3Line } from "react-icons/ri";
+import {
+  FaBookOpen,
+  FaComments,
+  FaLightbulb,
+  FaBalanceScaleLeft,
+} from "react-icons/fa";
+import { HiOutlineSparkles } from "react-icons/hi2";
+import { useEffect, useState } from "react";
 
 interface UserSession {
-  email: string
-  userId: string
+  email: string;
+  userId: string;
 }
 
 const Dashboard = () => {
-  const [greeting, setGreeting] = useState("Good Day")
-  const [userEmail, setUserEmail] = useState("")
+  const [greeting, setGreeting] = useState("Good Day");
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
     // Set greeting based on time of day
-    const hour = new Date().getHours()
+    const hour = new Date().getHours();
     if (hour < 12) {
-      setGreeting("Good Morning")
+      setGreeting("Good Morning");
     } else if (hour < 17) {
-      setGreeting("Good Afternoon")
+      setGreeting("Good Afternoon");
     } else {
-      setGreeting("Good Evening")
+      setGreeting("Good Evening");
     }
 
     // Get user info from session (you can also pass this as props from server component)
     const fetchUserInfo = async () => {
       try {
-        const response = await fetch('/api/auth/session')
+        const response = await fetch("/api/auth/session");
         if (response.ok) {
-          const session = await response.json()
-          setUserEmail(session.email || "Student")
+          const session = await response.json();
+          setUserEmail(session.email || "Student");
         }
       } catch (error) {
-        console.error('Failed to fetch user info:', error)
-        setUserEmail("Student")
+        console.error("Failed to fetch user info:", error);
+        setUserEmail("Student");
       }
-    }
+    };
 
-    fetchUserInfo()
-  }, [])
+    fetchUserInfo();
+  }, []);
 
   // Extract first name from email for personalization
   const getFirstName = (email: string) => {
-    if (!email) return "Student"
-    const name = email.split('@')[0]
-    return name.charAt(0).toUpperCase() + name.slice(1)
-  }
+    if (!email) return "Student";
+    const name = email.split("@")[0];
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  };
 
   return (
     <div className="min-h-screen p-4 md:p-6">
@@ -64,7 +69,7 @@ const Dashboard = () => {
           className="absolute inset-0 w-full h-full object-cover opacity-20"
         />
         <div className="relative z-10">
-          <motion.h1 
+          <motion.h1
             className="text-3xl md:text-5xl font-bold mb-4"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,7 +77,7 @@ const Dashboard = () => {
           >
             {greeting}, {getFirstName(userEmail)}!
           </motion.h1>
-          <motion.div 
+          <motion.div
             className="flex items-center gap-3"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -80,7 +85,8 @@ const Dashboard = () => {
           >
             <MdTipsAndUpdates className="shrink-0 text-yellow-400 text-4xl md:text-5xl" />
             <p className="text-lg md:text-2xl font-semibold">
-              "The best way to predict the future is to create it." - Peter Drucker
+              "The best way to predict the future is to create it." - Peter
+              Drucker
             </p>
           </motion.div>
           <motion.div
@@ -94,7 +100,7 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <motion.div 
+      <motion.div
         className="flex flex-col md:flex-row flex-wrap gap-6 justify-between py-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -112,16 +118,22 @@ const Dashboard = () => {
                 <FaBookOpen className="text-blue-500 text-3xl" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">Review Your Notes</h2>
+                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">
+                  Review Your Notes
+                </h2>
                 <p className="text-sm md:text-base text-gray-600">
-                  Make sure to revisit your study notes to reinforce your knowledge.
+                  Make sure to revisit your study notes to reinforce your
+                  knowledge.
                 </p>
               </div>
             </div>
           </motion.div>
         </Link>
 
-        <Link href="/dashboard/quizzes" className="w-full md:w-[48%] lg:w-[32%]">
+        <Link
+          href="/dashboard/quizzes"
+          className="w-full md:w-[48%] lg:w-[32%]"
+        >
           <motion.div
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-gray-100"
             whileHover={{ scale: 1.02, y: -2 }}
@@ -133,7 +145,9 @@ const Dashboard = () => {
                 <MdQuiz className="text-green-500 text-3xl" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">Take a Quiz</h2>
+                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">
+                  Take a Quiz
+                </h2>
                 <p className="text-sm md:text-base text-gray-600">
                   Challenge yourself with a quiz to test your understanding.
                 </p>
@@ -154,7 +168,9 @@ const Dashboard = () => {
                 <FaComments className="text-red-500 text-3xl" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">Chat with Study Buddy</h2>
+                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">
+                  Chat with Study Buddy
+                </h2>
                 <p className="text-sm md:text-base text-gray-600">
                   Discuss any doubts or concepts with your AI study partner.
                 </p>
@@ -162,7 +178,7 @@ const Dashboard = () => {
             </div>
           </motion.div>
         </Link>
-        
+
         <Link href="/dashboard/todos" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-gray-100"
@@ -175,16 +191,45 @@ const Dashboard = () => {
                 <RiFileList3Line className="text-purple-500 text-3xl" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">Manage Your Tasks</h2>
+                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">
+                  Manage Your Tasks
+                </h2>
                 <p className="text-sm md:text-base text-gray-600">
-                  Organize your study tasks, set priorities, and track your progress.
+                  Organize your study tasks, set priorities, and track your
+                  progress.
                 </p>
               </div>
             </div>
           </motion.div>
         </Link>
-        
-        <Link href="/dashboard/flashcards" className="w-full md:w-[48%] lg:w-[32%]">
+        <Link
+          href="/dashboard/roadmaps"
+          className="w-full md:w-[48%] lg:w-[32%]"
+        >
+          <motion.div
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-start transition-transform duration-300 ease-in-out h-full"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="absolute inset-0 border-2 border-gradient-to-r from-red-400 via-orange-400 to-yellow-400 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative z-10 flex items-start gap-4">
+              <span className="text-red-500 text-5xl mr-2">🤖</span>
+              <div>
+                <h2 className="text-xl md:text-2xl font-semibold">
+                  Find Roadmap
+                </h2>
+                <p className="mt-2 text-sm md:text-base">
+                  Generate your personalized roadmap with desired time and
+                  selected days.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </Link>
+        <Link
+          href="/dashboard/flashcards"
+          className="w-full md:w-[48%] lg:w-[32%]"
+        >
           <motion.div
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-start transition-transform duration-300 ease-in-out h-full"
             whileHover={{ scale: 1.05 }}
@@ -194,9 +239,12 @@ const Dashboard = () => {
             <div className="relative z-10 flex items-start gap-4">
               <HiOutlineSparkles className="text-purple-500 text-5xl" />
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold">Generate Flashcards</h2>
+                <h2 className="text-xl md:text-2xl font-semibold">
+                  Generate Flashcards
+                </h2>
                 <p className="mt-2 text-sm md:text-base">
-                  Create AI-powered flashcards from your study material for effective memorization.
+                  Create AI-powered flashcards from your study material for
+                  effective memorization.
                 </p>
               </div>
             </div>
@@ -212,8 +260,8 @@ const Dashboard = () => {
           <div className="flex flex-wrap justify-between">
             <div className="w-full md:w-1/2 pr-4 mb-6">
               <ul className="list-none space-y-4 text-white text-lg md:text-xl">
-                <motion.li 
-                  key="goal" 
+                <motion.li
+                  key="goal"
                   className="flex items-center gap-3"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -222,8 +270,8 @@ const Dashboard = () => {
                   <GiStairsGoal className="shrink-0 text-2xl md:text-4xl text-emerald-400" />
                   Set clear goals for each study session.
                 </motion.li>
-                <motion.li 
-                  key="breaks" 
+                <motion.li
+                  key="breaks"
                   className="flex items-center gap-3"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -232,8 +280,8 @@ const Dashboard = () => {
                   <MdTimer className="shrink-0 text-2xl md:text-4xl text-yellow-400" />
                   Take regular breaks to avoid burnout.
                 </motion.li>
-                <motion.li 
-                  key="recall" 
+                <motion.li
+                  key="recall"
                   className="flex items-center gap-3"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -242,8 +290,8 @@ const Dashboard = () => {
                   <FiRefreshCw className="shrink-0 text-2xl md:text-4xl text-sky-400" />
                   Use active recall and spaced repetition techniques.
                 </motion.li>
-                <motion.li 
-                  key="organization" 
+                <motion.li
+                  key="organization"
                   className="flex items-center gap-3"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -256,8 +304,8 @@ const Dashboard = () => {
             </div>
             <div className="w-full md:w-1/2 pl-4 mb-6">
               <ul className="list-none space-y-4 text-white text-lg md:text-xl">
-                <motion.li 
-                  key="balance" 
+                <motion.li
+                  key="balance"
                   className="flex items-center gap-3"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -266,8 +314,8 @@ const Dashboard = () => {
                   <FaBalanceScaleLeft className="shrink-0 text-2xl md:text-4xl text-indigo-400" />
                   Keep a healthy balance between study and relaxation.
                 </motion.li>
-                <motion.li 
-                  key="environment" 
+                <motion.li
+                  key="environment"
                   className="flex items-center gap-3"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -276,8 +324,8 @@ const Dashboard = () => {
                   <FaLightbulb className="shrink-0 text-2xl md:text-4xl text-yellow-300" />
                   Find your optimal study environment.
                 </motion.li>
-                <motion.li 
-                  key="practice" 
+                <motion.li
+                  key="practice"
                   className="flex items-center gap-3"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -286,8 +334,8 @@ const Dashboard = () => {
                   <RiFileList3Line className="shrink-0 text-2xl md:text-4xl text-orange-400" />
                   Practice past papers and sample questions.
                 </motion.li>
-                <motion.li 
-                  key="schedule" 
+                <motion.li
+                  key="schedule"
                   className="flex items-center gap-3"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -302,7 +350,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

@@ -22,7 +22,7 @@ interface NavbarProps {
   };
 }
 
-const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
+const Navbar: React.FC<NavbarProps> = ({ session }) => {
   const [isHidden, setIsHidden] = useState(false);
   const [height, setHeight] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -73,6 +73,7 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
     { text: "Quizzes", url: "/dashboard/quizzes" },
     { text: "Notes", url: "/dashboard/notes" },
     { text: "Todos", url: "/dashboard/todos" },
+    { text: "Roadmaps", url: "/dashboard/roadmaps" },
     { text: "Chat", url: "/dashboard/chat" },
   ];
 
@@ -98,9 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
           <div className="h-4 rounded w-4 bg-white rotate-45" />
         </motion.div>
 
-        {!isMobile && (
-          <div className="sm:mr-10 mr-4" />
-        )}
+        {!isMobile && <div className="sm:mr-10 mr-4" />}
 
         {!isMobile && (
           <AnimatePresence>
@@ -142,7 +141,9 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
           >
             {/* Title and Close */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold tracking-wide">Study Sphere</h2>
+              <h2 className="text-2xl font-semibold tracking-wide">
+                Study Sphere
+              </h2>
               <button
                 onClick={() => setSidebarOpen(false)}
                 className="text-white text-2xl"

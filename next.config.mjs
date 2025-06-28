@@ -1,30 +1,41 @@
+// next.config.mjs
+
+import mdx from "@next/mdx";
+
+const withMDX = mdx({
+  extension: /\.mdx?$/,
+  options: {},
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Optimize for development speed
   swcMinify: true,
-  
-  // Reduce bundle size
+
   experimental: {
-    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react', 'react-icons']
+    optimizePackageImports: [
+      "@radix-ui/react-icons",
+      "lucide-react",
+      "react-icons",
+    ],
   },
-  
-  // Webpack optimizations for faster builds
+
+  pageExtensions: ["ts", "tsx", "js", "jsx", "mdx"],
+
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
-      // Reduce memory usage in development
       config.optimization.splitChunks = {
-        chunks: 'all',
+        chunks: "all",
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
+            name: "vendors",
+            chunks: "all",
           },
         },
-      }
+      };
     }
-    return config
+    return config;
   },
-}
+};
 
-export default nextConfig
+export default withMDX(nextConfig);
