@@ -19,12 +19,273 @@ import {
   HiOutlineAdjustmentsHorizontal,
   HiOutlineAcademicCap,
   HiOutlinePlay,
-  HiOutlineCheckCircle
+  HiOutlineCheckCircle,
+  HiOutlineSpeakerWave,
+  HiOutlineSpeakerXMark,
+  HiOutlinePause
 } from "react-icons/hi2"
 import { FaFlipboard } from "react-icons/fa6"
 import { MdAutoAwesome, MdArrowBack, MdArrowForward } from "react-icons/md"
 
 type Step = 'input' | 'settings' | 'generate' | 'study'
+
+// Enhanced Flashcard Component with Audio
+const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
+  flashcard: any
+  onAnswerResult: (result: 'correct' | 'incorrect' | 'partial') => void
+  size?: "sm" | "md" | "lg"
+}) => {
+  const [isFlipped, setIsFlipped] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [currentUtterance, setCurrentUtterance] = useState<SpeechSynthesisUtterance | null>(null)
+  const [audioEnabled, setAudioEnabled] = useState(true)
+
+  const speakText = (text: string) => {
+    // Check if speech synthesis is supported
+    if (!('speechSynthesis' in window)) {
+      alert('Text-to-speech is not supported in your browser')
+      return
+    }
+
+    // Stop any current speech
+    if (currentUtterance) {
+      window.speechSynthesis.cancel()
+      setIsPlaying(false)
+    }
+
+    // Create new utterance
+    const utterance = new SpeechSynthesisUtterance(text)
+    
+    // Configure speech settings
+    utterance.rate = 0.8
+    utterance.pitch = 1
+    utterance.volume = 1
+
+    // Set up event handlers
+    utterance.onstart = () => {
+      setIsPlaying(true)
+    }
+    
+    utterance.onend = () => {
+      setIsPlaying(false)
+      setCurrentUtterance(null)
+    }
+    
+    utterance.onerror = (event) => {
+      console.error('Speech synthesis error:', event.error)
+      setIsPlaying(false)
+      setCurrentUtterance(null)
+    }
+
+    // Start speaking
+    setCurrentUtterance(utterance)
+    window.speechSynthesis.speak(utterance)
+  }
+
+  const stopSpeaking = () => {
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel()
+      setIsPlaying(false)
+      setCurrentUtterance(null)
+    }
+  }
+
+  const toggleAudio = () => {
+    setAudioEnabled(!audioEnabled)
+    if (!audioEnabled) {
+      stopSpeaking()
+    }
+  }
+
+  const handleFlip = () => {
+    setIsFlipped(!isFlipped)
+    if (!isFlipped && audioEnabled && flashcard.answer) {
+      setTimeout(() => speakText(flashcard.answer), 300) 
+    }
+  }
+
+  const handleAnswerResult = (result: 'correct' | 'incorrect' | 'partial') => {
+    stopSpeaking() 
+    onAnswerResult(result)
+  }
+
+  const sizeClasses = {
+    sm: "h-48",
+    md: "h-64",
+    lg: "h-80"
+  }
+
+  return (
+    <div className="w-full max-w-2xl mx-auto">
+      {/* Audio Controls */}
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleAudio}
+            className={`flex items-center gap-2 ${audioEnabled ? 'text-green-600' : 'text-gray-400'}`}
+          >
+            {audioEnabled ? (
+              <>
+                <HiOutlineSpeakerWave className="h-4 w-4" />
+                Audio On
+              </>
+            ) : (
+              <>
+                <HiOutlineSpeakerXMark className="h-4 w-4" />
+                Audio Off
+              </>
+            )}
+          </Button>
+          
+          {audioEnabled && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => speakText(isFlipped ? flashcard.answer : flashcard.question)}
+              disabled={isPlaying}
+              className="flex items-center gap-2"
+            >
+              {isPlaying ? (
+                <>
+                  <HiOutlinePause className="h-4 w-4" />
+                  Playing...
+                </>
+              ) : (
+                <>
+                  <HiOutlinePlay className="h-4 w-4" />
+                  Listen
+                </>
+              )}
+            </Button>
+          )}
+          
+          {isPlaying && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={stopSpeaking}
+              className="flex items-center gap-2 text-red-600"
+            >
+              <HiOutlinePause className="h-4 w-4" />
+              Stop
+            </Button>
+          )}
+        </div>
+        
+        <Badge variant="secondary" className="text-sm">
+          {isFlipped ? 'Answer' : 'Question'}
+        </Badge>
+      </div>
+
+      {/* Flashcard */}
+      <div className="perspective-1000">
+        <motion.div
+          className={`relative ${sizeClasses[size]} cursor-pointer`}
+          onClick={handleFlip}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <motion.div
+            className="absolute inset-0 w-full h-full"
+            animate={{ rotateY: isFlipped ? 180 : 0 }}
+            transition={{ duration: 0.6, type: "spring" }}
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            {/* Front (Question) */}
+            <Card className="absolute inset-0 w-full h-full bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200"
+                  style={{ backfaceVisibility: "hidden" }}>
+              <CardContent className="flex flex-col justify-center items-center h-full p-8 text-center">
+                <div className="mb-4">
+                  <Badge variant="outline" className="mb-2">Question</Badge>
+                </div>
+                <p className="text-lg font-medium text-gray-800 leading-relaxed">
+                  {flashcard.question}
+                </p>
+                <div className="mt-6 text-sm text-gray-500">
+                  Click to reveal answer
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Back (Answer) */}
+            <Card className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-50 to-teal-50 border-2 border-green-200" 
+                  style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}>
+              <CardContent className="flex flex-col justify-center items-center h-full p-8 text-center">
+                <div className="mb-4">
+                  <Badge variant="outline" className="mb-2 bg-green-100 text-green-700">Answer</Badge>
+                </div>
+                <p className="text-lg text-gray-800 leading-relaxed mb-6">
+                  {flashcard.answer}
+                </p>
+                
+                <div className="flex gap-3 mt-4">
+                  <Button
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleAnswerResult('incorrect')
+                    }}
+                    variant="outline"
+                    className="border-red-300 text-red-600 hover:bg-red-50"
+                  >
+                    ❌ Incorrect
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleAnswerResult('partial')
+                    }}
+                    variant="outline"
+                    className="border-yellow-300 text-yellow-600 hover:bg-yellow-50"
+                  >
+                    ⚡ Partial
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleAnswerResult('correct')
+                    }}
+                    variant="outline"
+                    className="border-green-300 text-green-600 hover:bg-green-50"
+                  >
+                    ✅ Correct
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Audio Status */}
+      {isPlaying && (
+        <div className="mt-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-4 py-2 text-sm text-blue-700"
+          >
+            <div className="flex space-x-1">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            </div>
+            <span>Playing audio...</span>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Help Text */}
+      <div className="mt-4 text-center text-sm text-gray-500">
+        💡 Tip: Audio will automatically play when you reveal the answer
+      </div>
+    </div>
+  )
+}
 
 const FlashcardsPage = () => {
   const [currentStep, setCurrentStep] = useState<Step>('input')
@@ -145,7 +406,7 @@ const FlashcardsPage = () => {
         setCurrentCardIndex(0)
         setCurrentStep('study')
         
-        return `Successfully generated ${count} ${difficultyLevel} difficulty flashcards focused on ${focus} from your study material! You can now start studying.`
+        return `Successfully generated ${count} ${difficultyLevel} difficulty flashcards focused on ${focus} from your study material! You can now start studying with audio support.`
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to generate flashcards'
         return `Error: ${errorMessage}. Please try again or check your study material.`
@@ -265,12 +526,13 @@ const FlashcardsPage = () => {
           <HiOutlineDocumentText className="text-blue-500" />
           Enter Study Material
         </CardTitle>        <CardDescription className="text-lg">
-          Paste your notes, textbook content, or any study material below. Our AI will analyze and create intelligent flashcards.
+          Paste your notes, textbook content, or any study material below. Our AI will analyze and create intelligent flashcards with audio support.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <CopilotTextarea
-          className="min-h-[300px] text-lg resize-none border-2 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-lg"          placeholder="📚 Paste your study material here...
+  <CopilotTextarea
+    className="min-h-[300px] text-lg resize-none border-2 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-lg p-4"
+    placeholder={`📚 Paste your study material here...
 
 Example:
 • Chapter notes on photosynthesis
@@ -281,36 +543,37 @@ Example:
 🤖 Our AI will analyze your content and create intelligent, targeted flashcards with:
 ✨ Smart questions that test understanding
 ✨ Comprehensive answers that aid learning
-✨ Adaptive difficulty based on your settings"
-          value={studyMaterial}
-          onValueChange={setStudyMaterial}
-          autosuggestionsConfig={{
-            textareaPurpose: "Study material for flashcard generation",
-            chatApiConfigs: {
-              suggestionsApiConfig: {
-                maxTokens: 20,
-                stop: [".", "!", "?", ";", ":"],
-              },
-            },
-          }}
-        />
-        
-        {studyMaterial.trim() && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-green-50 border border-green-200 rounded-lg p-4"
-          >
-            <div className="flex items-center gap-2 text-green-700">
-              <HiOutlineAcademicCap className="text-xl" />
-              <span className="font-medium">Ready for next step!</span>
-            </div>
-            <p className="text-green-600 mt-1">
-              {studyMaterial.length} characters • Estimated {Math.ceil(studyMaterial.length / 100)} concepts detected
-            </p>
-          </motion.div>
-        )}
-      </CardContent>
+✨ Adaptive difficulty based on your settings
+🔊 Audio support for better learning`}
+    value={studyMaterial}
+    onValueChange={setStudyMaterial}
+    autosuggestionsConfig={{
+      textareaPurpose: "Study material for flashcard generation",
+      chatApiConfigs: {
+        suggestionsApiConfig: {
+          maxTokens: 20,
+          stop: [".", "!", "?", ";", ":"],
+        },
+      },
+    }}
+  />
+  
+  {studyMaterial.trim() && (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-green-50 border border-green-200 rounded-lg p-4"
+    >
+      <div className="flex items-center gap-2 text-green-700">
+        <HiOutlineAcademicCap className="text-xl" />
+        <span className="font-medium">Ready for next step!</span>
+      </div>
+      <p className="text-green-600 mt-1">
+        {studyMaterial.length} characters • Estimated {Math.ceil(studyMaterial.length / 100)} concepts detected
+      </p>
+    </motion.div>
+  )}
+</CardContent>
     </Card>
   )
 
@@ -417,7 +680,7 @@ Example:
             </Button>
             {!isGenerating && (
               <p className="text-sm text-gray-500 mt-4">
-                🤖 Powered by advanced AI • Creates intelligent questions and detailed answers
+                🤖 Powered by advanced AI • Creates intelligent questions and detailed answers • 🔊 Audio support included
               </p>
             )}
           </>
@@ -432,7 +695,7 @@ Example:
             </div>
             <h3 className="text-2xl font-bold text-green-700">Flashcards Generated!</h3>
             <p className="text-gray-600">
-              Successfully created {generatedFlashcards.length} flashcards
+              Successfully created {generatedFlashcards.length} flashcards with audio support
             </p>
             <Button 
               onClick={() => setCurrentStep('study')}
@@ -462,7 +725,8 @@ Example:
         <CardContent>
           {currentCard && (
             <div className="space-y-6">
-              <Flashcard
+              {/* Updated to use FlashcardWithAudio component */}
+              <FlashcardWithAudio
                 flashcard={currentCard}
                 onAnswerResult={markAnswer}
                 size="lg"
@@ -505,7 +769,8 @@ Example:
             </div>
           )}
         </CardContent>
-      </Card>    </div>
+      </Card>
+    </div>
   )
 
   return (

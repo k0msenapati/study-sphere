@@ -72,6 +72,7 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
     { text: "Dashboard", url: "/dashboard" },
     { text: "Quizzes", url: "/dashboard/quizzes" },
     { text: "Notes", url: "/dashboard/notes" },
+    { text: "Todos", url: "/dashboard/todos" },
     { text: "Chat", url: "/dashboard/chat" },
   ];
 

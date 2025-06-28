@@ -163,6 +163,27 @@ const Dashboard = () => {
           </motion.div>
         </Link>
         
+        <Link href="/dashboard/todos" className="w-full md:w-[48%] lg:w-[32%]">
+          <motion.div
+            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-gray-100"
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 rounded-lg opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
+            <div className="relative z-10 flex items-start gap-4">
+              <div className="p-3 bg-purple-50 rounded-lg">
+                <RiFileList3Line className="text-purple-500 text-3xl" />
+              </div>
+              <div>
+                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">Manage Your Tasks</h2>
+                <p className="text-sm md:text-base text-gray-600">
+                  Organize your study tasks, set priorities, and track your progress.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </Link>
+        
         <Link href="/dashboard/flashcards" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
             className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-start transition-transform duration-300 ease-in-out h-full"
