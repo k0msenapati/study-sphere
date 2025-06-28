@@ -10,9 +10,11 @@
 ### 🌟 About
 
 **Study Sphere** is an intelligent and versatile learning platform built to supercharge your study sessions. With a modern interface and powerful AI support, it offers an engaging and personalized educational experience through four core features:
+**Study Sphere** is an intelligent and versatile learning platform built to supercharge your study sessions. With a modern interface and powerful AI support, it offers an engaging and personalized educational experience through four core features:
 
 - 📝 **Notes**: Create, manage, and organize your study notes with ease.
 - ❓ **Quiz**: Challenge yourself with subject-specific quizzes and track your progress.
+- 🃏 **Flashcards Generator**: AI-powered flashcard creation from your study material for effective memorization.
 - 🃏 **Flashcards Generator**: AI-powered flashcard creation from your study material for effective memorization.
 - 🤖 **Study Buddy (AI Mentor)**: Get instant help, explanations, and guidance from your AI-powered learning assistant.
 
@@ -27,6 +29,7 @@ Start your journey toward smarter studying with **Study Sphere** – where learn
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />  <img src="https://img.shields.io/badge/CopilotKit-🪁-black" alt="CopilotKit" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />  <img src="https://img.shields.io/badge/CopilotKit-🪁-black" alt="CopilotKit" />
 </p>
 
 ### ✨ New Feature: AI Flashcards Generator
@@ -40,6 +43,8 @@ Transform your study material into interactive flashcards with the power of AI! 
 - 💾 **Export & Save**: Download flashcards for offline study
 
 **Perfect for**: Memorization, active recall, spaced repetition, and exam preparation.
+
+👉 [Read the complete Flashcards Feature Guide](FLASHCARDS.md)
 
 <details>
 <summary>📦 <strong>Set Up</strong></summary>
@@ -72,23 +77,6 @@ To get **Study Sphere** up and running locally, follow these steps:
    ```
 
 </details>
-
-## 🤝 How to Contribute
-
-We welcome contributions from everyone! To get started:
-
-1. **Fork** this repository.
-2. **Clone** your fork to your local machine.
-3. **Create a new branch** for your feature or bugfix.
-4. **Make your changes** and commit them with clear messages.
-5. **Push** your branch to your forked repository.
-6. **Open a Pull Request** describing your changes.
-
-For detailed guidelines, please see our [CONTRIBUTING.md](CONTRIBUTING.md).
-
-Thank you for helping improve Study Sphere!
-
----
 
 <div align="center">
   <h1>Tip from us 😇</h1>

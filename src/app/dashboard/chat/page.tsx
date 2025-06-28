@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Trash2, RotateCcw, Square, Sparkles, Plus, Paperclip, Image, FileText, Zap } from 'lucide-react';
 import { useCopilotChat } from "@copilotkit/react-core";
 import { Role, TextMessage } from "@copilotkit/runtime-client-gql";
+import { FiTrash2 } from 'react-icons/fi';
 
 interface Message {
   content: string;
@@ -15,7 +16,6 @@ export default function StudySphereChat() {
     visibleMessages,
     appendMessage,
     setMessages,
-    deleteMessage,
     reloadMessages,
     stopGeneration,
     isLoading,
@@ -25,8 +25,11 @@ export default function StudySphereChat() {
   const [showFullChat, setShowFullChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const savedPairs = useRef<Set<string>>(new Set());
+  const [isSending, setIsSending] = useState(false);
+  const [chatHistory, setChatHistory] = useState<{ id: string; prompt: string; response: string }[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
 
-  // Convert CopilotKit messages to our format
   const messages: Message[] = visibleMessages.map(msg => {
     const textMsg = msg as TextMessage;
     return {
@@ -45,11 +48,11 @@ export default function StudySphereChat() {
   }, [messages]);
 
   const sendMessage = (content: string) => {
-    if (content.trim()) {
-      appendMessage(new TextMessage({ content: content.trim(), role: Role.User }));
-      setInputValue('');
-      setShowFullChat(true);
-    }
+    if (!content.trim() || isSending) return;
+    setIsSending(true);
+    appendMessage(new TextMessage({ content: content.trim(), role: Role.User }));
+    setInputValue('');
+    setShowFullChat(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -87,12 +90,57 @@ export default function StudySphereChat() {
     }
   };
 
-  // Initial landing view
+  useEffect(() => {
+    if (!isLoading) {
+      setIsSending(false);
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (messages.length < 2) return;
+    const last = messages[messages.length - 1];
+    const secondLast = messages[messages.length - 2];
+    const key = `${secondLast.content}__${last.content}`;
+    const bothRecent =
+      typeof last.createdAt === 'string' && typeof secondLast.createdAt === 'string'
+        ? Math.abs(new Date(last.createdAt).getTime() - new Date(secondLast.createdAt).getTime()) < 30_000
+        : true;
+    if (
+      !isLoading &&
+      secondLast.role === 'User' &&
+      last.role === 'Assistant' &&
+      last.content &&
+      secondLast.content &&
+      bothRecent &&
+      !savedPairs.current.has(key)
+    ) {
+      savedPairs.current.add(key);
+      fetch('/api/chats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: secondLast.content,
+          response: last.content,
+        }),
+      }).catch(console.error);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    fetch('/api/chats')
+      .then(res => res.json())
+      .then(data => {
+        setChatHistory(data.reverse());
+      })
+      .catch(console.error);
+  }, []);
+
   if (!showFullChat && messages.length <= 1) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-4xl mx-auto">
-          {/* Header */}
           <div className="text-center mb-12">
             <div className="w-20 h-20 bg-black rounded-3xl flex items-center justify-center mb-6 mx-auto shadow-xl">
               <Sparkles className="w-10 h-10 text-white" />
@@ -105,7 +153,6 @@ export default function StudySphereChat() {
             </p>
           </div>
 
-          {/* Input Area */}
           <div className="relative mb-8">
             <div className="relative">
               <textarea
@@ -147,7 +194,6 @@ export default function StudySphereChat() {
             </div>
           </div>
 
-          {/* Quick Actions */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
               { icon: Zap, label: "Study Tips", desc: "Get effective study strategies" },
@@ -168,7 +214,6 @@ export default function StudySphereChat() {
             ))}
           </div>
 
-          {/* Suggestions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               "Explain quantum physics concepts",
@@ -189,14 +234,65 @@ export default function StudySphereChat() {
             ))}
           </div>
         </div>
+        <button
+          onClick={() => setShowHistory(!showHistory)}
+          className="fixed bottom-6 left-6 bg-black text-white px-4 py-2 rounded-full shadow-lg hover:bg-gray-800 transition-all z-50">Previous Chats</button>
+
+        {showHistory && (
+          <div className="fixed bottom-20 left-6 bg-white border border-gray-200 shadow-lg rounded-lg w-80 max-h-96 overflow-y-auto z-50">
+            <div className="p-4 border-b font-semibold text-gray-700 flex justify-between items-center">
+              Chat History
+              <button
+                onClick={() => setShowHistory(false)}
+                className="text-sm text-gray-400 hover:text-black"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="divide-y">
+              {chatHistory.length === 0 ? (
+                <div className="p-4 text-sm text-gray-500">No previous chats</div>
+              ) : (
+                chatHistory.map((chat) => (
+                  <div
+                    key={chat.id}
+                    className="group relative p-3 hover:bg-gray-50"
+                  >
+                    <div className="text-sm font-medium text-black truncate pr-6">{chat.prompt}</div>
+                    <div className="text-xs text-gray-500 line-clamp-2 pr-6">{chat.response}</div>
+                    <button
+                      onClick={async () => {
+                        try {
+                          await fetch("/api/chats", {
+                            method: "DELETE",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ id: chat.id }),
+                          });
+
+                          setChatHistory((prev) => prev.filter((c) => c.id !== chat.id));
+                        } catch (err) {
+                          console.error("Error deleting chat:", err);
+                        }
+                      }}
+                      title="Delete chat"
+                      className="absolute right-2 top-2 p-1 text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 
-  // Full chat interface
   return (
     <div className="flex flex-col h-screen bg-white text-black">
-      {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-white">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg">
@@ -236,8 +332,6 @@ export default function StudySphereChat() {
           )}
         </div>
       </div>
-
-      {/* Messages Area */}
       <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
         <div className="max-w-4xl mx-auto space-y-8">
           {messages.map((message, index) => (
@@ -246,11 +340,10 @@ export default function StudySphereChat() {
               className={`flex ${message.role === 'User' ? 'justify-end' : 'justify-start'}`}
             >
               <div className={`flex max-w-[85%] ${message.role === 'User' ? 'flex-row-reverse' : 'flex-row'} items-start space-x-4`}>
-                <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg ${
-                  message.role === 'User' 
-                    ? 'bg-black ml-4' 
-                    : 'bg-white border-2 border-gray-300 mr-4'
-                }`}>
+                <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg ${message.role === 'User'
+                  ? 'bg-black ml-4'
+                  : 'bg-white border-2 border-gray-300 mr-4'
+                  }`}>
                   {message.role === 'User' ? (
                     <User className="w-5 h-5 text-white" />
                   ) : (
@@ -258,26 +351,22 @@ export default function StudySphereChat() {
                   )}
                 </div>
                 <div className="flex flex-col space-y-2">
-                  <div className={`rounded-3xl px-6 py-4 shadow-lg ${
-                    message.role === 'User' 
-                      ? 'bg-black text-white' 
-                      : 'bg-white text-black border border-gray-200'
-                  }`}>
+                  <div className={`rounded-3xl px-6 py-4 shadow-lg ${message.role === 'User'
+                    ? 'bg-black text-white'
+                    : 'bg-white text-black border border-gray-200'
+                    }`}>
                     <div className="whitespace-pre-wrap break-words leading-relaxed">
                       {message.content}
                     </div>
                   </div>
-                  <div className={`text-xs px-2 ${
-                    message.role === 'User' ? 'text-right text-gray-500' : 'text-left text-gray-500'
-                  }`}>
+                  <div className={`text-xs px-2 ${message.role === 'User' ? 'text-right text-gray-500' : 'text-left text-gray-500'
+                    }`}>
                     {formatTime(message.createdAt)}
                   </div>
                 </div>
               </div>
             </div>
           ))}
-          
-          {/* Typing Indicator */}
           {isLoading && (
             <div className="flex justify-start">
               <div className="flex max-w-[85%] items-start space-x-4">
@@ -297,8 +386,6 @@ export default function StudySphereChat() {
           <div ref={messagesEndRef} />
         </div>
       </div>
-
-      {/* Input Area */}
       <div className="p-6 border-t border-gray-200 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-end space-x-4">
