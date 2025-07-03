@@ -57,7 +57,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen p-4 md:p-6">
-      <header className="relative bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 md:p-12 rounded-lg shadow-md mb-8 overflow-hidden">
+      <header className="relative bg-gradient-to-r from-primary/80 to-primary/60 text-primary-foreground p-8 md:p-12 rounded-lg shadow-md mb-8 overflow-hidden border border-border">
         <img
           src="https://images.unsplash.com/photo-1500989145603-8e7ef71d639e?q=80&w=1776&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Study Background"
@@ -65,7 +65,7 @@ const Dashboard = () => {
         />
         <div className="relative z-10">
           <motion.h1 
-            className="text-3xl md:text-5xl font-bold mb-4"
+            className="text-3xl md:text-5xl font-bold mb-4 text-primary-foreground"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -78,13 +78,13 @@ const Dashboard = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <MdTipsAndUpdates className="shrink-0 text-yellow-400 text-4xl md:text-5xl" />
-            <p className="text-lg md:text-2xl font-semibold">
+            <MdTipsAndUpdates className="shrink-0 text-yellow-400 dark:text-yellow-300 text-4xl md:text-5xl" />
+            <p className="text-lg md:text-2xl font-semibold text-primary-foreground">
               "The best way to predict the future is to create it." - Peter Drucker
             </p>
           </motion.div>
           <motion.div
-            className="mt-4 text-sm md:text-base bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-4 py-2 inline-block"
+            className="mt-4 text-sm md:text-base bg-primary-foreground/20 backdrop-blur-sm rounded-lg px-4 py-2 inline-block border border-primary-foreground/30 text-primary-foreground"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -102,18 +102,18 @@ const Dashboard = () => {
       >
         <Link href="/dashboard/notes" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-gray-100"
+            className="relative bg-card cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-border"
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-lg opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
             <div className="relative z-10 flex items-start gap-4">
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <FaBookOpen className="text-blue-500 text-3xl" />
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <FaBookOpen className="text-blue-500 dark:text-blue-400 text-3xl" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">Review Your Notes</h2>
-                <p className="text-sm md:text-base text-gray-600">
+                <h2 className="text-xl md:text-2xl font-semibold text-card-foreground mb-2">Review Your Notes</h2>
+                <p className="text-sm md:text-base text-muted-foreground">
                   Make sure to revisit your study notes to reinforce your knowledge.
                 </p>
               </div>
@@ -123,18 +123,18 @@ const Dashboard = () => {
 
         <Link href="/dashboard/quizzes" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-gray-100"
+            className="relative bg-card cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-border"
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-green-400 via-teal-400 to-cyan-400 rounded-lg opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
             <div className="relative z-10 flex items-start gap-4">
-              <div className="p-3 bg-green-50 rounded-lg">
-                <MdQuiz className="text-green-500 text-3xl" />
+              <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <MdQuiz className="text-green-500 dark:text-green-400 text-3xl" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">Take a Quiz</h2>
-                <p className="text-sm md:text-base text-gray-600">
+                <h2 className="text-xl md:text-2xl font-semibold text-card-foreground mb-2">Take a Quiz</h2>
+                <p className="text-sm md:text-base text-muted-foreground">
                   Challenge yourself with a quiz to test your understanding.
                 </p>
               </div>
@@ -144,18 +144,18 @@ const Dashboard = () => {
 
         <Link href="/dashboard/chat" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-gray-100"
+            className="relative bg-card cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-border"
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 rounded-lg opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
             <div className="relative z-10 flex items-start gap-4">
-              <div className="p-3 bg-red-50 rounded-lg">
-                <FaComments className="text-red-500 text-3xl" />
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <FaComments className="text-red-500 dark:text-red-400 text-3xl" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">Chat with Study Buddy</h2>
-                <p className="text-sm md:text-base text-gray-600">
+                <h2 className="text-xl md:text-2xl font-semibold text-card-foreground mb-2">Chat with Study Buddy</h2>
+                <p className="text-sm md:text-base text-muted-foreground">
                   Discuss any doubts or concepts with your AI study partner.
                 </p>
               </div>
@@ -165,18 +165,18 @@ const Dashboard = () => {
         
         <Link href="/dashboard/todos" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-gray-100"
+            className="relative bg-card cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-border"
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 rounded-lg opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
             <div className="relative z-10 flex items-start gap-4">
-              <div className="p-3 bg-purple-50 rounded-lg">
-                <RiFileList3Line className="text-purple-500 text-3xl" />
+              <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                <RiFileList3Line className="text-purple-500 dark:text-purple-400 text-3xl" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">Manage Your Tasks</h2>
-                <p className="text-sm md:text-base text-gray-600">
+                <h2 className="text-xl md:text-2xl font-semibold text-card-foreground mb-2">Manage Your Tasks</h2>
+                <p className="text-sm md:text-base text-muted-foreground">
                   Organize your study tasks, set priorities, and track your progress.
                 </p>
               </div>
@@ -186,16 +186,16 @@ const Dashboard = () => {
         
         <Link href="/dashboard/flashcards" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md flex items-start transition-transform duration-300 ease-in-out h-full"
+            className="relative bg-card cursor-pointer p-6 rounded-lg shadow-md flex items-start transition-transform duration-300 ease-in-out h-full border border-border"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <div className="absolute inset-0 border-2 border-gradient-to-r from-purple-400 via-pink-400 to-rose-400 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
             <div className="relative z-10 flex items-start gap-4">
-              <HiOutlineSparkles className="text-purple-500 text-5xl" />
+              <HiOutlineSparkles className="text-purple-500 dark:text-purple-400 text-5xl" />
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold">Generate Flashcards</h2>
-                <p className="mt-2 text-sm md:text-base">
+                <h2 className="text-xl md:text-2xl font-semibold text-card-foreground">Generate Flashcards</h2>
+                <p className="mt-2 text-sm md:text-base text-muted-foreground">
                   Create AI-powered flashcards from your study material for effective memorization.
                 </p>
               </div>
@@ -205,18 +205,18 @@ const Dashboard = () => {
 
         <Link href="/dashboard/profile" className="w-full md:w-[48%] lg:w-[32%]">
           <motion.div
-            className="relative bg-white cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-gray-100"
+            className="relative bg-card cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-border"
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 via-cyan-400 to-teal-400 rounded-lg opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
             <div className="relative z-10 flex items-start gap-4">
-              <div className="p-3 bg-indigo-50 rounded-lg">
-                <FaUser className="text-indigo-500 text-3xl" />
+              <div className="p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                <FaUser className="text-indigo-500 dark:text-indigo-400 text-3xl" />
               </div>
               <div>
-                <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-2">View Your Profile</h2>
-                <p className="text-sm md:text-base text-gray-600">
+                <h2 className="text-xl md:text-2xl font-semibold text-card-foreground mb-2">View Your Profile</h2>
+                <p className="text-sm md:text-base text-muted-foreground">
                   Manage your account, track study progress, and personalize your experience.
                 </p>
               </div>
@@ -224,10 +224,10 @@ const Dashboard = () => {
           </motion.div>
         </Link>
       </motion.div>
-      <div className="mt-12 mb-32 bg-gradient-to-r from-fuchsia-500 to-cyan-500 p-6 md:p-12 rounded-lg shadow-md">
-        <div className="bg-white bg-opacity-30 backdrop-blur-lg rounded-lg shadow-xl p-6 md:p-8">
-          <h2 className="text-2xl md:text-3xl font-bold mb-10 text-center text-white flex items-center justify-center gap-4">
-            <MdTipsAndUpdates className="shrink-0 text-white text-4xl md:text-5xl" />
+      <div className="mt-12 mb-32 bg-gradient-to-r from-primary/20 to-secondary/20 p-6 md:p-12 rounded-lg shadow-md border border-border">
+        <div className="bg-card/80 backdrop-blur-lg rounded-lg shadow-xl p-6 md:p-8 border border-border">
+          <h2 className="text-2xl md:text-3xl font-bold mb-10 text-center text-card-foreground flex items-center justify-center gap-4">
+            <MdTipsAndUpdates className="shrink-0 text-primary text-4xl md:text-5xl" />
             Tips for Effective Studying
           </h2>
           <div className="flex flex-wrap justify-between">

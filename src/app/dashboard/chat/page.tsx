@@ -139,16 +139,16 @@ export default function StudySphereChat() {
 
   if (!showFullChat && messages.length <= 1) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <div className="w-20 h-20 bg-black rounded-3xl flex items-center justify-center mb-6 mx-auto shadow-xl">
-              <Sparkles className="w-10 h-10 text-white" />
+            <div className="w-20 h-20 bg-primary rounded-3xl flex items-center justify-center mb-6 mx-auto shadow-xl">
+              <Sparkles className="w-10 h-10 text-primary-foreground" />
             </div>
-            <h1 className="text-5xl font-bold text-black mb-4">
+            <h1 className="text-5xl font-bold text-foreground mb-4">
               What can I help you study?
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-muted-foreground text-lg">
               Your AI-powered study companion is ready to help with anything
             </p>
           </div>
@@ -204,12 +204,12 @@ export default function StudySphereChat() {
               <button
                 key={index}
                 onClick={() => sendMessage(`Help me with ${action.label.toLowerCase()}`)}
-                className="p-4 bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-xl transition-all duration-200 text-left group shadow-sm hover:shadow-md"
+                className="p-4 bg-card hover:bg-card/80 border border-border hover:border-border/80 rounded-xl transition-all duration-200 text-left group shadow-sm hover:shadow-md"
                 type="button"
               >
-                <action.icon className="w-6 h-6 text-black mb-2 group-hover:text-gray-700 transition-colors" />
-                <div className="text-black font-medium mb-1">{action.label}</div>
-                <div className="text-gray-600 text-sm">{action.desc}</div>
+                <action.icon className="w-6 h-6 text-foreground mb-2 group-hover:text-muted-foreground transition-colors" />
+                <div className="text-foreground font-medium mb-1">{action.label}</div>
+                <div className="text-muted-foreground text-sm">{action.desc}</div>
               </button>
             ))}
           </div>
@@ -239,7 +239,7 @@ export default function StudySphereChat() {
           className="fixed bottom-6 left-6 bg-black text-white px-4 py-2 rounded-full shadow-lg hover:bg-gray-800 transition-all z-50">Previous Chats</button>
 
         {showHistory && (
-          <div className="fixed bottom-20 left-6 bg-white border border-gray-200 shadow-lg rounded-lg w-80 max-h-96 overflow-y-auto z-50">
+          <div className="fixed bottom-20 left-6 bg-card border border-border shadow-lg rounded-lg w-80 max-h-96 overflow-y-auto z-50">
             <div className="p-4 border-b font-semibold text-gray-700 flex justify-between items-center">
               Chat History
               <button
@@ -292,42 +292,42 @@ export default function StudySphereChat() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-white text-black">
-      <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-white">
+    <div className="flex flex-col h-screen bg-background text-foreground">
+      <div className="flex items-center justify-between p-6 border-b border-border bg-background">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-lg">
-            <Sparkles className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
+            <Sparkles className="w-6 h-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-black">StudySphere AI</h1>
-            <p className="text-sm text-gray-600 font-medium">Your AI Study Assistant</p>
+            <h1 className="text-2xl font-bold text-foreground">StudySphere AI</h1>
+            <p className="text-sm text-muted-foreground font-medium">Your AI Study Assistant</p>
           </div>
         </div>
         <div className="flex items-center space-x-3">
           <button
             onClick={handleReloadMessages}
-            className="p-3 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-all duration-200 border border-gray-200 hover:border-gray-300"
+            className="p-3 rounded-2xl bg-secondary hover:bg-secondary/80 transition-all duration-200 border border-border hover:border-border/80"
             title="Reload messages"
             type="button"
           >
-            <RotateCcw className="w-5 h-5 text-gray-700" />
+            <RotateCcw className="w-5 h-5 text-secondary-foreground" />
           </button>
           <button
             onClick={clearChat}
-            className="p-3 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-all duration-200 border border-gray-200 hover:border-gray-300"
+            className="p-3 rounded-2xl bg-secondary hover:bg-secondary/80 transition-all duration-200 border border-border hover:border-border/80"
             title="Clear chat"
             type="button"
           >
-            <Trash2 className="w-5 h-5 text-gray-700" />
+            <Trash2 className="w-5 h-5 text-secondary-foreground" />
           </button>
           {isLoading && (
             <button
               onClick={stopGeneration}
-              className="p-3 rounded-2xl bg-gray-800 hover:bg-black transition-all duration-200 border border-gray-300"
+              className="p-3 rounded-2xl bg-primary hover:bg-primary/90 transition-all duration-200 border border-border"
               title="Stop generation"
               type="button"
             >
-              <Square className="w-5 h-5 text-white" />
+              <Square className="w-5 h-5 text-primary-foreground" />
             </button>
           )}
         </div>
@@ -341,25 +341,25 @@ export default function StudySphereChat() {
             >
               <div className={`flex max-w-[85%] ${message.role === 'User' ? 'flex-row-reverse' : 'flex-row'} items-start space-x-4`}>
                 <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg ${message.role === 'User'
-                  ? 'bg-black ml-4'
-                  : 'bg-white border-2 border-gray-300 mr-4'
+                  ? 'bg-primary ml-4'
+                  : 'bg-card border-2 border-border mr-4'
                   }`}>
                   {message.role === 'User' ? (
-                    <User className="w-5 h-5 text-white" />
+                    <User className="w-5 h-5 text-primary-foreground" />
                   ) : (
-                    <Bot className="w-5 h-5 text-black" />
+                    <Bot className="w-5 h-5 text-foreground" />
                   )}
                 </div>
                 <div className="flex flex-col space-y-2">
                   <div className={`rounded-3xl px-6 py-4 shadow-lg ${message.role === 'User'
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black border border-gray-200'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-card text-foreground border border-border'
                     }`}>
                     <div className="whitespace-pre-wrap break-words leading-relaxed">
                       {message.content}
                     </div>
                   </div>
-                  <div className={`text-xs px-2 ${message.role === 'User' ? 'text-right text-gray-500' : 'text-left text-gray-500'
+                  <div className={`text-xs px-2 ${message.role === 'User' ? 'text-right text-muted-foreground' : 'text-left text-muted-foreground'
                     }`}>
                     {formatTime(message.createdAt)}
                   </div>
@@ -370,14 +370,14 @@ export default function StudySphereChat() {
           {isLoading && (
             <div className="flex justify-start">
               <div className="flex max-w-[85%] items-start space-x-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-white border-2 border-gray-300 mr-4 flex items-center justify-center shadow-lg">
-                  <Bot className="w-5 h-5 text-black" />
+                <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-card border-2 border-border mr-4 flex items-center justify-center shadow-lg">
+                  <Bot className="w-5 h-5 text-foreground" />
                 </div>
-                <div className="bg-white border border-gray-200 rounded-3xl px-6 py-4 shadow-lg">
+                <div className="bg-card border border-border rounded-3xl px-6 py-4 shadow-lg">
                   <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-black rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-foreground rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>
@@ -386,7 +386,7 @@ export default function StudySphereChat() {
           <div ref={messagesEndRef} />
         </div>
       </div>
-      <div className="p-6 border-t border-gray-200 bg-white">
+      <div className="p-6 border-t border-border bg-background">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-end space-x-4">
             <div className="flex-1 relative">
@@ -397,7 +397,7 @@ export default function StudySphereChat() {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask me anything about your studies..."
                 rows={1}
-                className="w-full px-6 py-4 bg-gray-100 border border-gray-300 rounded-3xl text-black placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 min-h-[56px] max-h-32"
+                className="w-full px-6 py-4 bg-input border border-border rounded-3xl text-foreground placeholder-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200 min-h-[56px] max-h-32"
                 style={{
                   height: 'auto',
                   minHeight: '56px'

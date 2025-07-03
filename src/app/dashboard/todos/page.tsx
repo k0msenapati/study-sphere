@@ -13,14 +13,14 @@ import { CheckSquare, Calendar, BarChart3, Settings } from 'lucide-react'
 export default function TodoPage() {
   return (
     <TasksProvider>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           {/* Page Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
               Task Management & Planning
             </h1>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Organize your tasks, schedule your time, and track your progress
             </p>
           </div>

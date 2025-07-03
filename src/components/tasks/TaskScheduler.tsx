@@ -65,8 +65,8 @@ export function TaskScheduler() {
     
     return (
       <div>
-        <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-700">
+        <div className="mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+          <p className="text-sm text-primary">
             Scheduling for: {format(selectedTimeSlot.date, 'PPP')} at {selectedTimeSlot.time}
           </p>
         </div>
@@ -106,7 +106,7 @@ export function TaskScheduler() {
           </div>
 
           {/* Week Grid */}
-          <div className="grid grid-cols-8 gap-1 border rounded-lg overflow-hidden">
+          <div className="grid grid-cols-8 gap-1 border border-border rounded-lg overflow-hidden bg-card">
             {/* Time Header */}
             <div className="bg-muted p-2 text-center text-sm font-medium">
               Time
@@ -117,7 +117,7 @@ export function TaskScheduler() {
               <div 
                 key={day.toISOString()} 
                 className={`bg-muted p-2 text-center text-sm font-medium ${
-                  isSameDay(day, new Date()) ? 'bg-blue-100 text-blue-700' : ''
+                  isSameDay(day, new Date()) ? 'bg-primary/20 text-primary' : ''
                 }`}
               >
                 <div>{format(day, 'EEE')}</div>
@@ -128,7 +128,7 @@ export function TaskScheduler() {
             {/* Time Slots */}
             {HOURS.map(hour => (
               <div key={hour} className="contents">
-                <div className="p-2 text-xs text-muted-foreground border-t bg-gray-50">
+                <div className="p-2 text-xs text-muted-foreground border-t bg-muted/50">
                   {hour}:00
                 </div>
                 {weekDays.map(day => {
@@ -138,8 +138,8 @@ export function TaskScheduler() {
                   return (
                     <div 
                       key={`${day.toISOString()}-${hour}`}
-                      className={`p-1 min-h-[60px] border-t cursor-pointer hover:bg-gray-50 ${
-                        isToday ? 'bg-blue-50' : ''
+                      className={`p-1 min-h-[60px] border-t border-border cursor-pointer hover:bg-accent/50 transition-colors ${
+                        isToday ? 'bg-primary/10' : 'bg-card'
                       }`}
                       onClick={() => handleTimeSlotClick(day, hour)}
                     >
@@ -189,12 +189,12 @@ export function TaskScheduler() {
                     mode="single"
                     selected={selectedDate}
                     onSelect={(date) => date && setSelectedDate(date)}
-                    className="rounded-md border"
+                    className="rounded-md border border-border bg-card"
                     modifiers={{
                       hasTask: (date) => getTasksForDate(date).length > 0
                     }}
                     modifiersClassNames={{
-                      hasTask: "bg-blue-100 text-blue-700 font-medium"
+                      hasTask: "bg-primary/20 text-primary font-medium"
                     }}
                   />
                 </CardContent>
@@ -220,10 +220,10 @@ export function TaskScheduler() {
                       getTasksForDay(selectedDate)
                         .sort((a, b) => (a.scheduledStartTime || '').localeCompare(b.scheduledStartTime || ''))
                         .map(task => (
-                          <div key={task.id} className="p-3 border rounded-lg">
+                          <div key={task.id} className="p-3 border border-border rounded-lg bg-card">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
-                                <h4 className="font-medium text-sm">{task.title}</h4>
+                                <h4 className="font-medium text-sm text-foreground">{task.title}</h4>
                                 {task.description && (
                                   <p className="text-xs text-muted-foreground mt-1">
                                     {task.description}
@@ -233,9 +233,9 @@ export function TaskScheduler() {
                                   <Badge 
                                     variant="outline" 
                                     className={
-                                      task.priority === 'high' ? 'text-red-700 border-red-200' :
-                                      task.priority === 'medium' ? 'text-yellow-700 border-yellow-200' :
-                                      'text-green-700 border-green-200'
+                                      task.priority === 'high' ? 'text-red-700 border-red-200 dark:text-red-400 dark:border-red-800' :
+                                      task.priority === 'medium' ? 'text-yellow-700 border-yellow-200 dark:text-yellow-400 dark:border-yellow-800' :
+                                      'text-green-700 border-green-200 dark:text-green-400 dark:border-green-800'
                                     }
                                   >
                                     {task.priority}

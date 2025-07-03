@@ -12,9 +12,9 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ 
   children, 
-  defaultTheme = "dark",
-  enableSystem = false,
-  disableTransitionOnChange = true,
+  defaultTheme = "system",
+  enableSystem = true,
+  disableTransitionOnChange = false,
   ...props 
 }: ThemeProviderProps) {
   return (
@@ -23,6 +23,8 @@ export function ThemeProvider({
       defaultTheme={defaultTheme}
       enableSystem={enableSystem}
       disableTransitionOnChange={disableTransitionOnChange}
+      themes={["light", "dark", "system"]}
+      storageKey="study-sphere-theme"
       {...props}
     >
       {children}

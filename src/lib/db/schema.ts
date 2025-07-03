@@ -78,6 +78,7 @@ export const userSettings = sqliteTable('user_settings', {
   pomodoroEnabled: integer('pomodoro_enabled', { mode: 'boolean' }).notNull().default(false),
   pomodoroWorkDuration: integer('pomodoro_work_duration').notNull().default(25), // minutes
   pomodoroBreakDuration: integer('pomodoro_break_duration').notNull().default(5), // minutes
+  themePreference: text('theme_preference').notNull().default('system'), // 'light' | 'dark' | 'system'
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });

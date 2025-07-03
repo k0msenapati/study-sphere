@@ -14,6 +14,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import Logout from "../components/auth/Logout";
+import { ThemeToggleButtonWithDB } from "@/components/theme-toggle-with-db";
 
 interface NavbarProps {
   session: {
@@ -124,6 +125,13 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
                   animate={{ opacity: 1 }}
                   style={{ opacity: routesOpacity }}
                 >
+                  <ThemeToggleButtonWithDB />
+                </motion.li>
+                <motion.li
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  style={{ opacity: routesOpacity }}
+                >
                   <Logout />
                 </motion.li>
               </motion.ul>
@@ -191,6 +199,16 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
                   </Link>
                 </motion.li>
               ))}
+              <motion.li
+                variants={{
+                  hidden: { opacity: 0, x: -30 },
+                  visible: { opacity: 1, x: 0 },
+                  exit: { opacity: 0, x: -30 },
+                }}
+                className="flex justify-center py-2"
+              >
+                <ThemeToggleButtonWithDB />
+              </motion.li>
               <motion.li
                 variants={{
                   hidden: { opacity: 0, x: -30 },

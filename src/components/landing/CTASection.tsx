@@ -15,8 +15,8 @@ const benefits = [
 export default function CTASection() {
   return (    <section className="py-24 relative overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900" />
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-purple-600/80" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 dark:from-blue-400/30 dark:to-purple-400/30" />
       
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -24,14 +24,14 @@ export default function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center text-white"
+          className="text-center"
         >
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6"
+            className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-primary/20"
           >
             <Sparkles className="h-4 w-4" />
             <span className="text-sm font-medium">Limited Time Offer</span>

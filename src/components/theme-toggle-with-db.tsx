@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Moon, Sun, Monitor } from "lucide-react"
-import { useTheme } from "next-themes"
+import { useThemePreference } from "@/lib/hooks/useThemePreference"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -12,19 +12,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function ThemeToggle() {
-  const { setTheme, theme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
+export function ThemeToggleWithDB() {
+  const { setTheme, theme, isLoading } = useThemePreference()
 
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
+  if (isLoading) {
     return (
-      <Button variant="outline" size="icon" className="relative">
-        <Sun className="h-[1.2rem] w-[1.2rem]" />
-        <span className="sr-only">Toggle theme</span>
+      <Button variant="outline" size="icon" disabled>
+        <div className="h-[1.2rem] w-[1.2rem] animate-pulse rounded bg-muted" />
+        <span className="sr-only">Loading theme...</span>
       </Button>
     )
   }
@@ -42,28 +37,26 @@ export function ThemeToggle() {
         <DropdownMenuItem onClick={() => setTheme("light")}>
           <Sun className="mr-2 h-4 w-4" />
           Light
+          {theme === "light" && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
           <Moon className="mr-2 h-4 w-4" />
           Dark
+          {theme === "dark" && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
           <Monitor className="mr-2 h-4 w-4" />
           System
+          {theme === "system" && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
 }
 
-// Simple toggle button version for mobile or inline use
-export function ThemeToggleButton() {
-  const { setTheme, theme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+// Simple toggle button version with DB sync
+export function ThemeToggleButtonWithDB() {
+  const { setTheme, theme, isLoading } = useThemePreference()
 
   const toggleTheme = () => {
     if (theme === "light") {
@@ -75,15 +68,11 @@ export function ThemeToggleButton() {
     }
   }
 
-  if (!mounted) {
+  if (isLoading) {
     return (
-      <Button
-        variant="ghost"
-        size="icon"
-        className="relative h-10 w-10"
-      >
-        <Sun className="h-[1.2rem] w-[1.2rem]" />
-        <span className="sr-only">Toggle theme</span>
+      <Button variant="ghost" size="icon" disabled className="h-10 w-10">
+        <div className="h-[1.2rem] w-[1.2rem] animate-pulse rounded bg-muted" />
+        <span className="sr-only">Loading theme...</span>
       </Button>
     )
   }
