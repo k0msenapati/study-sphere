@@ -98,7 +98,7 @@ Study Sphere is licensed under the [MIT License](LICENSE). See the [LICENSE](LIC
 <img src="https://media.giphy.com/media/LnQjpWaON8nhr21vNW/giphy.gif" width="60"> <em><b>I love connecting with different people</b>, so if you want to say <b>hi, I'll be happy to meet you more!</b> :)</em>
 
 
-png of the favicon 
+
 
 ![favicon](https://github.com/user-attachments/assets/1a7631e7-da58-46b7-947b-edb0f850bd35)
 
