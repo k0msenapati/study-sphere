@@ -19,7 +19,7 @@ export default function LandingPage() {
         title="Study Sphere – Revolutionize Your Study Routine"
         description="Enhance your learning with AI-powered notes, quizzes, and a personal study buddy on Study Sphere."
         url="https://study-sphere-beta.vercel.app"
-        image="https://study-sphere-beta.vercel.app/og-banner.png"
+        image="https://study-sphere-beta.vercel.app/favicon.ico"
       />
       <LandingNavbar />
       <HeroSection />
