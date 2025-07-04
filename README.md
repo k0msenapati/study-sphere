@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/56509c06-42a5-49c8-a39d-26598ca00cd9" alt="Study Sphere Logo" width="200"/>
+  <img src="favicon (2).svg" alt="Study Sphere Logo" width="200"/>
 </p>
 
 <h1 align="center">📚 Study Sphere</h1>
