@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/56509c06-42a5-49c8-a39d-26598ca00cd9" alt="Study Sphere Logo" width="200"/>
+  <img src="favicon (2).svg" alt="Study Sphere Logo" width="200"/>
 </p>
 
 <h1 align="center">📚 Study Sphere</h1>
@@ -96,3 +96,10 @@ If you find this project interesting and inspiring, please consider showing your
 Study Sphere is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for more information.
 
 <img src="https://media.giphy.com/media/LnQjpWaON8nhr21vNW/giphy.gif" width="60"> <em><b>I love connecting with different people</b>, so if you want to say <b>hi, I'll be happy to meet you more!</b> :)</em>
+
+
+
+
+![favicon](https://github.com/user-attachments/assets/1a7631e7-da58-46b7-947b-edb0f850bd35)
+
+
