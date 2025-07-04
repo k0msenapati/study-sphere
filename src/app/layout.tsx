@@ -27,6 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
+    <>
     <html lang="en" suppressHydrationWarning>
     <head>
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
@@ -39,5 +40,6 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
+      </>
   )
 }
