@@ -35,6 +35,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Update last sign in
+    await db
+      .update(users)
+      .set({ lastSignIn: new Date() })
+      .where(eq(users.id, user[0].id));
+
     // Set session
     await setSession(user[0].id, user[0].email);
 

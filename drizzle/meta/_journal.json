@@ -15,6 +15,13 @@
       "when": 1750943036845,
       "tag": "0001_amazing_doomsday",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1751519009449,
+      "tag": "0002_fine_gargoyle",
+      "breakpoints": true
     }
   ]
 }
