@@ -1,14 +1,35 @@
 export interface Flashcard {
   id: string
+  deckId: string
   question: string
   answer: string
   difficulty: 'easy' | 'medium' | 'hard'
   topic: string
-  createdAt: Date
-  lastReviewed?: Date
+  hints?: string // JSON array of strings
+  explanation?: string
+  tags: string // JSON array of strings
   correctCount: number
   incorrectCount: number
-  tags: string[]
+  lastReviewed?: Date
+  nextReview?: Date
+  order: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface Deck {
+  id: string
+  userId: number
+  title: string
+  description?: string
+  color: string
+  isPublic: boolean
+  tags: string // JSON array of strings
+  studyMaterial?: string
+  totalCards: number
+  lastStudied?: Date
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface FlashcardSet {

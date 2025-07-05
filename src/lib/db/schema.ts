@@ -83,6 +83,69 @@ export const userSettings = sqliteTable('user_settings', {
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
+// --- Flashcard Decks Table ---
+export const decks = sqliteTable('decks', {
+  id: text('id').primaryKey(), // UUID
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description'),
+  color: text('color').notNull().default('#3B82F6'),
+  isPublic: integer('is_public', { mode: 'boolean' }).notNull().default(false),
+  tags: text('tags').notNull().default('[]'), // JSON array of strings
+  studyMaterial: text('study_material'), // Original material used to generate cards
+  totalCards: integer('total_cards').notNull().default(0),
+  lastStudied: integer('last_studied', { mode: 'timestamp' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+});
+
+// --- Flashcards Table ---
+export const flashcards = sqliteTable('flashcards', {
+  id: text('id').primaryKey(), // UUID
+  deckId: text('deck_id').notNull().references(() => decks.id, { onDelete: 'cascade' }),
+  question: text('question').notNull(),
+  answer: text('answer').notNull(),
+  difficulty: text('difficulty').notNull().default('medium'),
+  topic: text('topic').notNull(),
+  hints: text('hints').default('[]'), // JSON array of strings
+  explanation: text('explanation'),
+  tags: text('tags').notNull().default('[]'), // JSON array of strings
+  correctCount: integer('correct_count').notNull().default(0),
+  incorrectCount: integer('incorrect_count').notNull().default(0),
+  lastReviewed: integer('last_reviewed', { mode: 'timestamp' }),
+  nextReview: integer('next_review', { mode: 'timestamp' }),
+  order: integer('order').notNull().default(0),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+});
+
+// --- Study Sessions Table ---
+export const studySessions = sqliteTable('study_sessions', {
+  id: text('id').primaryKey(), // UUID
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  deckId: text('deck_id').notNull().references(() => decks.id, { onDelete: 'cascade' }),
+  startTime: integer('start_time', { mode: 'timestamp' }).notNull(),
+  endTime: integer('end_time', { mode: 'timestamp' }),
+  totalCards: integer('total_cards').notNull().default(0),
+  correctAnswers: integer('correct_answers').notNull().default(0),
+  incorrectAnswers: integer('incorrect_answers').notNull().default(0),
+  partialAnswers: integer('partial_answers').notNull().default(0),
+  sessionType: text('session_type').notNull().default('study'),
+  timeSpent: integer('time_spent').notNull().default(0),
+  completed: integer('completed', { mode: 'boolean' }).notNull().default(false),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+});
+
+// --- Flashcard Results Table ---
+export const flashcardResults = sqliteTable('flashcard_results', {
+  id: text('id').primaryKey(), // UUID
+  sessionId: text('session_id').notNull().references(() => studySessions.id, { onDelete: 'cascade' }),
+  flashcardId: text('flashcard_id').notNull().references(() => flashcards.id, { onDelete: 'cascade' }),
+  result: text('result').notNull(), // 'correct', 'incorrect', 'partial'
+  timeToAnswer: integer('time_to_answer').notNull().default(0), // in seconds
+  reviewedAt: integer('reviewed_at', { mode: 'timestamp' }).notNull(),
+});
+
 // --- Zod Schemas (Optional, for validation) ---
 export const insertUserSchema = createInsertSchema(users);
 export const selectUserSchema = createSelectSchema(users);
@@ -102,6 +165,18 @@ export const selectDailyReviewSchema = createSelectSchema(dailyReviews);
 export const insertUserSettingsSchema = createInsertSchema(userSettings);
 export const selectUserSettingsSchema = createSelectSchema(userSettings);
 
+export const insertDeckSchema = createInsertSchema(decks);
+export const selectDeckSchema = createSelectSchema(decks);
+
+export const insertFlashcardSchema = createInsertSchema(flashcards);
+export const selectFlashcardSchema = createSelectSchema(flashcards);
+
+export const insertStudySessionSchema = createInsertSchema(studySessions);
+export const selectStudySessionSchema = createSelectSchema(studySessions);
+
+export const insertFlashcardResultSchema = createInsertSchema(flashcardResults);
+export const selectFlashcardResultSchema = createSelectSchema(flashcardResults);
+
 // --- Types ---
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -120,3 +195,15 @@ export type NewDailyReview = typeof dailyReviews.$inferInsert;
 
 export type UserSettings = typeof userSettings.$inferSelect;
 export type NewUserSettings = typeof userSettings.$inferInsert;
+
+export type Deck = typeof decks.$inferSelect;
+export type NewDeck = typeof decks.$inferInsert;
+
+export type Flashcard = typeof flashcards.$inferSelect;
+export type NewFlashcard = typeof flashcards.$inferInsert;
+
+export type StudySession = typeof studySessions.$inferSelect;
+export type NewStudySession = typeof studySessions.$inferInsert;
+
+export type FlashcardResult = typeof flashcardResults.$inferSelect;
+export type NewFlashcardResult = typeof flashcardResults.$inferInsert;

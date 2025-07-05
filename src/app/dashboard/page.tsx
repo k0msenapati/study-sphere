@@ -8,6 +8,7 @@ import { FiRefreshCw } from "react-icons/fi"
 import { IoFolderOpen, IoCalendarNumberSharp } from "react-icons/io5"
 import { RiFileList3Line } from "react-icons/ri"
 import { FaBookOpen, FaComments, FaLightbulb, FaBalanceScaleLeft, FaUser } from "react-icons/fa"
+import { FaFlipboard } from "react-icons/fa6"
 import { HiOutlineSparkles } from "react-icons/hi2"
 import { useEffect, useState } from "react"
 
@@ -197,6 +198,27 @@ const Dashboard = () => {
                 <h2 className="text-xl md:text-2xl font-semibold text-card-foreground">Generate Flashcards</h2>
                 <p className="mt-2 text-sm md:text-base text-muted-foreground">
                   Create AI-powered flashcards from your study material for effective memorization.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </Link>
+
+        <Link href="/dashboard/decks" className="w-full md:w-[48%] lg:w-[32%]">
+          <motion.div
+            className="relative bg-card cursor-pointer p-6 rounded-lg shadow-md hover:shadow-lg flex items-start transition-all duration-300 ease-in-out h-full border border-border"
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 rounded-lg opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
+            <div className="relative z-10 flex items-start gap-4">
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <FaFlipboard className="text-blue-500 dark:text-blue-400 text-3xl" />
+              </div>
+              <div>
+                <h2 className="text-xl md:text-2xl font-semibold text-card-foreground mb-2">Study Decks</h2>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  Browse and manage your flashcard collections for organized studying.
                 </p>
               </div>
             </div>

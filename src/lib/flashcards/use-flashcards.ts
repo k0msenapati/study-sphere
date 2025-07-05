@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useFlashcards } from './flashcards-provider'
-import { Flashcard, FlashcardSet, FlashcardGenerationRequest, StudySession } from './types'
+import { Flashcard, FlashcardSet, FlashcardGenerationRequest, StudySession, Deck } from './types'
 
 export function useFlashcardsOperations() {
   const { state, dispatch } = useFlashcards()
@@ -10,7 +10,7 @@ export function useFlashcardsOperations() {
     dispatch({ type: 'SET_ERROR', payload: null })
 
     try {
-      // Use fetch to call CopilotKit's AI generation
+      // Step 1: Use CopilotKit to generate flashcards
       const response = await fetch('/api/copilotkit/generate-flashcards', {
         method: 'POST',
         headers: {
@@ -30,26 +30,105 @@ export function useFlashcardsOperations() {
 
       const aiGeneratedFlashcards = await response.json()
       
-      // Transform AI response into our flashcard format
-      const flashcards: Flashcard[] = aiGeneratedFlashcards.flashcards.map((card: any, i: number) => ({
-        id: `card-${Date.now()}-${i}`,
+      // Generate a smart title based on the study material
+      const generateDeckTitle = (material: string, focusArea: string): string => {
+        const words = material.toLowerCase().split(/\s+/)
+        
+        // Look for key terms that could make a good title
+        const keyTerms = words.filter(word => 
+          word.length > 4 && 
+          !['about', 'learn', 'study', 'topic', 'chapter', 'lesson', 'material'].includes(word)
+        )
+        
+        if (keyTerms.length > 0) {
+          // Take the first 2-3 key terms and create a title
+          const titleTerms = keyTerms.slice(0, 3).map(term => 
+            term.charAt(0).toUpperCase() + term.slice(1)
+          )
+          return `${titleTerms.join(' & ')} Study Cards`
+        }
+        
+        // Fallback based on focus area
+        const focusAreaTitles = {
+          'definitions': 'Key Definitions',
+          'concepts': 'Core Concepts',
+          'problem-solving': 'Problem Solving',
+          'general': 'Study Notes'
+        }
+        
+        return focusAreaTitles[focusArea as keyof typeof focusAreaTitles] || 'AI Study Cards'
+      }
+
+      // Step 2: Create a deck first
+      const deckResponse = await fetch('/api/decks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: generateDeckTitle(request.studyMaterial, request.focusArea),
+          description: `AI-generated ${request.numberOfCards} ${request.difficulty} difficulty flashcards focusing on ${request.focusArea}`,
+          color: '#8B5CF6',
+          studyMaterial: request.studyMaterial,
+          tags: JSON.stringify([request.focusArea, request.difficulty, 'ai-generated'])
+        })
+      })
+
+      if (!deckResponse.ok) {
+        throw new Error('Failed to create deck')
+      }
+
+      const newDeck = await deckResponse.json()
+
+      // Step 3: Transform AI response and save flashcards to the deck
+      const flashcardsData = aiGeneratedFlashcards.flashcards.map((card: any, index: number) => ({
+        deckId: newDeck.id,
         question: card.question,
         answer: card.answer,
         difficulty: request.difficulty,
         topic: card.topic || request.focusArea,
-        createdAt: new Date(),
-        correctCount: 0,
-        incorrectCount: 0,
-        tags: card.tags || []
+        hints: JSON.stringify(card.hints || []),
+        explanation: card.explanation || '',
+        tags: JSON.stringify(card.tags || []),
+        order: index
+      }))
+
+      const bulkResponse = await fetch('/api/flashcards/bulk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          deckId: newDeck.id,
+          flashcards: flashcardsData
+        })
+      })
+
+      if (!bulkResponse.ok) {
+        throw new Error('Failed to save flashcards')
+      }
+
+      const { flashcards: savedFlashcards } = await bulkResponse.json()
+
+      // Step 4: Transform into FlashcardSet format for compatibility
+      const flashcards: Flashcard[] = savedFlashcards.map((card: any) => ({
+        ...card,
+        createdAt: new Date(card.createdAt),
+        updatedAt: new Date(card.updatedAt),
+        lastReviewed: card.lastReviewed ? new Date(card.lastReviewed) : undefined,
+        nextReview: card.nextReview ? new Date(card.nextReview) : undefined,
+        hints: card.hints,
+        explanation: card.explanation,
+        tags: card.tags
       }))
 
       const newSet: FlashcardSet = {
-        id: `set-${Date.now()}`,
-        title: `AI Flashcards from ${new Date().toLocaleDateString()}`,
-        description: `Generated ${request.numberOfCards} ${request.difficulty} difficulty flashcards focusing on ${request.focusArea}`,
+        id: newDeck.id,
+        title: newDeck.title,
+        description: newDeck.description || '',
         flashcards,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(newDeck.createdAt),
+        updatedAt: new Date(newDeck.updatedAt),
         studyMaterial: request.studyMaterial,
         settings: {
           numberOfCards: request.numberOfCards,
