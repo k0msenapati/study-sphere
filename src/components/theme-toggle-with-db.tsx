@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Moon, Sun, Monitor } from "lucide-react"
 import { useThemePreference } from "@/lib/hooks/useThemePreference"
+import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -83,10 +84,30 @@ export function ThemeToggleButtonWithDB() {
       size="icon"
       onClick={toggleTheme}
       className="relative h-10 w-10"
+      title={`Current theme: ${theme}`}
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Toggle theme</span>
+      {/* Light mode icon */}
+      <Sun className={cn(
+        "h-[1.2rem] w-[1.2rem] transition-all duration-300",
+        theme === "light" ? "rotate-0 scale-100" : "rotate-90 scale-0",
+        theme !== "light" && "absolute"
+      )} />
+      
+      {/* Dark mode icon */}
+      <Moon className={cn(
+        "h-[1.2rem] w-[1.2rem] transition-all duration-300",
+        theme === "dark" ? "rotate-0 scale-100" : "rotate-90 scale-0",
+        theme !== "dark" && "absolute"
+      )} />
+      
+      {/* System mode icon */}
+      <Monitor className={cn(
+        "h-[1.2rem] w-[1.2rem] transition-all duration-300",
+        theme === "system" ? "rotate-0 scale-100" : "rotate-90 scale-0",
+        theme !== "system" && "absolute"
+      )} />
+      
+      <span className="sr-only">Toggle theme (Current: {theme})</span>
     </Button>
   )
 }
