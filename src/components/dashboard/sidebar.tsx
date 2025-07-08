@@ -20,7 +20,8 @@ import {
   LogOut,
   Menu,
   ChevronLeft,
-  X
+  X,
+  GitBranch
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import Logout from "@/components/auth/Logout"
@@ -68,6 +69,11 @@ const sidebarNavItems = [
     title: "Quizzes",
     href: "/dashboard/quizzes",
     icon: BarChart3,
+  },
+  {
+    title: "Flowcharts",
+    href: "/dashboard/flowcharts",
+    icon: GitBranch,
   },
   {
     title: "Profile",
