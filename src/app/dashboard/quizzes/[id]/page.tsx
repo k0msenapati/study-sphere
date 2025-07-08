@@ -19,13 +19,14 @@ import {
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { InfoIcon } from "lucide-react"
+import { InfoIcon, AlertTriangle } from "lucide-react"
 
 export default function Page({ params }: { params: { id: string } }) {
   return (
@@ -51,6 +52,7 @@ function QuizGame({ quizId }: { quizId: string }) {
     description: "",
   })
   const [showAnswers, setShowAnswers] = useState(false)
+  const [showSubmissionDialog, setShowSubmissionDialog] = useState(false)
 
   useEffect(() => {
     const quiz = quizzes.find(q => q.id === quizId)
@@ -90,16 +92,8 @@ function QuizGame({ quizId }: { quizId: string }) {
       if (currentQuestionIndex < currentQuiz.questions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
       } else {
-        if (revisitList.length > 0) {
-          setAlertContent({
-            title: "Review marked questions",
-            description:
-              "You have marked questions for review. Please check them before submitting.",
-          })
-          setShowAlert(true)
-        } else {
-          setIsQuizFinished(true)
-        }
+        // Show submission confirmation dialog instead of direct submission
+        setShowSubmissionDialog(true)
       }
     }
   }
@@ -128,9 +122,36 @@ function QuizGame({ quizId }: { quizId: string }) {
   }
 
   const getQuestionStatus = (index: number) => {
-    if (revisitList.includes(index)) return "yellow"
+    if (revisitList.includes(index)) return "orange"
     if (answers[index] !== null) return "green"
-    return "gray"
+    return "red"
+  }
+
+  const getQuestionStatusColor = (index: number) => {
+    const status = getQuestionStatus(index)
+    switch (status) {
+      case "green":
+        return "bg-green-500 hover:bg-green-600"
+      case "orange":
+        return "bg-orange-400 hover:bg-orange-500"
+      case "red":
+        return "bg-red-500 hover:bg-red-600"
+      default:
+        return "bg-gray-300 hover:bg-gray-400"
+    }
+  }
+
+  const getQuizSummary = () => {
+    const answered = answers.filter(answer => answer !== null).length
+    const unanswered = answers.filter(answer => answer === null).length
+    const markedForReview = revisitList.length
+
+    return { answered, unanswered, markedForReview }
+  }
+
+  const handleSubmitQuiz = () => {
+    setShowSubmissionDialog(false)
+    setIsQuizFinished(true)
   }
 
   if (!currentQuiz) {
@@ -158,7 +179,7 @@ function QuizGame({ quizId }: { quizId: string }) {
           <p className="text-lg">Percentage: {percentage.toFixed(2)}%</p>
           <Progress value={percentage} className="w-full" />
           <p className={`text-xl font-bold ${passed ? "text-green-600" : "text-red-600"}`}>
-            {passed ? "Hurray! You passed! 🎉" : "Unfortunately, you didn’t pass. 😢"}
+            {passed ? "Hurray! You passed! 🎉" : "Unfortunately, you didn't pass. 😢"}
           </p>
           <div className="flex gap-2">
             <Button onClick={() => setShowAnswers(true)} className="mt-4">
@@ -176,27 +197,61 @@ function QuizGame({ quizId }: { quizId: string }) {
                 <DialogTitle>Review Your Answers</DialogTitle>
               </DialogHeader>
               <div>
-                {currentQuiz.questions.map((question, index) => (
-                  <div key={index} className="mb-4">
-                    <p className="font-semibold mb-2">{question.question}</p>
-                    <div>
-                      {question.options.map((option, optionIndex) => (
-                        <p
-                          key={optionIndex}
-                          className={`p-2 rounded ${
-                            option === question.correctOption
-                              ? "bg-green-100"
-                              : answers[index] === option && option !== question.correctOption
-                                ? "bg-red-100"
-                                : ""
-                          }`}
-                        >
-                          {option}
+                {currentQuiz.questions.map((question, index) => {
+                  const userAnswer = answers[index]
+                  const isCorrect = userAnswer === question.correctOption
+                  const wasAnswered = userAnswer !== null
+
+                  return (
+                    <div key={index} className="mb-6 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                      <div className="mb-3">
+                        <p className="font-bold text-white text-lg mb-2">
+                          Question {index + 1}: {question.question}
                         </p>
-                      ))}
+                        {/* Question feedback */}
+                        <div className="text-sm mb-3">
+                          {!wasAnswered ? (
+                            <span className="text-gray-500 font-medium">❌ Not answered</span>
+                          ) : isCorrect ? (
+                            <span className="text-green-600 font-medium">✅ Correct answer</span>
+                          ) : (
+                            <span className="text-red-600 font-medium">❌ Incorrect answer</span>
+                          )}
+                        </div>
+                        {/* Show user's answer if they answered */}
+                        {wasAnswered && (
+                          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <span className="font-medium">Your answer: </span>
+                            <span className={isCorrect ? "text-green-600" : "text-red-600"}>
+                              {userAnswer}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        {question.options.map((option, optionIndex) => (
+                          <p
+                            key={optionIndex}
+                            className={`p-3 rounded-lg border ${option === question.correctOption
+                                ? "bg-green-500 border-green-600 text-white font-bold"
+                                : userAnswer === option && option !== question.correctOption
+                                  ? "bg-red-500 border-red-600 text-white font-bold"
+                                  : "bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300"
+                              }`}
+                          >
+                            {option}
+                            {option === question.correctOption && (
+                              <span className="ml-2 text-xs">✅ Correct</span>
+                            )}
+                            {userAnswer === option && option !== question.correctOption && (
+                              <span className="ml-2 text-xs">❌ Your choice</span>
+                            )}
+                          </p>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
               <DialogFooter>
                 <Button onClick={() => setShowAnswers(false)}>Close</Button>
@@ -209,6 +264,7 @@ function QuizGame({ quizId }: { quizId: string }) {
   }
 
   const currentQuestion = currentQuiz.questions[currentQuestionIndex]
+  const { answered, unanswered, markedForReview } = getQuizSummary()
 
   return (
     <>
@@ -238,25 +294,42 @@ function QuizGame({ quizId }: { quizId: string }) {
                     <li>Review marked questions before submitting the quiz.</li>
                     <li>Time left: {timer} seconds.</li>
                   </ul>
+                  <div className="mt-4 space-y-2">
+                    <p className="font-medium">Question Status Legend:</p>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-green-500 rounded"></div>
+                      <span className="text-sm">Answered</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-orange-400 rounded"></div>
+                      <span className="text-sm">Marked for Review</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 bg-red-500 rounded"></div>
+                      <span className="text-sm">Unanswered</span>
+                    </div>
+                  </div>
                 </DialogDescription>
               </DialogHeader>
             </DialogContent>
           </Dialog>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex justify-center space-x-2 mb-4">
+          <div className="flex justify-center space-x-2 mb-4 flex-wrap">
             {currentQuiz.questions.map((_, index) => (
               <div
                 key={index}
-                className={`w-6 h-6 rounded-sm cursor-pointer ${
-                  getQuestionStatus(index) === "green"
-                    ? "bg-green-500"
-                    : getQuestionStatus(index) === "yellow"
-                      ? "bg-yellow-500"
-                      : "bg-gray-300"
-                }`}
+                className={`w-8 h-8 rounded-sm cursor-pointer text-white text-sm font-medium flex items-center justify-center transition-colors ${getQuestionStatusColor(index)}`}
                 onClick={() => setCurrentQuestionIndex(index)}
-              />
+                title={`Question ${index + 1} - ${answers[index] !== null
+                  ? "Answered"
+                  : revisitList.includes(index)
+                    ? "Marked for Review"
+                    : "Unanswered"
+                  }`}
+              >
+                {index + 1}
+              </div>
             ))}
           </div>
           <p className="text-lg">{currentQuestion.question}</p>
@@ -316,6 +389,58 @@ function QuizGame({ quizId }: { quizId: string }) {
       >
         Back to Quizzes
       </Button>
+
+      {/* Submission Confirmation Dialog */}
+      <AlertDialog open={showSubmissionDialog} onOpenChange={setShowSubmissionDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-orange-500" />
+              Confirm Quiz Submission
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <div className="space-y-3 mt-2">
+                <p>Please review your quiz status before submitting:</p>
+                <div className="space-y-2 bg-black-50 p-3 rounded-md">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-green-500 rounded"></div>
+                      <span>Answered Questions:</span>
+                    </div>
+                    <span className="font-medium">{answered}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-red-500 rounded"></div>
+                      <span>Unanswered Questions:</span>
+                    </div>
+                    <span className="font-medium">{unanswered}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 bg-orange-400 rounded"></div>
+                      <span>Marked for Review:</span>
+                    </div>
+                    <span className="font-medium">{markedForReview}</span>
+                  </div>
+                </div>
+                {(unanswered > 0 || markedForReview > 0) && (
+                  <p className="text-orange-600 text-sm">
+                    ⚠️ You have {unanswered > 0 ? `${unanswered} unanswered` : ""}
+                    {unanswered > 0 && markedForReview > 0 ? " and " : ""}
+                    {markedForReview > 0 ? `${markedForReview} marked for review` : ""} question(s).
+                  </p>
+                )}
+                <p className="text-sm text-white-600">Are you sure you want to submit your quiz?</p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Go Back to Quiz</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSubmitQuiz}>Submit Quiz</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {showAlert && (
         <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
