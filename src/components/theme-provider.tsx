@@ -23,7 +23,11 @@ export function ThemeProvider({
       defaultTheme={defaultTheme}
       enableSystem={enableSystem}
       disableTransitionOnChange={disableTransitionOnChange}
-      themes={["light", "dark", "system"]}
+      themes={[
+        "light", 
+        "dark", 
+        "system"
+      ]}
       storageKey="study-sphere-theme"
       {...props}
     >

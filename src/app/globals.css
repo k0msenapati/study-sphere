@@ -57,6 +57,286 @@
     --chart-4: 205 30% 28%;
     --chart-5: 205 88% 78%;
   }
+
+  /* Winter is Coming Theme */
+  .winter-is-coming {
+    --background: 0 0% 100%;
+    --foreground: 211 69% 44%;
+    --muted: 0 12% 90%;
+    --muted-foreground: 0 12% 30%;
+    --popover: 0 0% 97%;
+    --popover-foreground: 211 69% 34%;
+    --card: 0 0% 98%;
+    --card-foreground: 211 69% 39%;
+    --border: 0 0% 95%;
+    --input: 0 0% 92%;
+    --primary: 0 0% 17%;
+    --primary-foreground: 0 0% 77%;
+    --secondary: 0 0% 75%;
+    --secondary-foreground: 0 0% 15%;
+    --accent: 0 0% 85%;
+    --accent-foreground: 0 0% 25%;
+    --destructive: 7 87% 31%;
+    --destructive-foreground: 7 87% 91%;
+    --ring: 0 0% 17%;
+    --chart-1: 0 0% 17%;
+    --chart-2: 0 0% 75%;
+    --chart-3: 0 0% 85%;
+    --chart-4: 0 0% 78%;
+    --chart-5: 0 3% 17%;
+    --radius: 0.5rem;
+  }
+
+  .winter-is-coming.dark {
+    --background: 60 8% 15%;
+    --foreground: 201 83% 81%;
+    --muted: 60 12% 19%;
+    --muted-foreground: 60 12% 69%;
+    --popover: 60 8% 12%;
+    --popover-foreground: 201 83% 91%;
+    --card: 60 8% 13%;
+    --card-foreground: 201 83% 86%;
+    --border: 0 0% 20%;
+    --input: 0 0% 23%;
+    --primary: 205 85% 78%;
+    --primary-foreground: 205 85% 18%;
+    --secondary: 205 30% 25%;
+    --secondary-foreground: 205 30% 85%;
+    --accent: 60 8% 30%;
+    --accent-foreground: 60 8% 90%;
+    --destructive: 7 98% 49%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 205 85% 78%;
+    --chart-1: 205 85% 78%;
+    --chart-2: 205 30% 25%;
+    --chart-3: 60 8% 30%;
+    --chart-4: 205 30% 28%;
+    --chart-5: 205 88% 78%;
+  }
+
+  /* Ill Nebulous Theme */
+  .ill-nebulous {
+    --background: 5 52% 100%;
+    --foreground: 5 59% 1%;
+    --muted: 125 31% 89%;
+    --muted-foreground: 125 15% 33%;
+    --popover: 5 52% 100%;
+    --popover-foreground: 5 59% 1%;
+    --card: 5 52% 100%;
+    --card-foreground: 5 59% 1%;
+    --border: 5 5% 94%;
+    --input: 5 5% 94%;
+    --primary: 5 6% 74%;
+    --primary-foreground: 5 6% 14%;
+    --secondary: 125 6% 74%;
+    --secondary-foreground: 125 6% 14%;
+    --accent: 245 6% 74%;
+    --accent-foreground: 245 6% 14%;
+    --destructive: 16 88% 34%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 5 6% 74%;
+    --chart-1: 5 6% 74%;
+    --chart-2: 125 6% 74%;
+    --chart-3: 245 6% 74%;
+    --chart-4: 125 6% 77%;
+    --chart-5: 5 9% 74%;
+    --radius: 0.5rem;
+  }
+
+  .ill-nebulous.dark {
+    --background: 5 32% 3%;
+    --foreground: 5 31% 97%;
+    --muted: 125 31% 11%;
+    --muted-foreground: 125 15% 67%;
+    --popover: 5 32% 3%;
+    --popover-foreground: 5 31% 97%;
+    --card: 5 32% 3%;
+    --card-foreground: 5 31% 97%;
+    --border: 5 5% 11%;
+    --input: 5 5% 11%;
+    --primary: 5 6% 74%;
+    --primary-foreground: 5 6% 14%;
+    --secondary: 125 6% 74%;
+    --secondary-foreground: 125 6% 14%;
+    --accent: 245 6% 74%;
+    --accent-foreground: 245 6% 14%;
+    --destructive: 16 88% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 5 6% 74%;
+    --chart-1: 5 6% 74%;
+    --chart-2: 125 6% 74%;
+    --chart-3: 245 6% 74%;
+    --chart-4: 125 6% 77%;
+    --chart-5: 5 9% 74%;
+  }
+
+  /* Ranksmith Theme */
+  .ranksmith {
+    --background: 81 40% 99%;
+    --foreground: 81 79% 5%;
+    --muted: 72 3.41% 91.35%;
+    --muted-foreground: 71.43 0% 18.77%;
+    --popover: 81 40% 99%;
+    --popover-foreground: 81 79% 5%;
+    --card: 81 40% 98%;
+    --card-foreground: 81 79% 4%;
+    --border: 81 6% 94%;
+    --input: 81 6% 94%;
+    --primary: 255.33 42.06% 58.04%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 261.82 21.57% 90%;
+    --secondary-foreground: 262.86 22.11% 18.63%;
+    --accent: 74.77 52.85% 75.88%;
+    --accent-foreground: 111 14% 10%;
+    --destructive: 13 100% 39.36%;
+    --destructive-foreground: 13 91.67% 96.31%;
+    --ring: 81 14% 70%;
+    --chart-1: 81 14% 70%;
+    --chart-2: 51 14% 70%;
+    --chart-3: 111 14% 70%;
+    --chart-4: 51 14% 73%;
+    --chart-5: 81 17% 70%;
+    --radius: 0.5rem;
+  }
+
+  .ranksmith.dark {
+    --background: 81 60% 3%;
+    --foreground: 81 39% 97%;
+    --muted: 51 23% 7%;
+    --muted-foreground: 51 13% 62%;
+    --popover: 81 60% 3%;
+    --popover-foreground: 81 39% 97%;
+    --card: 81 60% 4%;
+    --card-foreground: 81 39% 98%;
+    --border: 81 6% 10%;
+    --input: 81 6% 10%;
+    --primary: 81 14% 70%;
+    --primary-foreground: 81 14% 10%;
+    --secondary: 51 14% 70%;
+    --secondary-foreground: 51 14% 10%;
+    --accent: 111 14% 70%;
+    --accent-foreground: 111 14% 10%;
+    --destructive: 13 86% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 81 14% 70%;
+    --chart-1: 81 14% 70%;
+    --chart-2: 51 14% 70%;
+    --chart-3: 111 14% 70%;
+    --chart-4: 51 14% 73%;
+    --chart-5: 81 17% 70%;
+  }
+
+  /* Concerned Wanderlust Theme */
+  .concerned-wanderlust {
+    --background: 190 44% 99%;
+    --foreground: 190 67% 2%;
+    --muted: 160 12% 86%;
+    --muted-foreground: 160 7% 25%;
+    --popover: 190 44% 98%;
+    --popover-foreground: 190 67% 1%;
+    --card: 190 44% 98%;
+    --card-foreground: 190 67% 1%;
+    --border: 190 12% 92%;
+    --input: 190 12% 92%;
+    --primary: 190 23% 33%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 23% 33%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 220 23% 33%;
+    --accent-foreground: 220 23% 93%;
+    --destructive: 19 99% 39%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 190 23% 33%;
+    --chart-1: 190 23% 33%;
+    --chart-2: 160 23% 33%;
+    --chart-3: 220 23% 33%;
+    --chart-4: 160 23% 36%;
+    --chart-5: 190 26% 33%;
+    --radius: 0.5rem;
+  }
+
+  .concerned-wanderlust.dark {
+    --background: 190 56% 3%;
+    --foreground: 190 39% 98%;
+    --muted: 160 12% 14%;
+    --muted-foreground: 160 7% 75%;
+    --popover: 190 56% 4%;
+    --popover-foreground: 190 39% 99%;
+    --card: 190 56% 4%;
+    --card-foreground: 190 39% 99%;
+    --border: 190 12% 11%;
+    --input: 190 12% 11%;
+    --primary: 190 23% 33%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 23% 33%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 220 23% 33%;
+    --accent-foreground: 220 23% 93%;
+    --destructive: 19 99% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 190 23% 33%;
+    --chart-1: 190 23% 33%;
+    --chart-2: 160 23% 33%;
+    --chart-3: 220 23% 33%;
+    --chart-4: 160 23% 36%;
+    --chart-5: 190 26% 33%;
+  }
+
+  /* Proud Glazed Pears Theme */
+  .proud-glazed-pears {
+    --background: 36 59% 99%;
+    --foreground: 36 63% 2%;
+    --muted: 6 8% 93%;
+    --muted-foreground: 6 4% 28%;
+    --popover: 36 59% 99%;
+    --popover-foreground: 36 63% 2%;
+    --card: 36 59% 98%;
+    --card-foreground: 36 63% 1%;
+    --border: 36 9% 92%;
+    --input: 36 9% 92%;
+    --primary: 36 43% 88%;
+    --primary-foreground: 36 43% 28%;
+    --secondary: 6 43% 88%;
+    --secondary-foreground: 6 43% 28%;
+    --accent: 66 43% 88%;
+    --accent-foreground: 66 43% 8%;
+    --destructive: 20 84% 43%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 36 43% 88%;
+    --chart-1: 36 43% 88%;
+    --chart-2: 6 43% 88%;
+    --chart-3: 66 43% 88%;
+    --chart-4: 6 43% 91%;
+    --chart-5: 36 46% 88%;
+    --radius: 0.5rem;
+  }
+
+  .proud-glazed-pears.dark {
+    --background: 36 45% 0%;
+    --foreground: 36 35% 99%;
+    --muted: 6 8% 7%;
+    --muted-foreground: 6 4% 72%;
+    --popover: 36 45% 0%;
+    --popover-foreground: 36 35% 99%;
+    --card: 0 0% 1%;
+    --card-foreground: 0 0% 100%;
+    --border: 36 9% 15%;
+    --input: 36 9% 15%;
+    --primary: 36 43% 88%;
+    --primary-foreground: 36 43% 28%;
+    --secondary: 6 43% 88%;
+    --secondary-foreground: 6 43% 28%;
+    --accent: 66 43% 88%;
+    --accent-foreground: 66 43% 8%;
+    --destructive: 20 84% 49%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 36 43% 88%;
+    --chart-1: 36 43% 88%;
+    --chart-2: 6 43% 88%;
+    --chart-3: 66 43% 88%;
+    --chart-4: 6 43% 91%;
+    --chart-5: 36 46% 88%;
+  }
 }
 
 @layer base {

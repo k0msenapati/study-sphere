@@ -73,7 +73,7 @@ export const userSettings = sqliteTable("user_settings", {
 	workEndTime: text("work_end_time").default("17:00").notNull(),
 	peakHoursStart: text("peak_hours_start").default("10:00").notNull(),
 	peakHoursEnd: text("peak_hours_end").default("12:00").notNull(),
-	pomodoroEnabled: integer("pomodoro_enabled").default(false).notNull(),
+	pomodoroEnabled: integer("pomodoro_enabled").default(0).notNull(),
 	pomodoroWorkDuration: integer("pomodoro_work_duration").default(25).notNull(),
 	pomodoroBreakDuration: integer("pomodoro_break_duration").default(5).notNull(),
 	createdAt: integer("created_at").notNull(),
@@ -90,7 +90,7 @@ export const decks = sqliteTable("decks", {
 	title: text().notNull(),
 	description: text(),
 	color: text().default("#3B82F6").notNull(),
-	isPublic: integer("is_public").default(false).notNull(),
+	isPublic: integer("is_public").default(0).notNull(),
 	tags: text().default("[]").notNull(),
 	studyMaterial: text("study_material"),
 	totalCards: integer("total_cards").default(0).notNull(),
@@ -139,7 +139,7 @@ export const studySessions = sqliteTable("study_sessions", {
 	partialAnswers: integer("partial_answers").default(0).notNull(),
 	sessionType: text("session_type").default("study").notNull(),
 	timeSpent: integer("time_spent").default(0).notNull(),
-	completed: integer().default(false).notNull(),
+	completed: integer().default(0).notNull(),
 	createdAt: integer("created_at").notNull(),
 });
 

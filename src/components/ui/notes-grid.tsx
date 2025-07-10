@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from "react"
-import { motion, AnimatePresence, MotionConfig, Transition, Variant } from "motion/react"
+import { motion, AnimatePresence, MotionConfig, Transition, Variant } from "framer-motion"
 import { createPortal } from "react-dom"
 import { cn } from "@/lib/utils"
 // import useClickOutside from '@/hooks/useClickOutside';
