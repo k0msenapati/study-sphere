@@ -50,7 +50,18 @@ import {
   Hash,
   X,
   Filter,
+  Download,
 } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+} from "@/components/ui/dropdown-menu"
+import jsPDF from "jspdf"
 import { MultiSelect } from "@/components/ui/multi-select"
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false })
 
@@ -62,7 +73,7 @@ const quillFormats = ["bold", "italic", "underline", "background"]
 
 // Extended Note type with categories
 interface ExtendedNote extends Note {
-  categories?: string[]
+  categories: string[]
 }
 
 function CategoryInput({
@@ -135,12 +146,42 @@ function CategoryInput({
 }
 
 function NotesComponent() {
+  // Export note as PDF
+  const exportNoteToPDF = (note: ExtendedNote) => {
+    const doc = new jsPDF();
+    let output = note.title + "\n\n";
+    if (note.categories && note.categories.length > 0) {
+      output += `Categories: ${note.categories.join(", ")}` + "\n\n";
+    }
+    // Dump the HTML content as text, preserving paragraphs and line breaks
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = note.content;
+    let text = tempDiv.innerText || tempDiv.textContent || "";
+    // Replace multiple newlines with double newlines for paragraph spacing
+    text = text.replace(/\n{2,}/g, "\n\n");
+    // Split by paragraphs
+    const paragraphs = text.split(/\n\n+/);
+    let y = 10;
+    doc.setFontSize(12);
+    paragraphs.forEach(paragraph => {
+      const lines = doc.splitTextToSize(paragraph, 190);
+      lines.forEach((line: string | string[]) => {
+        doc.text(line, 10, y);
+        y += 8;
+      });
+      y += 4; // Extra space between paragraphs
+    });
+    doc.save(`${note.title || "note"}.pdf`);
+  }
   const { notes, createNote, updateNote, deleteNote } = useNotesContext()
   const emptyNote: ExtendedNote = {
     id: "",
     title: "",
     content: "",
     categories: [],
+    userId: 0,
+    createdAt: "",
+    modifiedAt: ""
   }
   const [newNote, setNewNote] = useState<ExtendedNote>(emptyNote)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -274,6 +315,9 @@ function NotesComponent() {
         title: args.title as string,
         content: args.content as string,
         categories,
+        userId: 0,
+        createdAt: "",
+        modifiedAt: ""
       }
       createNote(newNote)
       console.log("Note created", newNote)
@@ -610,9 +654,29 @@ function NotesComponent() {
                   )}
                 </DialogTitle>
 
-                <Button variant="ghost" size="icon" onClick={() => setIsEditMode(!isEditMode)}>
-                  {isEditMode ? <Eye className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="icon" onClick={() => setIsEditMode(!isEditMode)}>
+                    {isEditMode ? <Eye className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+                  </Button>
+                  {/* Export Dropdown */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>Export</DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent>
+                          <DropdownMenuItem onClick={() => exportNoteToPDF(selectedNote)}>
+                            To PDF
+                          </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuSub>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </DialogHeader>
 
               {/* Categories in edit mode */}

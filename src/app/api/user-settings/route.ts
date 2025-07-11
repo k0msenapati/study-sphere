@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
         pomodoroEnabled: false,
         pomodoroWorkDuration: 25,
         pomodoroBreakDuration: 5,
+        themePreference: 'system',
         createdAt: new Date(),
         updatedAt: new Date(),
       }

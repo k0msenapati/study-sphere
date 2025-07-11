@@ -1,0 +1,1 @@
+ALTER TABLE `user_settings` ADD `theme_preference` text DEFAULT 'system' NOT NULL;

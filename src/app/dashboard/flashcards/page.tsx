@@ -124,7 +124,11 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
             variant="outline"
             size="sm"
             onClick={toggleAudio}
-            className={`flex items-center gap-2 ${audioEnabled ? 'text-green-600' : 'text-gray-400'}`}
+            className={`flex items-center gap-2 border-2 ${
+              audioEnabled 
+                ? 'text-green-600 dark:text-green-400 border-green-300 dark:border-green-600 bg-green-50 dark:bg-green-950/50' 
+                : 'text-muted-foreground border-gray-300 dark:border-gray-600'
+            }`}
           >
             {audioEnabled ? (
               <>
@@ -145,7 +149,7 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
               size="sm"
               onClick={() => speakText(isFlipped ? flashcard.answer : flashcard.question)}
               disabled={isPlaying}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400"
             >
               {isPlaying ? (
                 <>
@@ -166,7 +170,7 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
               variant="outline"
               size="sm"
               onClick={stopSpeaking}
-              className="flex items-center gap-2 text-red-600"
+              className="flex items-center gap-2 text-red-600 dark:text-red-400 border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-950/50"
             >
               <HiOutlinePause className="h-4 w-4" />
               Stop
@@ -174,7 +178,7 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
           )}
         </div>
         
-        <Badge variant="secondary" className="text-sm">
+        <Badge variant="secondary" className="text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
           {isFlipped ? 'Answer' : 'Question'}
         </Badge>
       </div>
@@ -194,29 +198,29 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
             style={{ transformStyle: "preserve-3d" }}
           >
             {/* Front (Question) */}
-            <Card className="absolute inset-0 w-full h-full bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200"
+            <Card className="absolute inset-0 w-full h-full bg-gradient-to-br from-white via-blue-50 to-blue-100 dark:from-gray-800 dark:via-blue-950/80 dark:to-blue-900/60 border-2 border-blue-200 dark:border-blue-700 shadow-lg"
                   style={{ backfaceVisibility: "hidden" }}>
               <CardContent className="flex flex-col justify-center items-center h-full p-8 text-center">
                 <div className="mb-4">
-                  <Badge variant="outline" className="mb-2">Question</Badge>
+                  <Badge variant="outline" className="mb-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 border-blue-300 dark:border-blue-600">Question</Badge>
                 </div>
-                <p className="text-lg font-medium text-gray-800 leading-relaxed">
+                <p className="text-lg font-medium text-gray-900 dark:text-gray-100 leading-relaxed">
                   {flashcard.question}
                 </p>
-                <div className="mt-6 text-sm text-gray-500">
+                <div className="mt-6 text-sm text-gray-600 dark:text-gray-400">
                   Click to reveal answer
                 </div>
               </CardContent>
             </Card>
 
             {/* Back (Answer) */}
-            <Card className="absolute inset-0 w-full h-full bg-gradient-to-br from-green-50 to-teal-50 border-2 border-green-200" 
+            <Card className="absolute inset-0 w-full h-full bg-gradient-to-br from-white via-green-50 to-green-100 dark:from-gray-800 dark:via-green-950/80 dark:to-green-900/60 border-2 border-green-200 dark:border-green-700 shadow-lg" 
                   style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}>
               <CardContent className="flex flex-col justify-center items-center h-full p-8 text-center">
                 <div className="mb-4">
-                  <Badge variant="outline" className="mb-2 bg-green-100 text-green-700">Answer</Badge>
+                  <Badge variant="outline" className="mb-2 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 border-green-300 dark:border-green-600">Answer</Badge>
                 </div>
-                <p className="text-lg text-gray-800 leading-relaxed mb-6">
+                <p className="text-lg text-gray-900 dark:text-gray-100 leading-relaxed mb-6">
                   {flashcard.answer}
                 </p>
                 
@@ -228,7 +232,7 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
                       handleAnswerResult('incorrect')
                     }}
                     variant="outline"
-                    className="border-red-300 text-red-600 hover:bg-red-50"
+                    className="border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950"
                   >
                     ❌ Incorrect
                   </Button>
@@ -239,7 +243,7 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
                       handleAnswerResult('partial')
                     }}
                     variant="outline"
-                    className="border-yellow-300 text-yellow-600 hover:bg-yellow-50"
+                    className="border-yellow-300 dark:border-yellow-700 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-950"
                   >
                     ⚡ Partial
                   </Button>
@@ -250,7 +254,7 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
                       handleAnswerResult('correct')
                     }}
                     variant="outline"
-                    className="border-green-300 text-green-600 hover:bg-green-50"
+                    className="border-green-300 dark:border-green-700 text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950"
                   >
                     ✅ Correct
                   </Button>
@@ -267,12 +271,12 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-4 py-2 text-sm text-blue-700"
+            className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-900/80 border border-blue-200 dark:border-blue-700 rounded-full px-4 py-2 text-sm text-blue-700 dark:text-blue-200 shadow-md"
           >
             <div className="flex space-x-1">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+              <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
             </div>
             <span>Playing audio...</span>
           </motion.div>
@@ -280,7 +284,7 @@ const FlashcardWithAudio = ({ flashcard, onAnswerResult, size = "md" }: {
       )}
 
       {/* Help Text */}
-      <div className="mt-4 text-center text-sm text-gray-500">
+      <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
         💡 Tip: Audio will automatically play when you reveal the answer
       </div>
     </div>
@@ -531,7 +535,7 @@ const FlashcardsPage = () => {
       </CardHeader>
       <CardContent className="space-y-6">
   <CopilotTextarea
-    className="min-h-[300px] text-lg resize-none border-2 border-gray-200 focus:border-purple-400 focus:ring-purple-400 rounded-lg p-4"
+    className="min-h-[300px] text-lg resize-none border-2 border-border focus:border-primary focus:ring-primary rounded-lg p-4 bg-background text-foreground placeholder:text-muted-foreground"
     placeholder={`📚 Paste your study material here...
 
 Example:
@@ -562,13 +566,13 @@ Example:
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-green-50 border border-green-200 rounded-lg p-4"
+      className="bg-green-50 border border-green-200 rounded-lg p-4 dark:bg-green-900/20 dark:border-green-800"
     >
-      <div className="flex items-center gap-2 text-green-700">
+      <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
         <HiOutlineAcademicCap className="text-xl" />
         <span className="font-medium">Ready for next step!</span>
       </div>
-      <p className="text-green-600 mt-1">
+      <p className="text-green-600 dark:text-green-400 mt-1">
         {studyMaterial.length} characters • Estimated {Math.ceil(studyMaterial.length / 100)} concepts detected
       </p>
     </motion.div>
@@ -591,7 +595,7 @@ Example:
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-700">Number of Cards</label>
+            <label className="text-sm font-semibold text-foreground">Number of Cards</label>
             <Select value={numberOfCards} onValueChange={setNumberOfCards}>
               <SelectTrigger className="h-12">
                 <SelectValue />
@@ -607,7 +611,7 @@ Example:
           </div>
           
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-700">Difficulty Level</label>
+            <label className="text-sm font-semibold text-foreground">Difficulty Level</label>
             <Select value={difficulty} onValueChange={handleDifficultyChange}>
               <SelectTrigger className="h-12">
                 <SelectValue />
@@ -621,7 +625,7 @@ Example:
           </div>
           
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-700">Focus Area</label>
+            <label className="text-sm font-semibold text-foreground">Focus Area</label>
             <Select value={focusArea} onValueChange={handleFocusAreaChange}>
               <SelectTrigger className="h-12">
                 <SelectValue />
@@ -653,11 +657,11 @@ Example:
         {generatedFlashcards.length === 0 ? (
           <>
             <div className="p-8">
-              <FaFlipboard className="mx-auto text-6xl text-gray-300 mb-4" />
-              <p className="text-gray-600 mb-6">Ready to generate your flashcards with AI</p>
+              <FaFlipboard className="mx-auto text-6xl text-muted-foreground mb-4" />
+              <p className="text-muted-foreground mb-6">Ready to generate your flashcards with AI</p>
               {aiGenerationStatus && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                  <p className="text-blue-700 font-medium">{aiGenerationStatus}</p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 dark:bg-blue-900/20 dark:border-blue-800">
+                  <p className="text-blue-700 dark:text-blue-300 font-medium">{aiGenerationStatus}</p>
                 </div>
               )}
             </div>
@@ -679,7 +683,7 @@ Example:
               )}
             </Button>
             {!isGenerating && (
-              <p className="text-sm text-gray-500 mt-4">
+              <p className="text-sm text-muted-foreground mt-4">
                 🤖 Powered by advanced AI • Creates intelligent questions and detailed answers • 🔊 Audio support included
               </p>
             )}
@@ -693,8 +697,8 @@ Example:
             <div className="text-green-500 text-6xl">
               <HiOutlineCheckCircle className="mx-auto" />
             </div>
-            <h3 className="text-2xl font-bold text-green-700">Flashcards Generated!</h3>
-            <p className="text-gray-600">
+            <h3 className="text-2xl font-bold text-green-700 dark:text-green-400">Flashcards Generated!</h3>
+            <p className="text-muted-foreground">
               Successfully created {generatedFlashcards.length} flashcards with audio support
             </p>
             <Button 
@@ -712,17 +716,17 @@ Example:
 
   const StepStudy = () => (
     <div className="w-full max-w-4xl mx-auto space-y-6">
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center gap-3 text-2xl">
-            <FaFlipboard className="text-green-500" />
+      <Card className="bg-card dark:bg-gray-900 border-border dark:border-gray-800">
+        <CardHeader className="text-center bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/50 dark:to-blue-950/50 border-b border-border dark:border-gray-800">
+          <CardTitle className="flex items-center justify-center gap-3 text-2xl text-foreground">
+            <FaFlipboard className="text-green-500 dark:text-green-400" />
             Study Session
           </CardTitle>
-          <CardDescription className="text-lg">
+          <CardDescription className="text-lg text-muted-foreground">
             Card {currentCardIndex + 1} of {generatedFlashcards.length}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="bg-background dark:bg-gray-900">
           {currentCard && (
             <div className="space-y-6">
               {/* Updated to use FlashcardWithAudio component */}
@@ -737,19 +741,19 @@ Example:
                   variant="outline" 
                   onClick={prevCard} 
                   disabled={currentCardIndex === 0}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <MdArrowBack className="h-4 w-4" />
                   Previous
                 </Button>
                 
-                <Progress value={(currentCardIndex + 1) / generatedFlashcards.length * 100} className="flex-1 mx-4" />
+                <Progress value={(currentCardIndex + 1) / generatedFlashcards.length * 100} className="flex-1 mx-4 bg-gray-200 dark:bg-gray-700" />
                 
                 <Button 
                   variant="outline" 
                   onClick={nextCard} 
                   disabled={currentCardIndex === generatedFlashcards.length - 1}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Next
                   <MdArrowForward className="h-4 w-4" />
@@ -760,7 +764,7 @@ Example:
                 <Button 
                   variant="outline" 
                   onClick={handleExportFlashcards}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50"
                 >
                   <HiOutlineCloudArrowDown className="h-4 w-4" />
                   Export Flashcards
@@ -774,14 +778,14 @@ Example:
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-gray-50 dark:to-gray-950">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             AI Flashcards Generator
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Transform your study material into interactive flashcards powered by AI
           </p>
         </div>
@@ -789,8 +793,8 @@ Example:
         {/* Progress Bar */}
         <div className="mb-8 max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Progress</span>
-            <span className="text-sm text-gray-500">{getStepProgress()}%</span>
+            <span className="text-sm font-medium text-foreground">Progress</span>
+            <span className="text-sm text-muted-foreground">{getStepProgress()}%</span>
           </div>
           <Progress value={getStepProgress()} className="h-2" />
         </div>
@@ -838,7 +842,7 @@ Example:
         {/* Error Display */}
         {error && (
           <div className="mt-8 max-w-2xl mx-auto">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
               <p className="font-medium">Error generating flashcards:</p>
               <p className="text-sm">{error}</p>
             </div>

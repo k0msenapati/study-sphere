@@ -14,6 +14,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import Logout from "../components/auth/Logout";
+import { ThemeToggleButtonWithDB } from "@/components/theme-toggle-with-db";
 
 interface NavbarProps {
   session: {
@@ -70,6 +71,8 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
 
   const routes = [
     { text: "Dashboard", url: "/dashboard" },
+    { text: "Decks", url: "/dashboard/decks" },
+    { text: "Flashcards", url: "/dashboard/flashcards" },
     { text: "Quizzes", url: "/dashboard/quizzes" },
     { text: "Notes", url: "/dashboard/notes" },
     { text: "Todos", url: "/dashboard/todos" },
@@ -119,6 +122,13 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
                     </motion.li>
                   </Link>
                 ))}
+                <motion.li
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  style={{ opacity: routesOpacity }}
+                >
+                  <ThemeToggleButtonWithDB />
+                </motion.li>
                 <motion.li
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -191,6 +201,16 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
                   </Link>
                 </motion.li>
               ))}
+              <motion.li
+                variants={{
+                  hidden: { opacity: 0, x: -30 },
+                  visible: { opacity: 1, x: 0 },
+                  exit: { opacity: 0, x: -30 },
+                }}
+                className="flex justify-center py-2"
+              >
+                <ThemeToggleButtonWithDB />
+              </motion.li>
               <motion.li
                 variants={{
                   hidden: { opacity: 0, x: -30 },

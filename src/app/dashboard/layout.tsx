@@ -1,55 +1,73 @@
 // src/app/dashboard/layout.tsx
+"use client"
+
 import { CopilotKit } from "@copilotkit/react-core"
 import { CopilotPopup } from "@copilotkit/react-ui"
-import { getSession } from '@/lib/auth/jwt'
 import { redirect } from 'next/navigation'
-import AuthenticatedNavbar from "@/components/navbar"
+import { Sidebar } from "@/components/dashboard/sidebar"
 import { FlashcardsProvider } from "@/lib/flashcards/flashcards-provider"
 import { TasksProvider } from "@/lib/tasks/tasks-provider"
+import { FlowchartProvider } from "@/lib/flowcharts/flowcharts-provider"
 import "@copilotkit/react-ui/styles.css"
+import { useEffect, useState } from "react"
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const session = await getSession()
+  const [session, setSession] = useState<{ userId: number; email: string } | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const response = await fetch('/api/auth/session')
+        if (response.ok) {
+          const sessionData = await response.json()
+          setSession(sessionData)
+        } else {
+          redirect('/auth/login')
+        }
+      } catch (error) {
+        console.error('Failed to fetch session:', error)
+        redirect('/auth/login')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSession()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
   if (!session) {
     redirect('/auth/login')
-  }  return (
+    return null
+  }
+
+  return (
     <CopilotKit runtimeUrl="/api/copilotkit">
       <FlashcardsProvider>
         <TasksProvider>
-        <div className="h-full w-full bg-white text-slate-900 light" style={{
-          '--background': '0 0% 100%',
-          '--foreground': '222 84% 4.9%',
-          '--card': '0 0% 100%',
-          '--card-foreground': '222 84% 4.9%',
-          '--popover': '0 0% 100%',
-          '--popover-foreground': '222 84% 4.9%',
-          '--primary': '217 91% 60%',
-          '--primary-foreground': '210 40% 98%',
-          '--secondary': '210 40% 96%',
-          '--secondary-foreground': '222 84% 4.9%',
-          '--muted': '210 40% 96%',
-          '--muted-foreground': '215 16% 47%',
-          '--accent': '210 40% 96%',
-          '--accent-foreground': '222 84% 4.9%',
-          '--destructive': '0 84% 60%',
-          '--destructive-foreground': '210 40% 98%',
-          '--border': '214 32% 91%',
-          '--input': '214 32% 91%',
-          '--ring': '217 91% 60%'
-        } as React.CSSProperties}>
-          <AuthenticatedNavbar session={session} />
-          <div className="relative overflow-hidden bg-white">
-            <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-              <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]"></div>
+          <FlowchartProvider>
+            <div className="flex h-screen bg-background">
+              <Sidebar session={session} />
+              <div className="flex-1 flex flex-col overflow-hidden">
+                <main className="flex-1 overflow-y-auto bg-background">
+                  {children}
+                </main>
+              </div>
+              <CopilotPopup />
             </div>
-            <main className="relative z-10 bg-white">{children}</main>
-          </div>
-          <CopilotPopup />
-        </div>
+          </FlowchartProvider>
         </TasksProvider>
       </FlashcardsProvider>
     </CopilotKit>

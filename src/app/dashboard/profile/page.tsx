@@ -14,6 +14,7 @@ import { AvatarUpload } from "@/components/profile/AvatarUpload"
 import { PasswordChange } from "@/components/profile/PasswordChange"
 import { AccountSettings } from "@/components/profile/AccountSettings"
 import { StudyStats } from "@/components/profile/StudyStats"
+import { ThemeSettings } from "@/components/profile/ThemeSettings"
 
 interface ProfileData {
   id: number
@@ -197,7 +198,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-muted rounded w-1/4"></div>
@@ -215,7 +216,7 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
             <p className="text-muted-foreground">Failed to load profile. Please try again.</p>
@@ -226,7 +227,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <motion.div
@@ -235,8 +236,8 @@ export default function ProfilePage() {
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile</h1>
-          <p className="text-gray-600">Manage your account, preferences, and study progress.</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Profile</h1>
+          <p className="text-muted-foreground">Manage your account, preferences, and study progress.</p>
         </motion.div>
 
         {/* Profile Overview Card */}
@@ -246,10 +247,10 @@ export default function ProfilePage() {
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <Card className="border-none shadow-lg bg-white/80 backdrop-blur-sm">
+          <Card className="border shadow-lg bg-card">
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
+                <Avatar className="h-24 w-24 border-4 border-border shadow-lg">
                   <AvatarImage src={profile.avatarUrl} alt={profile.name} />
                   <AvatarFallback className="text-xl font-semibold bg-primary/10">
                     {getInitials(profile.name)}
@@ -258,7 +259,7 @@ export default function ProfilePage() {
 
                 <div className="flex-1 text-center md:text-left space-y-2">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-foreground">
                       {profile.displayName || profile.name}
                     </h2>
                     {profile.displayName && (
@@ -278,17 +279,17 @@ export default function ProfilePage() {
                   </div>
 
                   {profile.bio && (
-                    <p className="text-gray-600 max-w-md">{profile.bio}</p>
+                    <p className="text-muted-foreground max-w-md">{profile.bio}</p>
                   )}
 
                   <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                    <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+                    <Badge variant="secondary" className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
                       {profile.studyStreak} day streak
                     </Badge>
-                    <Badge variant="secondary" className="bg-green-100 text-green-700">
+                    <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300">
                       {profile.totalNotes} notes
                     </Badge>
-                    <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
                       {profile.completedTasks}/{profile.totalTasks} tasks
                     </Badge>
                   </div>
@@ -300,7 +301,7 @@ export default function ProfilePage() {
 
         {/* Profile Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 bg-white/80 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 bg-card border border-border">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               <span className="hidden sm:inline">Overview</span>
@@ -355,7 +356,8 @@ export default function ProfilePage() {
             />
           </TabsContent>
 
-          <TabsContent value="settings">
+          <TabsContent value="settings" className="space-y-6">
+            <ThemeSettings />
             <AccountSettings
               settings={settings}
               onUpdateSettings={handleSettingsUpdate}

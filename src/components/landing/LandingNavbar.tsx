@@ -30,7 +30,7 @@ export default function LandingNavbar() {
               <div className="absolute -inset-2 rounded-xl bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 opacity-60 blur-lg group-hover:opacity-80 transition-all duration-500 animate-pulse"></div>
               
               {/* Logo container */}
-              <div className="relative flex items-center space-x-2 rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 px-4 py-2 border border-primary/30 shadow-lg">
+              <div className="relative flex items-center space-x-2 rounded-xl bg-background/80 backdrop-blur-sm px-4 py-2 border border-primary/30 shadow-lg">
                 <div className="relative">
                   <Sparkles className="h-6 w-6 text-blue-400 animate-spin" style={{ animationDuration: '3s' }} />
                   <div className="absolute inset-0 h-6 w-6 bg-blue-400 rounded-full blur-sm opacity-30 animate-ping"></div>
@@ -68,6 +68,13 @@ export default function LandingNavbar() {
 
         {/* Desktop CTA Buttons */}
         <div className="hidden md:flex items-center space-x-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+          </motion.div>
+
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -152,6 +159,7 @@ export default function LandingNavbar() {
           ))}
           
           <div className="pt-4 space-y-3">
+            
             <Button variant="ghost" asChild className="w-full justify-start">
               <Link href="/dashboard" onClick={() => setIsOpen(false)}>
                 Sign In

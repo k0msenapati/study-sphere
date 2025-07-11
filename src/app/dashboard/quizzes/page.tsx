@@ -51,12 +51,33 @@ function QuizzesComponent() {
       description?: string
       questions: Question[]
     }) => {
-      const newQuiz: Quiz = {
-        id: Math.random().toString(36).substring(7),
-        title: args.title as string,
-        description: args.description as string,
-        questions: args.questions as Question[],
+      // Check if a quiz with the same title already exists
+      const existingQuiz = quizzes.find(quiz =>
+        quiz.title.toLowerCase().trim() === args.title.toLowerCase().trim()
+      )
+
+      if (existingQuiz) {
+        throw new Error(`A quiz with the title "${args.title}" already exists. Please choose a different title.`)
       }
+
+      // Generate unique ID using timestamp and random string
+      const generateUniqueId = () => {
+        return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`
+      }
+
+      // Ensure questions have unique IDs
+      const questionsWithIds = (args.questions as Question[]).map((question, index) => ({
+        ...question,
+        id: question.id || `q-${generateUniqueId()}-${index}`
+      }))
+
+      const newQuiz: Quiz = {
+        id: `quiz-${generateUniqueId()}`,
+        title: args.title.trim(),
+        description: args.description?.trim() || "",
+        questions: questionsWithIds,
+      }
+
       createQuiz(newQuiz)
     },
   })
