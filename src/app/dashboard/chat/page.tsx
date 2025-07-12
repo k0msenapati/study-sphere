@@ -198,7 +198,7 @@ export default function StudySphereChat() {
             {[
               { icon: Zap, label: "Study Tips", desc: "Get effective study strategies" },
               { icon: FileText, label: "Essay Help", desc: "Writing and structure guidance" },
-              { icon: Plus, label: "Math Problems", desc: "Step-by-step solutions" },
+              { icon: Plus, label: "Create Quiz", desc: "Generate quiz questions" },
               { icon: Image, label: "Concept Maps", desc: "Visual learning aids" }
             ].map((action, index) => (
               <button
@@ -216,9 +216,9 @@ export default function StudySphereChat() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              "Explain quantum physics concepts",
+              "Create a quiz about quantum physics",
               "Help with essay writing",
-              "Solve math problems step by step",
+              "Generate quiz questions from my notes",
               "Create study schedules"
             ].map((suggestion, index) => (
               <button

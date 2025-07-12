@@ -17,16 +17,28 @@ Study Sphere is an AI-powered learning platform built with Next.js, React, and C
 - Progress tracking
 
 ### ❓ Quiz System
-- Pre-built quiz collection
-- Timed challenges (5-minute timer)
-- Score tracking
-- Multiple choice format
+- **AI Quiz Generation**: Create custom quizzes from your study material
+- **Multiple Creation Methods**: 
+  - Step-by-step quiz generator (similar to flashcards)
+  - AI chat integration for quick quiz creation
+- **Customizable Settings**:
+  - Number of questions (5-25)
+  - Difficulty levels (easy, medium, hard)  
+  - Question types (multiple choice, true/false, mixed)
+- **Pre-built quiz collection**
+- **Timed challenges** (5-minute timer)
+- **Score tracking** and progress analytics
+- **Interactive preview** before saving
 
 ### 🤖 Study Buddy Chat
-- AI conversation powered by CopilotKit
-- Context-aware responses
-- Chat history persistence
-- Study assistance and explanations
+- **AI conversation** powered by CopilotKit with Groq integration
+- **Context-aware responses** for study assistance
+- **Chat history persistence** with deletion options
+- **Study content generation**:
+  - Create flashcards from conversations
+  - Generate quiz questions from material
+  - Get study explanations and tips
+- **Quick action suggestions** for common study tasks
 
 ### 📋 Task Management
 - Create tasks with title, description, priority, due dates
