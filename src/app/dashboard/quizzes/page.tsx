@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Trash2, Play, Info } from "lucide-react"
+import { Trash2, Play, Info, Sparkles, Plus } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 function QuizzesComponent() {
@@ -142,29 +142,59 @@ function QuizzesComponent() {
             ✏️ Create, ▶️ play, and ⚙️ manage quizzes.
           </p>
         </div>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Info className="h-5 w-5" />
-                <span className="sr-only">Quiz Information</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs">
-              <p>Quizzes are a great way to test your knowledge and learn new things.</p>
-              <p className="mt-2">
-                Playing quizzes can help improve memory retention and make learning more engaging.
-              </p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div className="flex items-center gap-3">
+          <Button 
+            onClick={() => router.push('/dashboard/quizzes/generate')}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Sparkles className="h-5 w-5 mr-2" />
+            Generate AI Quiz
+          </Button>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Info className="h-5 w-5" />
+                  <span className="sr-only">Quiz Information</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Quizzes are a great way to test your knowledge and learn new things.</p>
+                <p className="mt-2">
+                  Playing quizzes can help improve memory retention and make learning more engaging.
+                </p>
+                <p className="mt-2 font-semibold">
+                  💡 Use the AI Quiz Generator to create quizzes from your study material!
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
       {quizzes.length === 0 ? (
         <Card>
-          <CardContent className="pt-6">
-            <p className="text-muted-foreground text-center">
-              You don&apos;t have any quizzes yet.
-            </p>
+          <CardContent className="pt-6 text-center">
+            <div className="space-y-4">
+              <div className="text-muted-foreground">
+                <p className="text-lg mb-2">You don&apos;t have any quizzes yet.</p>
+                <p className="text-sm">Get started by creating your first quiz!</p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-6">
+                <Button 
+                  onClick={() => router.push('/dashboard/quizzes/generate')}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  Generate AI Quiz
+                </Button>
+                
+                <p className="text-sm text-muted-foreground">
+                  or create one via chat
+                </p>
+              </div>
+            </div>
           </CardContent>
         </Card>
       ) : (
