@@ -57,6 +57,27 @@ export default function LandingFooter() {
               ))}
             </motion.div>
           </div>
+          {/* Footer navigation links */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 justify-center items-start text-center md:text-left">
+            <div className="flex flex-col space-y-2">
+              <span className="font-semibold text-foreground/80">Legal</span>
+              <Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link>
+              <Link href="/cookie-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">Cookie Policy</Link>
+              <Link href="/disclaimer" className="text-sm text-muted-foreground hover:text-primary transition-colors">Disclaimer</Link>
+              <Link href="/accessibility" className="text-sm text-muted-foreground hover:text-primary transition-colors">Accessibility</Link>
+            </div>
+            <div className="flex flex-col space-y-2">
+              <span className="font-semibold text-foreground/80">Company & Support</span>
+              <Link href="/about" className="text-sm text-muted-foreground hover:text-primary transition-colors">About</Link>
+              <Link href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">Contact</Link>
+              <Link href="/faq" className="text-sm text-muted-foreground hover:text-primary transition-colors">FAQ</Link>
+              <Link href="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">Blog</Link>
+              <Link href="/careers" className="text-sm text-muted-foreground hover:text-primary transition-colors">Careers</Link>
+              <Link href="/documentation" className="text-sm text-muted-foreground hover:text-primary transition-colors">Documentation</Link>
+              <Link href="/community-guidelines" className="text-sm text-muted-foreground hover:text-primary transition-colors">Community Guidelines</Link>
+            </div>
+          </div>
         </div>
 
         {/* Bottom section */}
