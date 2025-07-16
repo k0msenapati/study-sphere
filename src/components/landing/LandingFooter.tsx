@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Github, Twitter, Linkedin, Mail, Heart } from "lucide-react"
+import Image from "next/image"
 
 const socialLinks = [
   { name: "GitHub", href: "https://github.com/kom-senapati", icon: Github },
@@ -24,10 +25,17 @@ export default function LandingFooter() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <Link href="/" className="flex items-center space-x-2">
+              <Link href="/" className="flex items-center space-x-3">
                 <div className="relative">
                   <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 opacity-75 blur"></div>
-                  <div className="relative rounded-lg bg-background px-3 py-1">
+                  <div className="relative rounded-lg bg-background px-3 py-2 flex items-center space-x-2">
+                    <Image
+                      src="/study-sphere-logo1.png"
+                      alt="Study Sphere Logo"
+                      width={24}
+                      height={24}
+                      className="h-6 w-6"
+                    />
                     <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                       Study Sphere
                     </span>

@@ -13,6 +13,7 @@ import {
 import { FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import Logout from "../components/auth/Logout";
 import { ThemeToggleButtonWithDB } from "@/components/theme-toggle-with-db";
 
@@ -99,7 +100,13 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
           onClick={() => isMobile && setSidebarOpen(true)}
           className="bg-black rounded-lg max-w-[50px] min-w-[50px] flex items-center justify-center cursor-pointer"
         >
-          <div className="h-4 rounded w-4 bg-white rotate-45" />
+          <Image
+            src="/study-sphere-logo1.png"
+            alt="Study Sphere Logo"
+            width={24}
+            height={24}
+            className="h-6 w-6"
+          />
         </motion.div>
 
         {!isMobile && (
@@ -153,7 +160,16 @@ const Navbar: React.FC<NavbarProps> = ({ session }) =>  {
           >
             {/* Title and Close */}
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold tracking-wide">Study Sphere</h2>
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/study-sphere-logo1.png"
+                  alt="Study Sphere Logo"
+                  width={32}
+                  height={32}
+                  className="h-8 w-8"
+                />
+                <h2 className="text-2xl font-semibold tracking-wide">Study Sphere</h2>
+              </div>
               <button
                 onClick={() => setSidebarOpen(false)}
                 className="text-white text-2xl"

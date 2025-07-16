@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 import {
   LayoutDashboard,
   BookOpen,
@@ -157,8 +158,14 @@ export function Sidebar({ session }: SidebarProps) {
                   {/* Mobile header */}
                   <div className="flex h-16 items-center justify-between border-b border-border px-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                        <BookOpen className="h-5 w-5" />
+                      <div className="flex h-9 w-9 items-center justify-center">
+                        <Image
+                          src="/study-sphere-logo1.png"
+                          alt="Study Sphere Logo"
+                          width={24}
+                          height={24}
+                          className="h-6 w-6"
+                        />
                       </div>
                       <span className="text-lg font-semibold">StudySphere</span>
                     </div>
@@ -256,8 +263,14 @@ export function Sidebar({ session }: SidebarProps) {
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.2, delay: 0.1 }}
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <BookOpen className="h-4 w-4" />
+              <div className="flex h-8 w-8 items-center justify-center">
+                <Image
+                  src="/study-sphere-logo1.png"
+                  alt="Study Sphere Logo"
+                  width={20}
+                  height={20}
+                  className="h-5 w-5"
+                />
               </div>
               <span className="font-semibold">StudySphere</span>
             </motion.div>

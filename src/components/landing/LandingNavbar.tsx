@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import { Sparkles, Menu, X } from "lucide-react"
 import { useState } from "react"
+import Image from "next/image"
 
 export default function LandingNavbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -32,8 +33,14 @@ export default function LandingNavbar() {
               {/* Logo container */}
               <div className="relative flex items-center space-x-2 rounded-xl bg-background/80 backdrop-blur-sm px-4 py-2 border border-primary/30 shadow-lg">
                 <div className="relative">
-                  <Sparkles className="h-6 w-6 text-blue-400 animate-spin" style={{ animationDuration: '3s' }} />
-                  <div className="absolute inset-0 h-6 w-6 bg-blue-400 rounded-full blur-sm opacity-30 animate-ping"></div>
+                  <Image
+                    src="/study-sphere-logo1.png"
+                    alt="Study Sphere Logo"
+                    width={32}
+                    height={32}
+                    className="h-8 w-8"
+                  />
+                  <div className="absolute inset-0 h-8 w-8 bg-blue-400 rounded-full blur-sm opacity-30 animate-ping"></div>
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
                   Study Sphere

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -46,7 +47,19 @@ export default function Login() {
       transition={{ duration: 0.5 }}
       className="bg-white p-8 shadow-xl rounded-2xl space-y-6"
     >
-      <h2 className="text-3xl font-bold text-center text-gray-800">Welcome Back</h2>
+      <div className="text-center space-y-4">
+        <div className="flex justify-center">
+          <Image
+            src="/study-sphere-logo1.png"
+            alt="Study Sphere Logo"
+            width={64}
+            height={64}
+            className="h-16 w-16"
+          />
+        </div>
+        <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
+        <p className="text-gray-600">Sign in to Study Sphere</p>
+      </div>
 
       {error && (
         <motion.div
