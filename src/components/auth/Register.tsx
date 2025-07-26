@@ -11,7 +11,25 @@ export default function Register() {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [passwordStrength, setPasswordStrength] = useState('');
   const router = useRouter();
+
+    // The func for checking password strength.
+    const checkPasswordStrength = (password: string) => {
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const lengthCheck = password.length >= 8;
+
+    if (lengthCheck && hasUpperCase && hasLowerCase && hasNumbers && hasSpecial) {
+      return 'Strong';
+    } else if (lengthCheck && ((hasUpperCase && hasLowerCase) || hasNumbers)) {
+      return 'Moderate';
+    } else {
+      return 'Weak';
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,11 +126,25 @@ export default function Register() {
           type="password"
           id="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setPasswordStrength(checkPasswordStrength(e.target.value)); // 🔍 Set password strength dynamically
+          }}
           required
           minLength={6}
           className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
         />
+         {password && (
+          <p className={`text-sm mt-1 ${
+            passwordStrength === 'Strong'
+              ? 'text-green-600'
+              : passwordStrength === 'Moderate'
+              ? 'text-yellow-600'
+              : 'text-red-600'
+          }`}>
+            Strength: {passwordStrength}
+          </p>
+        )}
       </div>
 
       <button
