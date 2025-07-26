@@ -7,9 +7,18 @@ import { eq } from 'drizzle-orm';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, name } = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid JSON in request body' },
+        { status: 400 }
+      );
+    }
 
-    // Validate input
+    const { email, password, name } = body;
+
     if (!email || !password || !name) {
       return NextResponse.json(
         { error: 'Email, password, and name are required' },
@@ -17,8 +26,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user already exists
-    const existingUser = await db.select().from(users).where(eq(users.email, email));
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email));
+
     if (existingUser.length > 0) {
       return NextResponse.json(
         { error: 'User already exists' },
@@ -26,23 +38,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash password and create user
     const hashedPassword = await hashPassword(password);
-    const newUser = await db.insert(users).values({
-      email,
-      password: hashedPassword,
-      name,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }).returning();
 
-    // Set session
-    await setSession(newUser[0].id, newUser[0].email);
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        email,
+        password: hashedPassword,
+        name,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
 
-    return NextResponse.json({
-      message: 'User created successfully',
-      user: { id: newUser[0].id, email: newUser[0].email, name: newUser[0].name }
-    });
+    await setSession(newUser.id, newUser.email);
+
+    return NextResponse.json(
+      {
+        message: 'User created successfully',
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+        },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(
