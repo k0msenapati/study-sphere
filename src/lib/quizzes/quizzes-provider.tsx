@@ -434,8 +434,9 @@ export const QuizzesProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setQuizzes([])
     setBookmarks([])
     setCompletions([])
-    // Force reload of sample quizzes
-    window.location.reload()
+    // Reload sample quizzes without page reload
+    const sampleQuizzes = fetchSampleQuizzes()
+    setQuizzes(sampleQuizzes)
   }
 
   const checkLocalStorageStatus = () => {
