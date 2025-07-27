@@ -219,7 +219,7 @@ export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
           <label className="text-sm font-semibold text-foreground">Study Material</label>
           <CopilotTextarea
             value={studyMaterial}
-            onChange={(e) => setStudyMaterial(e.target.value)}
+            onValueChange={(value) => setStudyMaterial(value)}
             placeholder="Paste your study material here... (e.g., notes, textbook content, articles)"
             className="min-h-[200px] resize-none"
           />
