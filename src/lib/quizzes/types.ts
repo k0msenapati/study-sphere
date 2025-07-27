@@ -26,7 +26,7 @@ export type QuizTopic = {
 
 export type Quiz = {
   id: string
-  userId: number
+  userId?: string
   subjectId: string
   topicId: string
   title: string
