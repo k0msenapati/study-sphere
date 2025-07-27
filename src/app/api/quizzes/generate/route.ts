@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     let questions: Question[]
 
-    if (groq && groqApiKey) {
+    if (groq) {
       // Use AI to generate questions
       try {
         questions = await generateAIQuestions(body)
