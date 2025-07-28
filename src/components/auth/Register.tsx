@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-// ✅ Wrapped with useCallback to avoid recreation on each render
 const checkPasswordStrength = useCallback((password: string) => {
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
@@ -31,14 +30,13 @@ export default function Register() {
   const [passwordStrength, setPasswordStrength] = useState('');
   const router = useRouter();
 
-  // ✅ Debounce password strength check for better performance
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (password) {
         const strength = checkPasswordStrength(password);
         setPasswordStrength(strength);
       }
-    }, 300); //✅ 300ms debounce 
+    }, 300); // 300ms debounce 
 
     return () => clearTimeout(timeout);
   }, [password, checkPasswordStrength]);
