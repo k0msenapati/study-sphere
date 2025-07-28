@@ -151,6 +151,7 @@ export default function Register() {
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
+          aria-label="Toggle password visibility"
           className="absolute right-3 top-9 text-gray-500 hover:text-gray-700 focus:outline-none"
         >
           {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
