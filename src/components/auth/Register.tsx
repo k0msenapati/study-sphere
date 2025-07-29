@@ -6,7 +6,10 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 
-const checkPasswordStrength = useCallback(password: string) => {
+
+
+export default function Register() {
+  const checkPasswordStrength = useCallback((password: string) => {
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
   const hasNumbers = /[0-9]/.test(password);
@@ -20,9 +23,7 @@ const checkPasswordStrength = useCallback(password: string) => {
   } else {
     return 'Weak';
   }
-};
-
-export default function Register() {
+},[]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
