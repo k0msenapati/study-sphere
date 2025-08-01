@@ -4,8 +4,10 @@ import Groq from 'groq-sdk'
 interface QuizGenerationRequest {
   studyMaterial: string
   numberOfQuestions: number
-  difficulty: 'easy' | 'medium' | 'hard'
+  difficulty: 'beginner' | 'intermediate' | 'advanced'
   quizType: 'multiple-choice' | 'true-false' | 'mixed'
+  subjectId: string
+  topicId: string
 }
 
 interface Question {
@@ -34,9 +36,15 @@ export async function POST(request: NextRequest) {
 
     if (groq) {
       // Use AI to generate questions
-      questions = await generateAIQuestions(body)
+      try {
+        questions = await generateAIQuestions(body)
+      } catch (error) {
+        console.error('AI generation failed, using fallback:', error)
+        questions = generateSampleQuestions(studyMaterial, numberOfQuestions, difficulty, quizType)
+      }
     } else {
-      // Fallback to sample questions
+      // Fallback to sample questions based on the actual study material
+      console.log('No API key provided, using fallback questions')
       questions = generateSampleQuestions(studyMaterial, numberOfQuestions, difficulty, quizType)
     }
 
@@ -46,7 +54,8 @@ export async function POST(request: NextRequest) {
       metadata: {
         difficulty,
         quizType,
-        numberOfQuestions: questions.length
+        numberOfQuestions: questions.length,
+        aiGenerated: groq && groqApiKey ? true : false
       }
     })
 
@@ -78,6 +87,8 @@ Requirements:
 - For multiple choice questions: provide 4 options (A, B, C, D)
 - For true/false questions: provide 2 options (True, False)
 - For mixed type: use a combination of multiple choice and true/false
+- Questions MUST be based on the provided study material content
+- Make sure the questions test understanding of the key concepts in the study material
 
 Format your response as a JSON array with this structure:
 [
@@ -94,101 +105,79 @@ Make sure the questions test understanding of the key concepts in the study mate
     const completion = await groq.chat.completions.create({
       messages: [
         {
-          role: "system",
-          content: "You are an expert educator who creates high-quality quiz questions. Always respond with valid JSON only."
-        },
-        {
           role: "user",
-          content: prompt
-        }
+          content: prompt,
+        },
       ],
-      model: "gemma2-9b-it",
+      model: "llama3-8b-8192",
       temperature: 0.7,
-      max_tokens: 2000,
+      max_tokens: 4000,
     })
 
-    const content = completion.choices[0]?.message?.content
-    if (!content) {
+    const response = completion.choices[0]?.message?.content
+    if (!response) {
       throw new Error('No response from AI')
     }
 
-    // Parse the JSON response
-    const questions = JSON.parse(content)
-    
-    // Validate the structure
-    if (!Array.isArray(questions)) {
-      throw new Error('Invalid response format')
+    // Try to parse JSON from the response
+    const jsonMatch = response.match(/\[[\s\S]*\]/)
+    if (jsonMatch) {
+      const questions = JSON.parse(jsonMatch[0])
+      return questions
+    } else {
+      // If JSON parsing fails, fall back to sample questions
+      console.warn('Failed to parse AI response as JSON, using fallback')
+      return generateSampleQuestions(studyMaterial, numberOfQuestions, difficulty, quizType)
     }
-
-    return questions.map((q: any) => ({
-      question: q.question,
-      options: q.options,
-      correctOption: q.correctOption
-    }))
-
   } catch (error) {
     console.error('AI generation failed:', error)
-    // Fallback to sample questions if AI fails
-    return generateSampleQuestions(request.studyMaterial, numberOfQuestions, difficulty, quizType)
+    // Fall back to sample questions
+    return generateSampleQuestions(studyMaterial, numberOfQuestions, difficulty, quizType)
   }
 }
 
-function generateSampleQuestions(
-  studyMaterial: string,
-  numberOfQuestions: number,
-  difficulty: string,
-  quizType: string
-): Question[] {
-  // This is a placeholder implementation
-  // In a real app, this would use AI to analyze the study material and generate questions
-  
-  const sampleQuestions: Question[] = []
-  
-  // Extract some key concepts from the study material for more relevant questions
+function generateSampleQuestions(studyMaterial: string, numberOfQuestions: number, difficulty: string, quizType: string): Question[] {
+  // Extract key words from study material for more relevant questions
   const words = studyMaterial.toLowerCase().split(/\s+/)
-  const keyTerms = words.filter(word => word.length > 5).slice(0, 10)
+  const keyWords = words.filter(word => 
+    word.length > 4 && 
+    !['this', 'that', 'with', 'from', 'they', 'were', 'been', 'have', 'will', 'would', 'could', 'should', 'about', 'their', 'there', 'these', 'those'].includes(word)
+  ).slice(0, 10)
+
+  const questions: Question[] = []
   
   for (let i = 0; i < numberOfQuestions; i++) {
-    if (quizType === 'true-false' || (quizType === 'mixed' && i % 3 === 0)) {
-      // Generate True/False question
-      const statement = keyTerms.length > 0 
-        ? `The concept of "${keyTerms[i % keyTerms.length]}" is fundamental to this topic.`
-        : `This is a true/false question based on your study material.`
-      
-      sampleQuestions.push({
-        question: statement,
+    const questionNumber = i + 1
+    const keyWord = keyWords[i % keyWords.length] || 'topic'
+    
+    if (quizType === 'true-false' || (quizType === 'mixed' && i % 2 === 0)) {
+      // True/False question
+      const isTrue = Math.random() > 0.5
+      questions.push({
+        question: `Based on the study material, is the following statement about ${keyWord} ${isTrue ? 'correct' : 'incorrect'}?`,
         options: ['True', 'False'],
-        correctOption: Math.random() > 0.5 ? 'True' : 'False'
+        correctOption: isTrue ? 'True' : 'False'
       })
     } else {
-      // Generate Multiple Choice question
-      const questionTemplates = [
-        `What is the main concept related to ${keyTerms[i % keyTerms.length] || 'the topic'}?`,
-        `Which of the following best describes ${keyTerms[(i + 1) % keyTerms.length] || 'the main idea'}?`,
-        `According to the study material, what is important about ${keyTerms[(i + 2) % keyTerms.length] || 'this subject'}?`,
-        `What can be concluded about ${keyTerms[(i + 3) % keyTerms.length] || 'the topic'} from the given information?`
+      // Multiple choice question
+      const correctAnswer = `The correct answer about ${keyWord}`
+      const incorrectAnswers = [
+        `An incorrect option about ${keyWord}`,
+        `Another wrong answer regarding ${keyWord}`,
+        `A false statement about ${keyWord}`
       ]
       
-      const question = questionTemplates[i % questionTemplates.length]
+      const allOptions = [correctAnswer, ...incorrectAnswers]
+      // Shuffle options
+      const shuffledOptions = allOptions.sort(() => Math.random() - 0.5)
       
-      const options = [
-        'This is the correct answer based on your study material',
-        'This is an incorrect but plausible option',
-        'This is another incorrect option',
-        'This is the fourth option for multiple choice'
-      ]
-      
-      // Shuffle options to randomize correct answer position
-      const shuffledOptions = [...options].sort(() => Math.random() - 0.5)
-      const correctOption = shuffledOptions[0]
-      
-      sampleQuestions.push({
-        question,
+      questions.push({
+        question: `What is the most accurate statement about ${keyWord} based on the study material?`,
         options: shuffledOptions,
-        correctOption
+        correctOption: correctAnswer
       })
     }
   }
   
-  return sampleQuestions
+  return questions
 }
