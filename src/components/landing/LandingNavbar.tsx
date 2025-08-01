@@ -104,13 +104,13 @@ export default function LandingNavbar() {
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Button asChild className="relative group overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 border-0 shadow-lg shadow-blue-500/25 hover:shadow-purple-500/25 transition-all duration-300">
+            <Button asChild className="relative group overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 border-0 shadow-lg shadow-blue-500/25 text-white transition-all duration-300 hover:from-blue-600 hover:to-purple-700">
               <Link href="/dashboard" className="relative z-10 flex items-center gap-2">
                 <span>Get Started</span>
                 <Sparkles className="h-4 w-4 group-hover:rotate-180 transition-transform duration-500" />
                 
                 {/* Animated background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 opacity-0 group-hover:opacity-0 text-white transition-opacity duration-500"></div>
               </Link>
             </Button>
           </motion.div>
