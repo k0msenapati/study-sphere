@@ -23,14 +23,20 @@ export function useNotes() {
     }
   };
 
+  // Define the expected API response item type for bookmarks
+  interface NoteBookmarkApiResponseItem {
+    bookmark: NoteBookmark;
+    note: Note;
+  }
+
   const fetchBookmarks = async () => {
     try {
       const res = await fetch("/api/notes/bookmarks");
       if (res.ok) {
-        const data = await res.json();
+        const data: NoteBookmarkApiResponseItem[] = await res.json();
         // The API returns an array of objects with bookmark and note properties
         // We need to extract just the bookmark objects
-        const bookmarkObjects = data.map((item: any) => item.bookmark);
+        const bookmarkObjects = data.map((item) => item.bookmark);
         setBookmarks(bookmarkObjects);
       }
     } catch (err) {
