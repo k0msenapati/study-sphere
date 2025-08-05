@@ -26,6 +26,14 @@ export const notes = sqliteTable('notes', {
   modifiedAt: integer('modified_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
+// --- Note Bookmarks Table ---
+export const noteBookmarks = sqliteTable('note_bookmarks', {
+  id: text('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  noteId: text('note_id').notNull().references(() => notes.id, { onDelete: 'cascade' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+});
+
 export const chats = sqliteTable('chats', {
   id: text('id').primaryKey(), // UUID
   userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -153,6 +161,9 @@ export const selectUserSchema = createSelectSchema(users);
 export const insertNoteSchema = createInsertSchema(notes);
 export const selectNoteSchema = createSelectSchema(notes);
 
+export const insertNoteBookmarkSchema = createInsertSchema(noteBookmarks);
+export const selectNoteBookmarkSchema = createSelectSchema(noteBookmarks);
+
 export const insertChatSchema = createInsertSchema(chats);
 export const selectChatSchema = createSelectSchema(chats);
 
@@ -271,6 +282,9 @@ export type NewUser = typeof users.$inferInsert;
 
 export type Note = typeof notes.$inferSelect;
 export type NewNote = typeof notes.$inferInsert;
+
+export type NoteBookmark = typeof noteBookmarks.$inferSelect;
+export type NewNoteBookmark = typeof noteBookmarks.$inferInsert;
 
 export type Chat = typeof chats.$inferSelect;
 export type NewChat = typeof chats.$inferInsert;
