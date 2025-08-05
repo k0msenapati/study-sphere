@@ -14,5 +14,5 @@ export type NoteBookmark = {
   id: string;
   userId: number;
   noteId: string;
-  createdAt: number;
+  createdAt: string;
 };
