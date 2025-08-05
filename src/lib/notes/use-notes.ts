@@ -124,7 +124,7 @@ export function useNotes() {
 
   // Get bookmark count
   const getBookmarkCount = () => {
-    return notes.filter(note => bookmarks.some(bookmark => bookmark.noteId === note.id)).length;
+    return bookmarks.length;
   };
 
   useEffect(() => {
