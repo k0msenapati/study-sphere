@@ -153,7 +153,7 @@ function QuizzesComponent() {
       }))
 
       const newQuiz: Omit<Quiz, 'id' | 'createdAt' | 'updatedAt'> = {
-        userId: 1, // TODO: Get actual user ID
+        userId: "1", // TODO: Get actual user ID
         subjectId: args.subjectId,
         topicId: args.topicId,
         title: args.title.trim(),

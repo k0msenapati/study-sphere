@@ -154,7 +154,7 @@ export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
       // Create quiz with generated questions
       const quiz: Quiz = {
         id: `quiz-${generateUniqueId()}`,
-        userId: 1, // TODO: Get actual user ID
+        userId: "1", // TODO: Get actual user ID
         subjectId: selectedSubject,
         topicId: selectedTopic,
         title: autoTitle,
@@ -222,6 +222,7 @@ export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
             onValueChange={(value) => setStudyMaterial(value)}
             placeholder="Paste your study material here... (e.g., notes, textbook content, articles)"
             className="min-h-[200px] resize-none"
+            autosuggestionsConfig={{}}
           />
         </div>
         

@@ -22,7 +22,8 @@ import {
   Menu,
   ChevronLeft,
   X,
-  GitBranch
+  GitBranch,
+  BookHeart
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import Logout from "@/components/auth/Logout"
@@ -75,6 +76,11 @@ const sidebarNavItems = [
     title: "Flowcharts",
     href: "/dashboard/flowcharts",
     icon: GitBranch,
+  },
+  {
+    title: "Study Area",
+    href: "/dashboard/study-area",
+    icon: BookHeart,
   },
   {
     title: "Profile",
