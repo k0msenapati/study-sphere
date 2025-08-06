@@ -68,6 +68,8 @@ To get **Study Sphere** up and running locally, follow these steps:
 
    ```sh
    GROQ_API_KEY='YOUR API KEY HERE'
+   NEXT_PUBLIC_RECAPTCHA_SITE_KEY='your_recaptcha_site_key_here'
+   RECAPTCHA_SECRET_KEY='your_recaptcha_secret_key_here'
    ```
 
 4. **Run the development server:**

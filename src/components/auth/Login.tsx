@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Eye, EyeOff } from 'lucide-react'; // <-- for eye icon
+import { Eye, EyeOff } from 'lucide-react';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,18 +22,26 @@ export default function Login() {
     setError('');
 
     try {
+      const token = await recaptchaRef.current?.getValue();
+      if (!token) {
+        setError('Please complete reCAPTCHA');
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, recaptchaToken: token }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        // Redirect to dashboard
-        window.location.href = '/dashboard';
+        router.push('/dashboard');
+        router.refresh();
       } else {
         setError(data.error || 'Login failed');
+        recaptchaRef.current?.reset();
       }
     } catch (error) {
       setError('Network error');
@@ -89,7 +99,7 @@ export default function Login() {
         />
       </div>
 
-      {/* Password Input with Toggle */}
+      {/* Password Input */}
       <div className="relative">
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
           Password
@@ -111,6 +121,9 @@ export default function Login() {
           {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
         </button>
       </div>
+
+      {/* reCAPTCHA */}
+      <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} />
 
       {/* Submit Button */}
       <button

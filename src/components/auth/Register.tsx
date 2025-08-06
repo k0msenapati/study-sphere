@@ -1,29 +1,29 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
-
-
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function Register() {
   const checkPasswordStrength = useCallback((password: string) => {
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumbers = /[0-9]/.test(password);
-  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-  const lengthCheck = password.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const lengthCheck = password.length >= 8;
 
-  if (lengthCheck && hasUpperCase && hasLowerCase && hasNumbers && hasSpecial) {
-    return 'Strong';
-  } else if (lengthCheck && ((hasUpperCase && hasLowerCase) || hasNumbers)) {
-    return 'Moderate';
-  } else {
-    return 'Weak';
-  }
-},[]);
+    if (lengthCheck && hasUpperCase && hasLowerCase && hasNumbers && hasSpecial) {
+      return 'Strong';
+    } else if (lengthCheck && ((hasUpperCase && hasLowerCase) || hasNumbers)) {
+      return 'Moderate';
+    } else {
+      return 'Weak';
+    }
+  }, []);
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -32,6 +32,7 @@ export default function Register() {
   const [error, setError] = useState('');
   const [passwordStrength, setPasswordStrength] = useState('');
   const router = useRouter();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -39,8 +40,7 @@ export default function Register() {
         const strength = checkPasswordStrength(password);
         setPasswordStrength(strength);
       }
-    }, 300); // 300ms debounce
-
+    }, 300);
     return () => clearTimeout(timeout);
   }, [password]);
 
@@ -50,19 +50,26 @@ export default function Register() {
     setError('');
 
     try {
+      const token = await recaptchaRef.current?.getValue();
+      if (!token) {
+        setError('Please complete reCAPTCHA');
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, recaptchaToken: token }),
       });
 
       const data = await response.json();
-
       if (response.ok) {
         router.push('/dashboard');
         router.refresh();
       } else {
         setError(data.error || 'Registration failed');
+        recaptchaRef.current?.reset();
       }
     } catch (error) {
       setError('Network error');
@@ -135,7 +142,7 @@ export default function Register() {
         />
       </div>
 
-      {/* Password Input with Toggle & Strength */}
+      {/* Password Input */}
       <div className="relative">
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
           Password
@@ -172,6 +179,9 @@ export default function Register() {
           </p>
         )}
       </div>
+
+      {/* reCAPTCHA */}
+      <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} />
 
       {/* Submit Button */}
       <button
