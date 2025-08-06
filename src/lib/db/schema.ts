@@ -79,6 +79,10 @@ export const userSettings = sqliteTable('user_settings', {
   pomodoroWorkDuration: integer('pomodoro_work_duration').notNull().default(25), // minutes
   pomodoroBreakDuration: integer('pomodoro_break_duration').notNull().default(5), // minutes
   themePreference: text('theme_preference').notNull().default('system'), // 'light' | 'dark' | 'system'
+  studyAreaBackgroundImage: text('study_area_background_image'), // URL or path to background image
+  ambientSoundEnabled: integer('ambient_sound_enabled', { mode: 'boolean' }).notNull().default(false),
+  selectedAmbientSound: text('selected_ambient_sound').notNull().default('none'), // 'none', 'rain', 'forest', 'cafe', 'white-noise'
+  ambientSoundVolume: integer('ambient_sound_volume').notNull().default(50), // 0-100
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });

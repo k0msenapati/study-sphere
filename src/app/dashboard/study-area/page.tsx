@@ -16,7 +16,7 @@ import {
   Timer, Zap, AlertTriangle, Expand, Shrink, Play, Pause, RotateCcw,
   Target, Brain, Coffee, BarChart3, Calendar, Clock, 
   Flame, Star, Trophy, CheckCircle, XCircle, Settings,
-  Volume2, VolumeX, Music, Lightbulb, BookOpen
+  Volume2, VolumeX, Music, Lightbulb, BookOpen, Upload
 } from 'lucide-react'
 import screenfull from 'screenfull'
 
@@ -73,6 +73,9 @@ const StudyAreaPage = () => {
   // Audio and ambience
   const [isAmbientSoundEnabled, setIsAmbientSoundEnabled] = useState(false)
   const [selectedAmbientSound, setSelectedAmbientSound] = useState('none')
+  const [ambientVolume, setAmbientVolume] = useState(50)
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null)
+  const [showBackgroundSettings, setShowBackgroundSettings] = useState(false)
   
   // Settings
   const [userSettings, setUserSettings] = useState({
@@ -80,11 +83,17 @@ const StudyAreaPage = () => {
     breakDuration: 20,
     pomodoroWorkDuration: 25,
     pomodoroBreakDuration: 5,
-    pomodoroEnabled: false
+    pomodoroEnabled: false,
+    studyAreaBackgroundImage: null as string | null,
+    ambientSoundEnabled: false,
+    selectedAmbientSound: 'none',
+    ambientSoundVolume: 50
   })
   
   const studyAreaRef = useRef<HTMLDivElement>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const ambientAudioRef = useRef<HTMLAudioElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Load user settings and recent sessions
   useEffect(() => {
@@ -92,6 +101,29 @@ const StudyAreaPage = () => {
     fetchRecentSessions()
     fetchSessionStats()
   }, [])
+
+  // Ambient audio management
+  useEffect(() => {
+    if (ambientAudioRef.current) {
+      if (isAmbientSoundEnabled && selectedAmbientSound !== 'none') {
+        ambientAudioRef.current.src = `/audio/${selectedAmbientSound}.mp3`
+        ambientAudioRef.current.volume = ambientVolume / 100
+        ambientAudioRef.current.loop = true
+        ambientAudioRef.current.play().catch(error => {
+          console.log('Audio autoplay prevented:', error)
+        })
+      } else {
+        ambientAudioRef.current.pause()
+      }
+    }
+  }, [isAmbientSoundEnabled, selectedAmbientSound, ambientVolume])
+
+  // Update ambient volume
+  useEffect(() => {
+    if (ambientAudioRef.current) {
+      ambientAudioRef.current.volume = ambientVolume / 100
+    }
+  }, [ambientVolume])
 
   // Timer logic
   useEffect(() => {
@@ -153,13 +185,22 @@ const StudyAreaPage = () => {
       const response = await fetch('/api/user-settings')
       if (response.ok) {
         const settings = await response.json()
-        setUserSettings({
+        const newSettings = {
           focusSessionDuration: settings.focusSessionDuration || 90,
           breakDuration: settings.breakDuration || 20,
           pomodoroWorkDuration: settings.pomodoroWorkDuration || 25,
           pomodoroBreakDuration: settings.pomodoroBreakDuration || 5,
-          pomodoroEnabled: settings.pomodoroEnabled || false
-        })
+          pomodoroEnabled: settings.pomodoroEnabled || false,
+          studyAreaBackgroundImage: settings.studyAreaBackgroundImage || null,
+          ambientSoundEnabled: settings.ambientSoundEnabled || false,
+          selectedAmbientSound: settings.selectedAmbientSound || 'none',
+          ambientSoundVolume: settings.ambientSoundVolume || 50
+        }
+        setUserSettings(newSettings)
+        setBackgroundImage(newSettings.studyAreaBackgroundImage)
+        setIsAmbientSoundEnabled(newSettings.ambientSoundEnabled)
+        setSelectedAmbientSound(newSettings.selectedAmbientSound)
+        setAmbientVolume(newSettings.ambientSoundVolume)
       }
     } catch (error) {
       console.error('Error fetching user settings:', error)
@@ -293,6 +334,89 @@ const StudyAreaPage = () => {
     }
   }
 
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image file must be less than 5MB')
+      return
+    }
+
+    try {
+      // Create FormData for upload
+      const formData = new FormData()
+      formData.append('image', file)
+
+      // Upload to a simple file endpoint or convert to base64
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const imageDataUrl = e.target?.result as string
+        setBackgroundImage(imageDataUrl)
+        
+        // Save to user settings
+        await updateUserSettings({
+          studyAreaBackgroundImage: imageDataUrl
+        })
+      }
+      reader.readAsDataURL(file)
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      alert('Failed to upload image')
+    }
+  }
+
+  const removeBackgroundImage = async () => {
+    setBackgroundImage(null)
+    await updateUserSettings({
+      studyAreaBackgroundImage: null
+    })
+  }
+
+  const updateUserSettings = async (updates: Partial<typeof userSettings>) => {
+    try {
+      const response = await fetch('/api/user-settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      })
+      
+      if (response.ok) {
+        setUserSettings(prev => ({ ...prev, ...updates }))
+      }
+    } catch (error) {
+      console.error('Error updating user settings:', error)
+    }
+  }
+
+  const toggleAmbientSound = async (enabled: boolean) => {
+    setIsAmbientSoundEnabled(enabled)
+    await updateUserSettings({
+      ambientSoundEnabled: enabled
+    })
+  }
+
+  const changeAmbientSound = async (sound: string) => {
+    setSelectedAmbientSound(sound)
+    await updateUserSettings({
+      selectedAmbientSound: sound
+    })
+  }
+
+  const changeAmbientVolume = async (volume: number) => {
+    setAmbientVolume(volume)
+    await updateUserSettings({
+      ambientSoundVolume: volume
+    })
+  }
+
   const resetTimer = () => {
     setIsActive(false)
     setIsPaused(false)
@@ -321,16 +445,30 @@ const StudyAreaPage = () => {
 
   const predefinedTags = ['Study', 'Research', 'Reading', 'Writing', 'Math', 'Science', 'Programming', 'Review']
   const ambientSounds = [
-    { value: 'none', label: 'No Sound' },
-    { value: 'rain', label: 'Rain' },
-    { value: 'forest', label: 'Forest' },
-    { value: 'cafe', label: 'Coffee Shop' },
-    { value: 'white-noise', label: 'White Noise' }
+    { value: 'none', label: 'No Sound', emoji: '🔇' },
+    { value: 'rain', label: 'Rain', emoji: '🌧️' },
+    { value: 'forest', label: 'Forest', emoji: '🌲' },
+    { value: 'cafe', label: 'Coffee Shop', emoji: '☕' },
+    { value: 'white-noise', label: 'White Noise', emoji: '📻' }
   ]
 
   return (
-    <div ref={studyAreaRef} className="min-h-screen p-4 bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div 
+      ref={studyAreaRef} 
+      className="min-h-screen p-4 bg-gradient-to-br from-background via-background to-muted/20 relative"
+      style={{
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Background overlay for better readability */}
+      {backgroundImage && (
+        <div className="absolute inset-0 bg-background/70 backdrop-blur-sm" />
+      )}
+      
+      <div className="relative z-10 max-w-7xl mx-auto space-y-6">
         
         {/* Header with Stats */}
         <div className="flex items-center justify-between">
@@ -359,6 +497,11 @@ const StudyAreaPage = () => {
             <Button variant="outline" onClick={() => setShowStatsDialog(true)}>
               <BarChart3 className="h-4 w-4 mr-2" />
               Stats
+            </Button>
+            
+            <Button variant="outline" onClick={() => setShowBackgroundSettings(true)}>
+              <Settings className="h-4 w-4 mr-2" />
+              Background
             </Button>
             
             <Button variant="outline" onClick={toggleFullscreen}>
@@ -530,7 +673,7 @@ const StudyAreaPage = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <Music className="h-5 w-5" />
-                      Ambience
+                      Ambience & Audio
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -538,26 +681,46 @@ const StudyAreaPage = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setIsAmbientSoundEnabled(!isAmbientSoundEnabled)}
+                        onClick={() => toggleAmbientSound(!isAmbientSoundEnabled)}
                       >
                         {isAmbientSoundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
                       </Button>
-                      <Select value={selectedAmbientSound} onValueChange={setSelectedAmbientSound}>
+                      <Select value={selectedAmbientSound} onValueChange={changeAmbientSound}>
                         <SelectTrigger className="flex-1">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           {ambientSounds.map(sound => (
                             <SelectItem key={sound.value} value={sound.value}>
-                              {sound.label}
+                              <span className="flex items-center gap-2">
+                                <span>{sound.emoji}</span>
+                                {sound.label}
+                              </span>
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
                     
+                    {isAmbientSoundEnabled && selectedAmbientSound !== 'none' && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm">Volume</Label>
+                          <span className="text-sm text-muted-foreground">{ambientVolume}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={ambientVolume}
+                          onChange={(e) => changeAmbientVolume(parseInt(e.target.value))}
+                          className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
+                        />
+                      </div>
+                    )}
+                    
                     <div className="text-sm text-muted-foreground">
-                      Background sounds can help improve focus and concentration
+                      Background sounds can help improve focus and concentration. Audio files should be placed in /public/audio/.
                     </div>
                   </CardContent>
                 </Card>
@@ -671,7 +834,7 @@ const StudyAreaPage = () => {
         </div>
       </div>
 
-      {/* Session Complete Dialog */}
+      {/* Background Settings Dialog */}
       <Dialog open={showSessionDialog} onOpenChange={setShowSessionDialog}>
         <DialogContent>
           <DialogHeader>
@@ -769,6 +932,76 @@ const StudyAreaPage = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Background Settings Dialog */}
+      <Dialog open={showBackgroundSettings} onOpenChange={setShowBackgroundSettings}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Background Settings
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {backgroundImage && (
+              <div className="space-y-2">
+                <Label>Current Background</Label>
+                <div className="relative">
+                  <img 
+                    src={backgroundImage} 
+                    alt="Background preview" 
+                    className="w-full h-32 object-cover rounded-lg border"
+                  />
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={removeBackgroundImage}
+                    className="absolute top-2 right-2"
+                  >
+                    <XCircle className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+            
+            <div className="space-y-2">
+              <Label>Upload New Background</Label>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Choose Image
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Supports JPG, PNG, WebP. Max size: 5MB
+              </p>
+            </div>
+            
+            {!backgroundImage && (
+              <div className="text-center p-6 border-2 border-dashed border-muted rounded-lg">
+                <div className="text-muted-foreground">
+                  <Lightbulb className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No background image set</p>
+                  <p className="text-xs">Upload an image to personalize your study space</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        className="hidden"
+      />
+
       {/* Stats Dialog */}
       <Dialog open={showStatsDialog} onOpenChange={setShowStatsDialog}>
         <DialogContent className="max-w-2xl">
@@ -861,10 +1094,16 @@ const StudyAreaPage = () => {
         )}
       </AnimatePresence>
 
-      {/* Hidden audio element for completion sound */}
+      {/* Hidden audio elements */}
       <audio ref={audioRef} preload="auto">
-        <source src="/sounds/session-complete.mp3" type="audio/mpeg" />
+        <source src="/audio/session-complete.mp3" type="audio/mpeg" />
       </audio>
+      
+      <audio 
+        ref={ambientAudioRef} 
+        preload="auto"
+        loop
+      />
     </div>
   )
 }
