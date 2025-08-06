@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
@@ -13,38 +12,45 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? '';
+
+  useEffect(() => {
+    if (!siteKey) {
+      console.error('⚠️ Missing NEXT_PUBLIC_RECAPTCHA_SITE_KEY. reCAPTCHA will not work.');
+    }
+  }, [siteKey]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    try {
-      const token = await recaptchaRef.current?.getValue();
-      if (!token) {
-        setError('Please complete reCAPTCHA');
-        setLoading(false);
-        return;
-      }
+    if (!recaptchaToken) {
+      setError('Please complete the reCAPTCHA.');
+      setLoading(false);
+      return;
+    }
 
+    try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, recaptchaToken: token }),
+        body: JSON.stringify({ email, password, recaptchaToken }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        router.push('/dashboard');
-        router.refresh();
+        window.location.href = '/dashboard';
       } else {
         setError(data.error || 'Login failed');
         recaptchaRef.current?.reset();
       }
     } catch (error) {
       setError('Network error');
+      recaptchaRef.current?.reset();
     } finally {
       setLoading(false);
     }
@@ -58,22 +64,15 @@ export default function Login() {
       transition={{ duration: 0.5 }}
       className="bg-white p-8 shadow-xl rounded-2xl space-y-6"
     >
-      {/* Logo & Heading */}
+      {/* Logo */}
       <div className="text-center space-y-4">
         <div className="flex justify-center">
-          <Image
-            src="/study-sphere-logo1.png"
-            alt="Study Sphere Logo"
-            width={64}
-            height={64}
-            className="h-16 w-16"
-          />
+          <Image src="/study-sphere-logo1.png" alt="Study Sphere Logo" width={64} height={64} />
         </div>
         <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
         <p className="text-gray-600">Sign in to Study Sphere</p>
       </div>
 
-      {/* Error Message */}
       {error && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -84,7 +83,7 @@ export default function Login() {
         </motion.div>
       )}
 
-      {/* Email Input */}
+      {/* Email */}
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
           Email address
@@ -99,7 +98,7 @@ export default function Login() {
         />
       </div>
 
-      {/* Password Input */}
+      {/* Password */}
       <div className="relative">
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
           Password
@@ -123,9 +122,15 @@ export default function Login() {
       </div>
 
       {/* reCAPTCHA */}
-      <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} />
+      {siteKey && (
+        <ReCAPTCHA
+          ref={recaptchaRef}
+          sitekey={siteKey}
+          onChange={(token) => setRecaptchaToken(token || '')}
+        />
+      )}
 
-      {/* Submit Button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={loading}

@@ -23,7 +23,7 @@ export default function Register() {
       return 'Weak';
     }
   }, []);
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -31,8 +31,17 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [passwordStrength, setPasswordStrength] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState('');
   const router = useRouter();
+
   const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? '';
+
+  useEffect(() => {
+    if (!siteKey) {
+      console.error('⚠️ Missing NEXT_PUBLIC_RECAPTCHA_SITE_KEY. reCAPTCHA will not work.');
+    }
+  }, [siteKey]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -49,18 +58,17 @@ export default function Register() {
     setLoading(true);
     setError('');
 
-    try {
-      const token = await recaptchaRef.current?.getValue();
-      if (!token) {
-        setError('Please complete reCAPTCHA');
-        setLoading(false);
-        return;
-      }
+    if (!recaptchaToken) {
+      setError('Please complete the reCAPTCHA.');
+      setLoading(false);
+      return;
+    }
 
+    try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name, recaptchaToken: token }),
+        body: JSON.stringify({ email, password, name, recaptchaToken }),
       });
 
       const data = await response.json();
@@ -73,6 +81,7 @@ export default function Register() {
       }
     } catch (error) {
       setError('Network error');
+      recaptchaRef.current?.reset();
     } finally {
       setLoading(false);
     }
@@ -101,7 +110,6 @@ export default function Register() {
         <p className="text-gray-600">Join Study Sphere today</p>
       </div>
 
-      {/* Error Message */}
       {error && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -112,7 +120,7 @@ export default function Register() {
         </motion.div>
       )}
 
-      {/* Name Input */}
+      {/* Name */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
           Name
@@ -127,7 +135,7 @@ export default function Register() {
         />
       </div>
 
-      {/* Email Input */}
+      {/* Email */}
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
           Email
@@ -142,7 +150,7 @@ export default function Register() {
         />
       </div>
 
-      {/* Password Input */}
+      {/* Password */}
       <div className="relative">
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
           Password
@@ -181,9 +189,15 @@ export default function Register() {
       </div>
 
       {/* reCAPTCHA */}
-      <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} />
+      {siteKey && (
+        <ReCAPTCHA
+          ref={recaptchaRef}
+          sitekey={siteKey}
+          onChange={(token) => setRecaptchaToken(token || '')}
+        />
+      )}
 
-      {/* Submit Button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={loading}
