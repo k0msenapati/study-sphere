@@ -1,7 +1,6 @@
-"use client"
-
 import Link from "next/link"
 import SEO from "./SEO"
+import { getSession } from "@/lib/auth/jwt";
 import LandingNavbar from "@/components/landing/LandingNavbar"
 import HeroSection from "@/components/landing/HeroSection"
 import VideoSection from "@/components/landing/VideoSection"
@@ -12,7 +11,8 @@ import TestimonialsSection from "@/components/landing/TestimonialsSection"
 import CTASection from "@/components/landing/CTASection"
 import LandingFooter from "@/components/landing/LandingFooter"
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await getSession();
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SEO
@@ -21,7 +21,7 @@ export default function LandingPage() {
         url="https://study-sphere-beta.vercel.app"
         image="https://study-sphere-beta.vercel.app/og-banner.png"
       />
-      <LandingNavbar />
+      <LandingNavbar session={session} />
       <HeroSection />
       <VideoSection />
       <ProblemSection />
@@ -31,5 +31,5 @@ export default function LandingPage() {
       <CTASection />
       <LandingFooter />
     </div>
-  )
+  );
 }
