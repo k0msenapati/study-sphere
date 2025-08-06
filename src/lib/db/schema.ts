@@ -26,6 +26,14 @@ export const notes = sqliteTable('notes', {
   modifiedAt: integer('modified_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 });
 
+// --- Note Bookmarks Table ---
+export const noteBookmarks = sqliteTable('note_bookmarks', {
+  id: text('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  noteId: text('note_id').notNull().references(() => notes.id, { onDelete: 'cascade' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+});
+
 export const chats = sqliteTable('chats', {
   id: text('id').primaryKey(), // UUID
   userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -153,6 +161,9 @@ export const selectUserSchema = createSelectSchema(users);
 export const insertNoteSchema = createInsertSchema(notes);
 export const selectNoteSchema = createSelectSchema(notes);
 
+export const insertNoteBookmarkSchema = createInsertSchema(noteBookmarks);
+export const selectNoteBookmarkSchema = createSelectSchema(noteBookmarks);
+
 export const insertChatSchema = createInsertSchema(chats);
 export const selectChatSchema = createSelectSchema(chats);
 
@@ -177,12 +188,103 @@ export const selectStudySessionSchema = createSelectSchema(studySessions);
 export const insertFlashcardResultSchema = createInsertSchema(flashcardResults);
 export const selectFlashcardResultSchema = createSelectSchema(flashcardResults);
 
+// --- Quiz Subjects Table ---
+export const quizSubjects = sqliteTable('quiz_subjects', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  color: text('color').notNull().default('#3B82F6'),
+  icon: text('icon').notNull().default('📚'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+});
+
+// --- Quiz Topics Table ---
+export const quizTopics = sqliteTable('quiz_topics', {
+  id: text('id').primaryKey(),
+  subjectId: text('subject_id').notNull().references(() => quizSubjects.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  description: text('description'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+});
+
+// --- Quizzes Table ---
+export const quizzes = sqliteTable('quizzes', {
+  id: text('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  subjectId: text('subject_id').notNull().references(() => quizSubjects.id, { onDelete: 'cascade' }),
+  topicId: text('topic_id').notNull().references(() => quizTopics.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
+  description: text('description').notNull(),
+  difficulty: text('difficulty').notNull().default('intermediate'), // beginner, intermediate, advanced
+  questions: text('questions').notNull(), // JSON array of questions
+  timeLimit: integer('time_limit').notNull().default(300), // in seconds
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+});
+
+// --- Quiz Bookmarks Table ---
+export const quizBookmarks = sqliteTable('quiz_bookmarks', {
+  id: text('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  quizId: text('quiz_id').notNull().references(() => quizzes.id, { onDelete: 'cascade' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
+});
+
+// --- Quiz Completions Table ---
+export const quizCompletions = sqliteTable('quiz_completions', {
+  id: text('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  quizId: text('quiz_id').notNull().references(() => quizzes.id, { onDelete: 'cascade' }),
+  score: integer('score').notNull(),
+  totalQuestions: integer('total_questions').notNull(),
+  timeSpent: integer('time_spent').notNull(), // in seconds
+  completedAt: integer('completed_at', { mode: 'timestamp' }).notNull(),
+  answers: text('answers').notNull(), // JSON array of user answers
+});
+
+// --- Zod Schemas for Quiz Tables ---
+export const insertQuizSubjectSchema = createInsertSchema(quizSubjects);
+export const selectQuizSubjectSchema = createSelectSchema(quizSubjects);
+
+export const insertQuizTopicSchema = createInsertSchema(quizTopics);
+export const selectQuizTopicSchema = createSelectSchema(quizTopics);
+
+export const insertQuizSchema = createInsertSchema(quizzes);
+export const selectQuizSchema = createSelectSchema(quizzes);
+
+export const insertQuizBookmarkSchema = createInsertSchema(quizBookmarks);
+export const selectQuizBookmarkSchema = createSelectSchema(quizBookmarks);
+
+export const insertQuizCompletionSchema = createInsertSchema(quizCompletions);
+export const selectQuizCompletionSchema = createSelectSchema(quizCompletions);
+
+// --- Types for Quiz Tables ---
+export type QuizSubject = typeof quizSubjects.$inferSelect;
+export type NewQuizSubject = typeof quizSubjects.$inferInsert;
+
+export type QuizTopic = typeof quizTopics.$inferSelect;
+export type NewQuizTopic = typeof quizTopics.$inferInsert;
+
+export type Quiz = typeof quizzes.$inferSelect;
+export type NewQuiz = typeof quizzes.$inferInsert;
+
+export type QuizBookmark = typeof quizBookmarks.$inferSelect;
+export type NewQuizBookmark = typeof quizBookmarks.$inferInsert;
+
+export type QuizCompletion = typeof quizCompletions.$inferSelect;
+export type NewQuizCompletion = typeof quizCompletions.$inferInsert;
+
 // --- Types ---
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
 export type Note = typeof notes.$inferSelect;
 export type NewNote = typeof notes.$inferInsert;
+
+export type NoteBookmark = typeof noteBookmarks.$inferSelect;
+export type NewNoteBookmark = typeof noteBookmarks.$inferInsert;
 
 export type Chat = typeof chats.$inferSelect;
 export type NewChat = typeof chats.$inferInsert;

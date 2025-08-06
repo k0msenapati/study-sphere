@@ -33,8 +33,10 @@ type Step = 'input' | 'settings' | 'generate' | 'preview'
 interface QuizGenerationRequest {
   studyMaterial: string
   numberOfQuestions: number
-  difficulty: 'easy' | 'medium' | 'hard'
+  difficulty: 'beginner' | 'intermediate' | 'advanced'
   quizType: 'multiple-choice' | 'true-false' | 'mixed'
+  subjectId: string
+  topicId: string
 }
 
 interface QuizGeneratorProps {
@@ -42,13 +44,15 @@ interface QuizGeneratorProps {
 }
 
 export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
-  const { createQuiz } = useQuizzesContext()
+  const { createQuiz, subjects, topics } = useQuizzesContext()
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState<Step>('input')
   const [studyMaterial, setStudyMaterial] = useState("")
   const [numberOfQuestions, setNumberOfQuestions] = useState("10")
-  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>("medium")
+  const [difficulty, setDifficulty] = useState<'beginner' | 'intermediate' | 'advanced'>("intermediate")
   const [quizType, setQuizType] = useState<'multiple-choice' | 'true-false' | 'mixed'>("multiple-choice")
+  const [selectedSubject, setSelectedSubject] = useState<string>("")
+  const [selectedTopic, setSelectedTopic] = useState<string>("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedQuiz, setGeneratedQuiz] = useState<Quiz | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -71,7 +75,7 @@ export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
       ).join(' ')
     }
     
-    const difficultyEmoji = difficulty === 'easy' ? '📚' : difficulty === 'medium' ? '🎯' : '🧠'
+    const difficultyEmoji = difficulty === 'beginner' ? '🌱' : difficulty === 'intermediate' ? '🎯' : '🧠'
     return `${difficultyEmoji} ${topic} Quiz (${questionCount} Questions)`
   }
 
@@ -86,42 +90,29 @@ export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
   }
 
   const nextStep = () => {
-    switch (currentStep) {
-      case 'input':
-        if (studyMaterial.trim()) setCurrentStep('settings')
-        break
-      case 'settings':
-        setCurrentStep('generate')
-        break
-      case 'generate':
-        setCurrentStep('preview')
-        break
-    }
+    if (currentStep === 'input') setCurrentStep('settings')
+    else if (currentStep === 'settings') setCurrentStep('generate')
   }
 
   const prevStep = () => {
-    switch (currentStep) {
-      case 'settings':
-        setCurrentStep('input')
-        break
-      case 'generate':
-        setCurrentStep('settings')
-        break
-      case 'preview':
-        setCurrentStep('generate')
-        break
-    }
+    if (currentStep === 'settings') setCurrentStep('input')
+    else if (currentStep === 'generate') setCurrentStep('settings')
+    else if (currentStep === 'preview') setCurrentStep('generate')
   }
 
   const handleGenerateQuiz = async () => {
     if (!studyMaterial.trim()) {
-      setError("Please provide study material")
+      setError('Please enter study material')
       return
     }
-    
+
+    if (!selectedSubject || !selectedTopic) {
+      setError('Please select a subject and topic')
+      return
+    }
+
     setIsGenerating(true)
     setError(null)
-    setAiGenerationStatus("Analyzing your study material...")
     
     try {
       setAiGenerationStatus("AI is creating your quiz questions...")
@@ -140,7 +131,9 @@ export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
         studyMaterial,
         numberOfQuestions: parseInt(numberOfQuestions),
         difficulty,
-        quizType
+        quizType,
+        subjectId: selectedSubject,
+        topicId: selectedTopic
       }
 
       // Simulate AI generation (in a real app, this would call an API)
@@ -161,14 +154,21 @@ export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
       // Create quiz with generated questions
       const quiz: Quiz = {
         id: `quiz-${generateUniqueId()}`,
+        userId: 1, // TODO: Get actual user ID
+        subjectId: selectedSubject,
+        topicId: selectedTopic,
         title: autoTitle,
         description: autoDescription,
+        difficulty,
         questions: data.questions.map((q: any, index: number) => ({
           id: `q-${generateUniqueId()}-${index}`,
           question: q.question,
           options: q.options,
           correctOption: q.correctOption
-        }))
+        })),
+        timeLimit: 300, // 5 minutes default
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
       }
 
       setGeneratedQuiz(quiz)
@@ -185,76 +185,106 @@ export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
 
   const handleSaveQuiz = () => {
     if (generatedQuiz) {
-      createQuiz(generatedQuiz)
+      createQuiz({
+        userId: generatedQuiz.userId,
+        subjectId: generatedQuiz.subjectId,
+        topicId: generatedQuiz.topicId,
+        title: generatedQuiz.title,
+        description: generatedQuiz.description,
+        difficulty: generatedQuiz.difficulty,
+        questions: generatedQuiz.questions,
+        timeLimit: generatedQuiz.timeLimit,
+      })
       onQuizCreated(generatedQuiz)
     }
   }
 
+  const getTopicsForSubject = (subjectId: string) => {
+    return topics.filter(topic => topic.subjectId === subjectId)
+  }
+
   const StepInput = () => (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader className="text-center">
-        <CardTitle className="flex items-center justify-center gap-3 text-2xl">
-          <HiOutlineDocumentText className="text-blue-500" />
-          Study Material Input
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <HiOutlineDocumentText className="h-6 w-6 text-blue-500" />
+          Study Material
         </CardTitle>
-        <CardDescription className="text-lg">
-          Provide the content you want to create a quiz from
+        <CardDescription>
+          Enter the study material you want to create a quiz from
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-foreground">Study Material</label>
           <CopilotTextarea
             value={studyMaterial}
-            onValueChange={setStudyMaterial}
-            placeholder="Paste your notes, textbook content, or any material you want to create a quiz from..."
-            className="min-h-[200px] text-lg resize-none border-2 border-border focus:border-primary focus:ring-primary rounded-lg p-4 bg-background text-foreground placeholder:text-muted-foreground"
-            autosuggestionsConfig={{
-              textareaPurpose: "Study material for quiz generation",
-              chatApiConfigs: {
-                suggestionsApiConfig: {
-                  maxTokens: 20,
-                  stop: [".", "!", "?", ";", ":"],
-                },
-              },
-            }}
+            onValueChange={(value) => setStudyMaterial(value)}
+            placeholder="Paste your study material here... (e.g., notes, textbook content, articles)"
+            className="min-h-[200px] resize-none"
           />
-          <p className="text-sm text-muted-foreground">
-            💡 Tip: The more detailed your material, the better questions AI can generate
+        </div>
+        
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-900/20 dark:border-blue-800">
+          <p className="text-blue-700 dark:text-blue-300 font-medium text-sm">
+            💡 The AI will analyze your study material and create relevant quiz questions based on the key concepts.
           </p>
-          
-          {studyMaterial.trim() && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-green-50 border border-green-200 rounded-lg p-4 dark:bg-green-900/20 dark:border-green-800"
-            >
-              <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
-                <HiOutlineAcademicCap className="text-xl" />
-                <span className="font-medium">Ready for next step!</span>
-              </div>
-              <p className="text-green-600 dark:text-green-400 mt-1">
-                {studyMaterial.length} characters • Estimated {Math.ceil(studyMaterial.length / 100)} concepts detected
-              </p>
-            </motion.div>
-          )}
         </div>
       </CardContent>
     </Card>
   )
 
   const StepSettings = () => (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader className="text-center">
-        <CardTitle className="flex items-center justify-center gap-3 text-2xl">
-          <HiOutlineAdjustmentsHorizontal className="text-purple-500" />
-          Quiz Configuration
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <HiOutlineAdjustmentsHorizontal className="h-6 w-6 text-purple-500" />
+          Quiz Settings
         </CardTitle>
-        <CardDescription className="text-lg">
-          Customize your quiz settings and preferences
+        <CardDescription>
+          Configure your quiz settings and organization
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">        
+      <CardContent className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-foreground">Subject</label>
+            <Select value={selectedSubject || "all"} onValueChange={(value) => setSelectedSubject(value === "all" ? "" : value)}>
+              <SelectTrigger className="h-12">
+                <SelectValue placeholder="Select a subject" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Select a subject</SelectItem>
+                {subjects.map((subject) => (
+                  <SelectItem key={subject.id} value={subject.id}>
+                    <span className="flex items-center gap-2">
+                      <span>{subject.icon}</span>
+                      {subject.name}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-foreground">Topic</label>
+            <Select value={selectedTopic || "all"} onValueChange={(value) => setSelectedTopic(value === "all" ? "" : value)} disabled={!selectedSubject}>
+              <SelectTrigger className="h-12">
+                <SelectValue placeholder={selectedSubject ? "Select a topic" : "Select subject first"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{selectedSubject ? "Select a topic" : "Select subject first"}</SelectItem>
+                {selectedSubject && getTopicsForSubject(selectedSubject).map((topic) => (
+                  <SelectItem key={topic.id} value={topic.id}>
+                    {topic.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-semibold text-foreground">Number of Questions</label>
@@ -263,25 +293,25 @@ export default function QuizGenerator({ onQuizCreated }: QuizGeneratorProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="5">5 questions</SelectItem>
-                <SelectItem value="10">10 questions</SelectItem>
-                <SelectItem value="15">15 questions</SelectItem>
-                <SelectItem value="20">20 questions</SelectItem>
-                <SelectItem value="25">25 questions</SelectItem>
+                <SelectItem value="5">5 Questions</SelectItem>
+                <SelectItem value="10">10 Questions</SelectItem>
+                <SelectItem value="15">15 Questions</SelectItem>
+                <SelectItem value="20">20 Questions</SelectItem>
+                <SelectItem value="25">25 Questions</SelectItem>
               </SelectContent>
             </Select>
           </div>
           
           <div className="space-y-2">
             <label className="text-sm font-semibold text-foreground">Difficulty Level</label>
-            <Select value={difficulty} onValueChange={(value) => setDifficulty(value as 'easy' | 'medium' | 'hard')}>
+            <Select value={difficulty} onValueChange={(value) => setDifficulty(value as 'beginner' | 'intermediate' | 'advanced')}>
               <SelectTrigger className="h-12">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="easy">📚 Easy</SelectItem>
-                <SelectItem value="medium">🎯 Medium</SelectItem>
-                <SelectItem value="hard">🧠 Hard</SelectItem>
+                <SelectItem value="beginner">🌱 Beginner</SelectItem>
+                <SelectItem value="intermediate">🎯 Intermediate</SelectItem>
+                <SelectItem value="advanced">🧠 Advanced</SelectItem>
               </SelectContent>
             </Select>
           </div>

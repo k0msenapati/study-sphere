@@ -4,9 +4,10 @@ import { useState, useEffect } from "react"
 import { useQuizzesContext } from "@/lib/quizzes/quizzes-provider"
 import { Quiz } from "@/lib/quizzes/types"
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
 import {
   Dialog,
   DialogContent,
@@ -26,7 +27,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { InfoIcon, AlertTriangle } from "lucide-react"
+import { InfoIcon, AlertTriangle, CheckCircle, Clock, Trophy } from "lucide-react"
 
 export default function Page({ params }: { params: { id: string } }) {
   return (
@@ -38,7 +39,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
 function QuizGame({ quizId }: { quizId: string }) {
   const router = useRouter()
-  const { quizzes } = useQuizzesContext()
+  const { quizzes, markAsCompleted } = useQuizzesContext()
   const [currentQuiz, setCurrentQuiz] = useState<Quiz | null>(null)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [score, setScore] = useState(0)
@@ -53,268 +54,190 @@ function QuizGame({ quizId }: { quizId: string }) {
   })
   const [showAnswers, setShowAnswers] = useState(false)
   const [showSubmissionDialog, setShowSubmissionDialog] = useState(false)
+  const [startTime, setStartTime] = useState<number>(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [lastAnswerResult, setLastAnswerResult] = useState<'correct' | 'incorrect' | null>(null)
 
   useEffect(() => {
     const quiz = quizzes.find(q => q.id === quizId)
     if (quiz) {
       setCurrentQuiz(quiz)
       setAnswers(new Array(quiz.questions.length).fill(null))
+      setTimer(quiz.timeLimit || 300)
+      setStartTime(Date.now())
+      setIsLoading(false)
+    } else {
+      setIsLoading(false)
     }
   }, [quizId, quizzes])
 
   useEffect(() => {
     if (timer > 0 && !isQuizFinished) {
       const interval = setInterval(() => {
-        setTimer(timer - 1)
+        setTimer(prevTimer => {
+          if (prevTimer <= 1) {
+            setIsQuizFinished(true)
+            return 0
+          }
+          return prevTimer - 1
+        })
       }, 1000)
       return () => clearInterval(interval)
-    } else if (timer === 0) {
-      setIsQuizFinished(true)
     }
-  }, [timer, isQuizFinished])
+  }, [isQuizFinished])
 
   const handleAnswer = (selectedOption: string) => {
-    if (currentQuiz) {
+    if (currentQuiz && lastAnswerResult === null) { // Prevent multiple clicks
+      console.log('=== ANSWER HANDLER CALLED ===')
       const newAnswers = [...answers]
       newAnswers[currentQuestionIndex] = selectedOption
       setAnswers(newAnswers)
 
       const currentQuestion = currentQuiz.questions[currentQuestionIndex]
-      if (selectedOption === currentQuestion.correctOption) {
-        setScore(prevScore => prevScore + 1)
+      const correctOption = currentQuestion.correctOption
+      
+      console.log('Selected option:', `"${selectedOption}"`)
+      console.log('Correct option from data:', `"${correctOption}"`)
+      console.log('Are they equal?', selectedOption === correctOption)
+      
+      // Test case for debugging
+      console.log('Test comparison:', '"2" === "2"', "2" === "2")
+      console.log('Test comparison:', `"${selectedOption}" === "${correctOption}"`, selectedOption === correctOption)
+      
+      if (selectedOption === correctOption) {
+        console.log('Correct answer! Incrementing score')
+        setScore(prevScore => {
+          const newScore = prevScore + 1
+          console.log('Score updated from', prevScore, 'to', newScore)
+          return newScore
+        })
+        setLastAnswerResult('correct')
+      } else {
+        console.log('Wrong answer. Score remains:', score)
+        setLastAnswerResult('incorrect')
       }
-      handleNextQuestion()
+      
+      // Clear the result after a short delay
+      setTimeout(() => {
+        setLastAnswerResult(null)
+        handleNextQuestion()
+      }, 1000)
     }
   }
 
   const handleNextQuestion = () => {
-    if (currentQuiz) {
-      if (currentQuestionIndex < currentQuiz.questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1)
-      } else {
-        // Show submission confirmation dialog instead of direct submission
-        setShowSubmissionDialog(true)
-      }
-    }
-  }
-
-  const handleRevisit = () => {
-    if (!revisitList.includes(currentQuestionIndex)) {
-      setRevisitList([...revisitList, currentQuestionIndex])
-      setAlertContent({
-        title: "Question marked for revisit",
-        description: `Question ${currentQuestionIndex + 1} has been marked for revisit.`,
-      })
+    if (currentQuiz && currentQuestionIndex < currentQuiz.questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1)
     } else {
-      setRevisitList(revisitList.filter(q => q !== currentQuestionIndex))
-      setAlertContent({
-        title: "Question unmarked",
-        description: `Question ${currentQuestionIndex + 1} has been removed from revisit list.`,
-      })
-    }
-    setShowAlert(true)
-  }
-
-  const handleReviewMarked = () => {
-    if (revisitList.length > 0) {
-      setCurrentQuestionIndex(revisitList[0])
+      setIsQuizFinished(true)
     }
   }
 
-  const getQuestionStatus = (index: number) => {
-    if (revisitList.includes(index)) return "orange"
-    if (answers[index] !== null) return "green"
-    return "red"
+  const handlePreviousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1)
+    }
+  }
+
+  const handleFinishQuiz = () => {
+    if (currentQuiz) {
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000)
+      markAsCompleted(currentQuiz.id, score, timeSpent, answers.map(a => a || ''))
+      setShowSubmissionDialog(true)
+    }
+  }
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
   const getQuestionStatusColor = (index: number) => {
-    const status = getQuestionStatus(index)
-    switch (status) {
-      case "green":
-        return "bg-green-500 hover:bg-green-600"
-      case "orange":
-        return "bg-orange-400 hover:bg-orange-500"
-      case "red":
-        return "bg-red-500 hover:bg-red-600"
-      default:
-        return "bg-gray-300 hover:bg-gray-400"
+    if (answers[index] !== null) {
+      return "bg-green-500"
+    } else if (revisitList.includes(index)) {
+      return "bg-yellow-500"
+    } else {
+      return "bg-gray-500"
     }
   }
 
-  const getQuizSummary = () => {
-    const answered = answers.filter(answer => answer !== null).length
-    const unanswered = answers.filter(answer => answer === null).length
-    const markedForReview = revisitList.length
-
-    return { answered, unanswered, markedForReview }
+  const toggleRevisit = (index: number) => {
+    if (revisitList.includes(index)) {
+      setRevisitList(revisitList.filter(i => i !== index))
+    } else {
+      setRevisitList([...revisitList, index])
+    }
   }
 
-  const handleSubmitQuiz = () => {
-    setShowSubmissionDialog(false)
-    setIsQuizFinished(true)
+  if (isLoading) {
+    return (
+      <Card className="w-full max-w-2xl">
+        <CardContent className="pt-6 text-center">
+          <p className="text-lg text-muted-foreground">Loading quiz...</p>
+        </CardContent>
+      </Card>
+    )
   }
 
   if (!currentQuiz) {
-    return <div>Loading...</div>
-  }
-
-  if (isQuizFinished) {
-    const totalQuestions = currentQuiz.questions.length
-    const timeTaken = 300 - timer
-    const percentage = (score / totalQuestions) * 100
-    const passed = percentage > 80
-
     return (
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Quiz Finished!</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-lg">
-            Your score: {score} / {totalQuestions}
-          </p>
-          <p className="text-lg">
-            Time taken: {Math.floor(timeTaken / 60)}:{("0" + (timeTaken % 60)).slice(-2)} minutes
-          </p>
-          <p className="text-lg">Percentage: {percentage.toFixed(2)}%</p>
-          <Progress value={percentage} className="w-full" />
-          <p className={`text-xl font-bold ${passed ? "text-green-600" : "text-red-600"}`}>
-            {passed ? "Hurray! You passed! 🎉" : "Unfortunately, you didn't pass. 😢"}
-          </p>
-          <div className="flex gap-2">
-            <Button onClick={() => setShowAnswers(true)} className="mt-4">
-              View All Answers
-            </Button>
-            <Button onClick={() => router.back()} className="mt-4">
-              Back to Quizzes
-            </Button>
-          </div>
+      <Card className="w-full max-w-2xl">
+        <CardContent className="pt-6 text-center">
+          <p className="text-lg text-muted-foreground">Quiz not found</p>
+          <Button onClick={() => router.push('/dashboard/quizzes')} className="mt-4">
+            Back to Quizzes
+          </Button>
         </CardContent>
-        {showAnswers && (
-          <Dialog open={showAnswers} onOpenChange={setShowAnswers}>
-            <DialogContent className="h-[80vh] my-auto overflow-y-scroll">
-              <DialogHeader>
-                <DialogTitle>Review Your Answers</DialogTitle>
-              </DialogHeader>
-              <div>
-                {currentQuiz.questions.map((question, index) => {
-                  const userAnswer = answers[index]
-                  const isCorrect = userAnswer === question.correctOption
-                  const wasAnswered = userAnswer !== null
-
-                  return (
-                    <div key={index} className="mb-6 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
-                      <div className="mb-3">
-                        <p className="font-bold text-white text-lg mb-2">
-                          Question {index + 1}: {question.question}
-                        </p>
-                        {/* Question feedback */}
-                        <div className="text-sm mb-3">
-                          {!wasAnswered ? (
-                            <span className="text-gray-500 font-medium">❌ Not answered</span>
-                          ) : isCorrect ? (
-                            <span className="text-green-600 font-medium">✅ Correct answer</span>
-                          ) : (
-                            <span className="text-red-600 font-medium">❌ Incorrect answer</span>
-                          )}
-                        </div>
-                        {/* Show user's answer if they answered */}
-                        {wasAnswered && (
-                          <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            <span className="font-medium">Your answer: </span>
-                            <span className={isCorrect ? "text-green-600" : "text-red-600"}>
-                              {userAnswer}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        {question.options.map((option, optionIndex) => (
-                          <p
-                            key={optionIndex}
-                            className={`p-3 rounded-lg border ${option === question.correctOption
-                                ? "bg-green-500 border-green-600 text-white font-bold"
-                                : userAnswer === option && option !== question.correctOption
-                                  ? "bg-red-500 border-red-600 text-white font-bold"
-                                  : "bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300"
-                              }`}
-                          >
-                            {option}
-                            {option === question.correctOption && (
-                              <span className="ml-2 text-xs">✅ Correct</span>
-                            )}
-                            {userAnswer === option && option !== question.correctOption && (
-                              <span className="ml-2 text-xs">❌ Your choice</span>
-                            )}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-              <DialogFooter>
-                <Button onClick={() => setShowAnswers(false)}>Close</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        )}
       </Card>
     )
   }
 
   const currentQuestion = currentQuiz.questions[currentQuestionIndex]
-  const { answered, unanswered, markedForReview } = getQuizSummary()
+  const progress = ((currentQuestionIndex + 1) / currentQuiz.questions.length) * 100
 
   return (
-    <>
-      <div className="text-center">
-        <h1 className="text-3xl font-bold">{currentQuiz.title}</h1>
-        <p className="text-lg mt-2">{currentQuiz.description}</p>
-      </div>
-
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-2xl font-bold">
-            Question {currentQuestionIndex + 1} of {currentQuiz.questions.length}
-          </CardTitle>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="icon">
-                <InfoIcon className="h-4 w-4" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Quiz Instructions</DialogTitle>
-                <DialogDescription>
-                  <ul className="list-disc list-inside space-y-2">
-                    <li>Answer each question by selecting an option.</li>
-                    <li>Mark questions for review if you're unsure.</li>
-                    <li>Review marked questions before submitting the quiz.</li>
-                    <li>Time left: {timer} seconds.</li>
-                  </ul>
-                  <div className="mt-4 space-y-2">
-                    <p className="font-medium">Question Status Legend:</p>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-green-500 rounded"></div>
-                      <span className="text-sm">Answered</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-orange-400 rounded"></div>
-                      <span className="text-sm">Marked for Review</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-red-500 rounded"></div>
-                      <span className="text-sm">Unanswered</span>
-                    </div>
-                  </div>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+    <div className="w-full max-w-4xl">
+      {/* Quiz Header */}
+      <Card className="mb-6">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-2xl">{currentQuiz.title}</CardTitle>
+              <CardDescription>{currentQuiz.description}</CardDescription>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-center">
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Clock className="h-4 w-4" />
+                  Time Left
+                </div>
+                <div className={`text-lg font-bold ${timer < 60 ? 'text-red-500' : ''}`}>
+                  {formatTime(timer)}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-muted-foreground">Score</div>
+                <div className="text-lg font-bold text-green-600">
+                  {score}/{currentQuiz.questions.length}
+                </div>
+              </div>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent>
+          <Progress value={progress} className="w-full" />
+          <div className="flex justify-between text-sm text-muted-foreground mt-2">
+            <span>Question {currentQuestionIndex + 1} of {currentQuiz.questions.length}</span>
+            <span>{Math.round(progress)}% Complete</span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Question Navigation */}
+      <Card className="mb-6">
+        <CardContent className="pt-6">
           <div className="flex justify-center space-x-2 mb-4 flex-wrap">
             {currentQuiz.questions.map((_, index) => (
               <div
@@ -332,129 +255,118 @@ function QuizGame({ quizId }: { quizId: string }) {
               </div>
             ))}
           </div>
-          <p className="text-lg">{currentQuestion.question}</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {currentQuestion.options.map((option, index) => (
-              <Button
-                key={index}
-                variant={answers[currentQuestionIndex] === option ? "default" : "outline"}
-                className="w-full text-left justify-start h-auto py-4 px-6"
-                onClick={() => handleAnswer(option)}
-              >
-                {option}
-              </Button>
-            ))}
-          </div>
         </CardContent>
-        <CardFooter className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-          <div className="flex space-x-2">
-            <Button
-              onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
-              disabled={currentQuestionIndex === 0}
-            >
-              ⬅️ Previous
-            </Button>
-            <Button onClick={handleNextQuestion}>
-              {currentQuestionIndex === currentQuiz.questions.length - 1 ? "Finish 🏁" : "Next ➡️"}
-            </Button>
-          </div>
-          <div className="flex space-x-2">
-            <Button
-              variant={revisitList.includes(currentQuestionIndex) ? "default" : "outline"}
-              onClick={handleRevisit}
-            >
-              {revisitList.includes(currentQuestionIndex) ? "Marked ⭐" : "Mark for Revisit 🔖"}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleReviewMarked}
-              disabled={revisitList.length === 0}
-            >
-              Review Marked 🔍
-            </Button>
-          </div>
-        </CardFooter>
-        <div className="px-6 py-4 text-right">
-          <p className="text-sm text-gray-600">
-            Time left: {Math.floor(timer / 60)}:{("0" + (timer % 60)).slice(-2)} minutes
-          </p>
-        </div>
       </Card>
 
-      <Button
-        onClick={() => {
-          router.push("/dashboard/quizzes")
-        }}
-        className="ml-96 mr-auto"
-      >
-        Back to Quizzes
-      </Button>
-
-      {/* Submission Confirmation Dialog */}
-      <AlertDialog open={showSubmissionDialog} onOpenChange={setShowSubmissionDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-orange-500" />
-              Confirm Quiz Submission
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              <div className="space-y-3 mt-2">
-                <p>Please review your quiz status before submitting:</p>
-                <div className="space-y-2 bg-black-50 p-3 rounded-md">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-500 rounded"></div>
-                      <span>Answered Questions:</span>
-                    </div>
-                    <span className="font-medium">{answered}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-red-500 rounded"></div>
-                      <span>Unanswered Questions:</span>
-                    </div>
-                    <span className="font-medium">{unanswered}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-orange-400 rounded"></div>
-                      <span>Marked for Review:</span>
-                    </div>
-                    <span className="font-medium">{markedForReview}</span>
-                  </div>
-                </div>
-                {(unanswered > 0 || markedForReview > 0) && (
-                  <p className="text-orange-600 text-sm">
-                    ⚠️ You have {unanswered > 0 ? `${unanswered} unanswered` : ""}
-                    {unanswered > 0 && markedForReview > 0 ? " and " : ""}
-                    {markedForReview > 0 ? `${markedForReview} marked for review` : ""} question(s).
-                  </p>
-                )}
-                <p className="text-sm text-white-600">Are you sure you want to submit your quiz?</p>
+      {/* Current Question */}
+      {!isQuizFinished ? (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Question {currentQuestionIndex + 1}</CardTitle>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleRevisit(currentQuestionIndex)}
+                  className={revisitList.includes(currentQuestionIndex) ? "bg-yellow-100" : ""}
+                >
+                  {revisitList.includes(currentQuestionIndex) ? "✓ Marked" : "Mark for Review"}
+                </Button>
               </div>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Go Back to Quiz</AlertDialogCancel>
-            <AlertDialogAction onClick={handleSubmitQuiz}>Submit Quiz</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {showAlert && (
-        <AlertDialog open={showAlert} onOpenChange={setShowAlert}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{alertContent.title}</AlertDialogTitle>
-              <AlertDialogDescription>{alertContent.description}</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogAction onClick={() => setShowAlert(false)}>OK</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-lg">{currentQuestion.question}</p>
+            
+            {/* Answer Result Feedback */}
+            {lastAnswerResult && (
+              <div className={`p-4 rounded-lg text-center font-semibold ${
+                lastAnswerResult === 'correct' 
+                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+              }`}>
+                {lastAnswerResult === 'correct' ? '✅ Correct!' : '❌ Incorrect!'}
+              </div>
+            )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {currentQuestion.options.map((option, index) => (
+                <Button
+                  key={index}
+                  variant={answers[currentQuestionIndex] === option ? "default" : "outline"}
+                  className="w-full text-left justify-start h-auto py-4 px-6"
+                  onClick={() => handleAnswer(option)}
+                  disabled={lastAnswerResult !== null}
+                >
+                  {option}
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button
+              variant="outline"
+              onClick={handlePreviousQuestion}
+              disabled={currentQuestionIndex === 0}
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={handleNextQuestion}
+              disabled={currentQuestionIndex === currentQuiz.questions.length - 1}
+            >
+              Next
+            </Button>
+          </CardFooter>
+        </Card>
+      ) : (
+        /* Quiz Results */
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-center">Quiz Complete!</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-2 text-4xl">
+              <Trophy className="text-yellow-500" />
+              <span className="font-bold">{score}/{currentQuiz.questions.length}</span>
+            </div>
+            <p className="text-lg">
+              You scored {Math.round((score / currentQuiz.questions.length) * 100)}%
+            </p>
+            <div className="flex justify-center gap-4 text-sm text-muted-foreground">
+              <span>Time: {formatTime(Math.floor((Date.now() - startTime) / 1000))}</span>
+              <span>Questions: {currentQuiz.questions.length}</span>
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-center gap-4">
+            <Button onClick={handleFinishQuiz} variant="default">
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Save Results
+            </Button>
+            <Button onClick={() => router.push('/dashboard/quizzes')} variant="outline">
+              Back to Quizzes
+            </Button>
+          </CardFooter>
+        </Card>
       )}
-    </>
+
+      {/* Submission Dialog */}
+      <Dialog open={showSubmissionDialog} onOpenChange={setShowSubmissionDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Quiz Results Saved!</DialogTitle>
+            <DialogDescription>
+              Your quiz results have been saved. You can review your completed quizzes anytime.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => router.push('/dashboard/quizzes')}>
+              Back to Quizzes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }
