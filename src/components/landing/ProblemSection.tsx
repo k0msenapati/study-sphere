@@ -59,7 +59,7 @@ export default function ProblemSection() {
               className="relative group"
             >
               <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-              <div className="relative bg-card p-8 rounded-lg border border-border">
+              <div className="relative bg-card p-8 rounded-lg border border-border h-[220px] flex flex-col justify-between">
                 <div className="flex items-center mb-4">
                   <div className="p-3 bg-red-100 dark:bg-red-900/20 rounded-lg mr-4">
                     <problem.icon className="h-6 w-6 text-red-600" />
