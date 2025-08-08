@@ -1,21 +1,5 @@
-import { sqliteTable, AnySQLiteColumn, uniqueIndex, integer, text, foreignKey } from "drizzle-orm/sqlite-core"
-  import { sql } from "drizzle-orm"
-
-export const users = sqliteTable("users", {
-	id: integer().primaryKey({ autoIncrement: true }).notNull(),
-	email: text().notNull(),
-	password: text().notNull(),
-	name: text().notNull(),
-	createdAt: integer("created_at").notNull(),
-	updatedAt: integer("updated_at").notNull(),
-	bio: text(),
-	displayName: text("display_name"),
-	avatarUrl: text("avatar_url"),
-	lastSignIn: integer("last_sign_in"),
-},
-(table) => [
-	uniqueIndex("users_email_unique").on(table.email),
-]);
+import { sqliteTable, AnySQLiteColumn, foreignKey, text, integer, uniqueIndex } from "drizzle-orm/sqlite-core"
+import { sql } from "drizzle-orm"
 
 export const chats = sqliteTable("chats", {
 	id: text().primaryKey().notNull(),
@@ -36,53 +20,6 @@ export const dailyReviews = sqliteTable("daily_reviews", {
 	productivityScore: integer("productivity_score"),
 	createdAt: integer("created_at").notNull(),
 });
-
-export const notes = sqliteTable("notes", {
-	id: text().primaryKey().notNull(),
-	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
-	title: text().notNull(),
-	content: text().notNull(),
-	categories: text().notNull(),
-	createdAt: integer("created_at").notNull(),
-	modifiedAt: integer("modified_at").notNull(),
-});
-
-export const tasks = sqliteTable("tasks", {
-	id: text().primaryKey().notNull(),
-	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
-	title: text().notNull(),
-	description: text(),
-	priority: text().default("medium").notNull(),
-	status: text().default("pending").notNull(),
-	dueDate: integer("due_date"),
-	scheduledDate: integer("scheduled_date"),
-	scheduledStartTime: text("scheduled_start_time"),
-	scheduledEndTime: text("scheduled_end_time"),
-	estimatedDuration: integer("estimated_duration"),
-	completedAt: integer("completed_at"),
-	createdAt: integer("created_at").notNull(),
-	updatedAt: integer("updated_at").notNull(),
-});
-
-export const userSettings = sqliteTable("user_settings", {
-	id: text().primaryKey().notNull(),
-	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
-	focusSessionDuration: integer("focus_session_duration").default(90).notNull(),
-	breakDuration: integer("break_duration").default(20).notNull(),
-	workStartTime: text("work_start_time").default("09:00").notNull(),
-	workEndTime: text("work_end_time").default("17:00").notNull(),
-	peakHoursStart: text("peak_hours_start").default("10:00").notNull(),
-	peakHoursEnd: text("peak_hours_end").default("12:00").notNull(),
-	pomodoroEnabled: integer("pomodoro_enabled").default(0).notNull(),
-	pomodoroWorkDuration: integer("pomodoro_work_duration").default(25).notNull(),
-	pomodoroBreakDuration: integer("pomodoro_break_duration").default(5).notNull(),
-	createdAt: integer("created_at").notNull(),
-	updatedAt: integer("updated_at").notNull(),
-	themePreference: text("theme_preference").default("system").notNull(),
-},
-(table) => [
-	uniqueIndex("user_settings_user_id_unique").on(table.userId),
-]);
 
 export const decks = sqliteTable("decks", {
 	id: text().primaryKey().notNull(),
@@ -127,6 +64,23 @@ export const flashcards = sqliteTable("flashcards", {
 	updatedAt: integer("updated_at").notNull(),
 });
 
+export const notes = sqliteTable("notes", {
+	id: text().primaryKey().notNull(),
+	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	title: text().notNull(),
+	content: text().notNull(),
+	categories: text().notNull(),
+	createdAt: integer("created_at").notNull(),
+	modifiedAt: integer("modified_at").notNull(),
+});
+
+export const noteBookmarks = sqliteTable("note_bookmarks", {
+	id: text().primaryKey().notNull(),
+	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	noteId: text("note_id").notNull().references(() => notes.id, { onDelete: "cascade" } ),
+	createdAt: integer("created_at").notNull(),
+});
+
 export const studySessions = sqliteTable("study_sessions", {
 	id: text().primaryKey().notNull(),
 	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
@@ -141,6 +95,110 @@ export const studySessions = sqliteTable("study_sessions", {
 	timeSpent: integer("time_spent").default(0).notNull(),
 	completed: integer().default(0).notNull(),
 	createdAt: integer("created_at").notNull(),
+});
+
+export const tasks = sqliteTable("tasks", {
+	id: text().primaryKey().notNull(),
+	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	title: text().notNull(),
+	description: text(),
+	priority: text().default("medium").notNull(),
+	status: text().default("pending").notNull(),
+	dueDate: integer("due_date"),
+	scheduledDate: integer("scheduled_date"),
+	scheduledStartTime: text("scheduled_start_time"),
+	scheduledEndTime: text("scheduled_end_time"),
+	estimatedDuration: integer("estimated_duration"),
+	completedAt: integer("completed_at"),
+	createdAt: integer("created_at").notNull(),
+	updatedAt: integer("updated_at").notNull(),
+});
+
+export const userSettings = sqliteTable("user_settings", {
+	id: text().primaryKey().notNull(),
+	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	focusSessionDuration: integer("focus_session_duration").default(90).notNull(),
+	breakDuration: integer("break_duration").default(20).notNull(),
+	workStartTime: text("work_start_time").default("09:00").notNull(),
+	workEndTime: text("work_end_time").default("17:00").notNull(),
+	peakHoursStart: text("peak_hours_start").default("10:00").notNull(),
+	peakHoursEnd: text("peak_hours_end").default("12:00").notNull(),
+	pomodoroEnabled: integer("pomodoro_enabled").default(0).notNull(),
+	pomodoroWorkDuration: integer("pomodoro_work_duration").default(25).notNull(),
+	pomodoroBreakDuration: integer("pomodoro_break_duration").default(5).notNull(),
+	themePreference: text("theme_preference").default("system").notNull(),
+	createdAt: integer("created_at").notNull(),
+	updatedAt: integer("updated_at").notNull(),
+},
+(table) => [
+	uniqueIndex("user_settings_user_id_unique").on(table.userId),
+]);
+
+export const users = sqliteTable("users", {
+	id: integer().primaryKey({ autoIncrement: true }).notNull(),
+	name: text().notNull(),
+	email: text().notNull(),
+	password: text().notNull(),
+	bio: text(),
+	displayName: text("display_name"),
+	avatarUrl: text("avatar_url"),
+	lastSignIn: integer("last_sign_in"),
+	createdAt: integer("created_at").notNull(),
+	updatedAt: integer("updated_at").notNull(),
+},
+(table) => [
+	uniqueIndex("users_email_unique").on(table.email),
+]);
+
+export const quizBookmarks = sqliteTable("quiz_bookmarks", {
+	id: text().primaryKey().notNull(),
+	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	quizId: text("quiz_id").notNull().references(() => quizzes.id, { onDelete: "cascade" } ),
+	createdAt: integer("created_at").notNull(),
+});
+
+export const quizCompletions = sqliteTable("quiz_completions", {
+	id: text().primaryKey().notNull(),
+	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	quizId: text("quiz_id").notNull().references(() => quizzes.id, { onDelete: "cascade" } ),
+	score: integer().notNull(),
+	totalQuestions: integer("total_questions").notNull(),
+	timeSpent: integer("time_spent").notNull(),
+	completedAt: integer("completed_at").notNull(),
+	answers: text().notNull(),
+});
+
+export const quizSubjects = sqliteTable("quiz_subjects", {
+	id: text().primaryKey().notNull(),
+	name: text().notNull(),
+	description: text(),
+	color: text().default("#3B82F6").notNull(),
+	icon: text().default("📚").notNull(),
+	createdAt: integer("created_at").notNull(),
+	updatedAt: integer("updated_at").notNull(),
+});
+
+export const quizTopics = sqliteTable("quiz_topics", {
+	id: text().primaryKey().notNull(),
+	subjectId: text("subject_id").notNull().references(() => quizSubjects.id, { onDelete: "cascade" } ),
+	name: text().notNull(),
+	description: text(),
+	createdAt: integer("created_at").notNull(),
+	updatedAt: integer("updated_at").notNull(),
+});
+
+export const quizzes = sqliteTable("quizzes", {
+	id: text().primaryKey().notNull(),
+	userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" } ),
+	subjectId: text("subject_id").notNull().references(() => quizSubjects.id, { onDelete: "cascade" } ),
+	topicId: text("topic_id").notNull().references(() => quizTopics.id, { onDelete: "cascade" } ),
+	title: text().notNull(),
+	description: text().notNull(),
+	difficulty: text().default("intermediate").notNull(),
+	questions: text().notNull(),
+	timeLimit: integer("time_limit").default(300).notNull(),
+	createdAt: integer("created_at").notNull(),
+	updatedAt: integer("updated_at").notNull(),
 });
 
 export const quizSubjects = sqliteTable("quiz_subjects", {

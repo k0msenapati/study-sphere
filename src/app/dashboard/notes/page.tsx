@@ -51,6 +51,7 @@ import {
   X,
   Filter,
   Download,
+  Bookmark,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -173,7 +174,17 @@ function NotesComponent() {
     });
     doc.save(`${note.title || "note"}.pdf`);
   }
-  const { notes, createNote, updateNote, deleteNote } = useNotesContext()
+  const { 
+    notes, 
+    allNotes,
+    showBookmarked, 
+    setShowBookmarked, 
+    createNote, 
+    updateNote, 
+    deleteNote, 
+    toggleBookmark,
+    bookmarkCount
+  } = useNotesContext()
   const emptyNote: ExtendedNote = {
     id: "",
     title: "",
@@ -212,23 +223,27 @@ function NotesComponent() {
     setIsViewModalOpen(false)
   }
 
+  const handleBookmarkToggle = (noteId: string) => {
+    toggleBookmark(noteId)
+  }
+
   // Get all unique categories from existing notes
   const allCategories = useMemo(() => {
     const categories = new Set<string>()
-    notes.forEach(note => {
+    allNotes.forEach(note => {
       const extendedNote = note as ExtendedNote
       if (extendedNote.categories) {
         extendedNote.categories.forEach(cat => categories.add(cat))
       }
     })
     return Array.from(categories).sort()
-  }, [notes])
+  }, [allNotes])
 
   // Generate search options from existing notes
   const searchOptions = useMemo(() => {
     const options = new Set<string>()
 
-    notes.forEach(note => {
+    allNotes.forEach(note => {
       // Add note titles as search options
       if (note.title.trim()) {
         options.add(note.title.toLowerCase())
@@ -251,7 +266,7 @@ function NotesComponent() {
         icon: term.length > 10 ? FileText : Tag,
       }))
       .sort((a, b) => a.label.localeCompare(b.label))
-  }, [notes])
+  }, [allNotes])
 
   // Filter notes based on search query, selected search terms, and category
   const filteredNotes = useMemo(() => {
@@ -285,7 +300,7 @@ function NotesComponent() {
   }, [notes, searchQuery, selectedSearchTerms, selectedCategory])
 
   useCopilotReadable({
-    description: "Notes list with categories.",
+    description: "Notes list with categories and bookmarks.",
     value: JSON.stringify(notes),
   })
 
@@ -370,7 +385,7 @@ function NotesComponent() {
     },
   })
 
-  const totalNotes = notes.length
+  const totalNotes = allNotes.length
 
   return (
     <div className="min-h-screen p-8">
@@ -439,15 +454,32 @@ function NotesComponent() {
                     </Select>
                   </div>
                 )}
+
+                {/* Bookmark Filter */}
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-left">
+                    🔖 Filter by status
+                  </label>
+                  <Button
+                    variant={showBookmarked ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setShowBookmarked(!showBookmarked)}
+                    className="w-full justify-start"
+                  >
+                    <Bookmark className="h-4 w-4 mr-2" />
+                    Bookmarked ({bookmarkCount})
+                  </Button>
+                </div>
               </div>
 
               {/* Results Summary */}
-              {(searchQuery || selectedSearchTerms.length > 0 || selectedCategory !== "all") && (
+              {(searchQuery || selectedSearchTerms.length > 0 || selectedCategory !== "all" || showBookmarked) && (
                 <div className="text-sm text-gray-500 text-left">
                   Found {filteredNotes.length} note{filteredNotes.length !== 1 ? "s" : ""}
                   {searchQuery && ` matching "${searchQuery}"`}
                   {selectedSearchTerms.length > 0 && ` with keywords`}
                   {selectedCategory !== "all" && ` in "${selectedCategory}" category`}
+                  {showBookmarked && ` (bookmarked only)`}
                   <Button
                     variant="ghost"
                     size="sm"
@@ -456,6 +488,7 @@ function NotesComponent() {
                       setSearchQuery("")
                       setSelectedSearchTerms([])
                       setSelectedCategory("all")
+                      setShowBookmarked(false)
                     }}
                   >
                     Clear all filters
@@ -488,6 +521,7 @@ function NotesComponent() {
                 setSearchQuery("")
                 setSelectedSearchTerms([])
                 setSelectedCategory("all")
+                setShowBookmarked(false)
               }}
               variant="outline"
             >
@@ -532,6 +566,19 @@ function NotesComponent() {
                               {note.title}
                             </CardTitle>
                             <div className="flex gap-2 ml-2">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className={`hover:bg-yellow-100 hover:text-yellow-600 transition-all duration-200 ${
+                                  note.isBookmarked ? 'text-yellow-500' : 'text-gray-400'
+                                }`}
+                                onClick={e => {
+                                  e.stopPropagation()
+                                  handleBookmarkToggle(note.id)
+                                }}
+                              >
+                                <Bookmark className={`h-4 w-4 ${note.isBookmarked ? 'fill-current' : ''}`} />
+                              </Button>
                               <Button
                                 size="sm"
                                 variant="ghost"
@@ -655,8 +702,20 @@ function NotesComponent() {
                 </DialogTitle>
 
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="icon" onClick={() => setIsEditMode(!isEditMode)}>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => setIsEditMode(!isEditMode)}
+                  >
                     {isEditMode ? <Eye className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={`${selectedNote.isBookmarked ? 'text-yellow-500' : 'text-gray-400'}`}
+                    onClick={() => handleBookmarkToggle(selectedNote.id)}
+                  >
+                    <Bookmark className={`h-4 w-4 ${selectedNote.isBookmarked ? 'fill-current' : ''}`} />
                   </Button>
                   {/* Export Dropdown */}
                   <DropdownMenu>

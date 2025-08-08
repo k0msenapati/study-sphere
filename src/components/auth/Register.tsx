@@ -1,29 +1,29 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
-
-
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function Register() {
   const checkPasswordStrength = useCallback((password: string) => {
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumbers = /[0-9]/.test(password);
-  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-  const lengthCheck = password.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const lengthCheck = password.length >= 8;
 
-  if (lengthCheck && hasUpperCase && hasLowerCase && hasNumbers && hasSpecial) {
-    return 'Strong';
-  } else if (lengthCheck && ((hasUpperCase && hasLowerCase) || hasNumbers)) {
-    return 'Moderate';
-  } else {
-    return 'Weak';
-  }
-},[]);
+    if (lengthCheck && hasUpperCase && hasLowerCase && hasNumbers && hasSpecial) {
+      return 'Strong';
+    } else if (lengthCheck && ((hasUpperCase && hasLowerCase) || hasNumbers)) {
+      return 'Moderate';
+    } else {
+      return 'Weak';
+    }
+  }, []);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +31,17 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [passwordStrength, setPasswordStrength] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState('');
   const router = useRouter();
+
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? '';
+
+  useEffect(() => {
+    if (!siteKey) {
+      console.error('⚠️ Missing NEXT_PUBLIC_RECAPTCHA_SITE_KEY. reCAPTCHA will not work.');
+    }
+  }, [siteKey]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -39,8 +49,7 @@ export default function Register() {
         const strength = checkPasswordStrength(password);
         setPasswordStrength(strength);
       }
-    }, 300); // 300ms debounce
-
+    }, 300);
     return () => clearTimeout(timeout);
   }, [password]);
 
@@ -49,23 +58,30 @@ export default function Register() {
     setLoading(true);
     setError('');
 
+    if (!recaptchaToken) {
+      setError('Please complete the reCAPTCHA.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, recaptchaToken }),
       });
 
       const data = await response.json();
-
       if (response.ok) {
         router.push('/dashboard');
         router.refresh();
       } else {
         setError(data.error || 'Registration failed');
+        recaptchaRef.current?.reset();
       }
     } catch (error) {
       setError('Network error');
+      recaptchaRef.current?.reset();
     } finally {
       setLoading(false);
     }
@@ -94,7 +110,6 @@ export default function Register() {
         <p className="text-gray-600">Join Study Sphere today</p>
       </div>
 
-      {/* Error Message */}
       {error && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -105,7 +120,7 @@ export default function Register() {
         </motion.div>
       )}
 
-      {/* Name Input */}
+      {/* Name */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
           Name
@@ -120,7 +135,7 @@ export default function Register() {
         />
       </div>
 
-      {/* Email Input */}
+      {/* Email */}
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
           Email
@@ -135,7 +150,7 @@ export default function Register() {
         />
       </div>
 
-      {/* Password Input with Toggle & Strength */}
+      {/* Password */}
       <div className="relative">
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
           Password
@@ -173,7 +188,16 @@ export default function Register() {
         )}
       </div>
 
-      {/* Submit Button */}
+      {/* reCAPTCHA */}
+      {siteKey && (
+        <ReCAPTCHA
+          ref={recaptchaRef}
+          sitekey={siteKey}
+          onChange={(token) => setRecaptchaToken(token || '')}
+        />
+      )}
+
+      {/* Submit */}
       <button
         type="submit"
         disabled={loading}

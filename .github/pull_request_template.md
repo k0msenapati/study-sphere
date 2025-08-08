@@ -11,7 +11,7 @@ Fixes #(issue number)
 
 ## Screenshots / Video
 
-Please include a video or screenshorts for the previewing changes. 
+Please include a video or screenshots for the previewing changes. 
 
 ## How Has This Been Tested?
 
