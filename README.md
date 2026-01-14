@@ -7,7 +7,7 @@
 
 ---
 
-### 🌟 About
+### About
 
 **Study Sphere** is an intelligent and versatile learning platform built to supercharge your study sessions. With a modern interface and powerful AI support, it offers an engaging and personalized educational experience through four core features:
 
@@ -18,11 +18,11 @@
 
 Start your journey toward smarter studying with **Study Sphere** – where learning meets innovation.
 
-<p align="center">
+<!-- <p align="center">
   <a href="https://www.youtube.com/watch?v=a5dYdKVxN4k">
     <img src="http://i.ytimg.com/vi/a5dYdKVxN4k/hqdefault.jpg" alt="Study Sphere Demo Video" width="640"/>
   </a>
-</p>
+</p> -->
 
 ---
 
@@ -35,22 +35,6 @@ Start your journey toward smarter studying with **Study Sphere** – where learn
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/CopilotKit-🪁-black" alt="CopilotKit" />
 </p>
-
----
-
-### ✨ New Feature: AI Flashcards Generator
-
-Transform your study material into interactive flashcards with the power of AI! The new flashcards generator:
-
-- 🧠 **AI-Powered**: Automatically creates question-answer pairs from your study material
-- ⚙️ **Customizable**: Choose number of cards, difficulty level, and focus areas
-- 🎯 **Interactive**: Flip cards, track progress, and mark your understanding
-- 📊 **Progress Tracking**: Monitor your performance and identify areas for improvement
-- 💾 **Export & Save**: Download flashcards for offline study
-
-**Perfect for**: Memorization, active recall, spaced repetition, and exam preparation.
-
-👉 [Read the complete Flashcards Feature Guide](FLASHCARDS.md)
 
 <details>
 <summary>📦 <strong>Set Up</strong></summary>
